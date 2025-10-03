@@ -1,0 +1,29 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "parallax-container",
+  "type": "registry:block",
+  "title": "Parallax container",
+  "description": "A reusable, fully responsive component that applies a smooth parallax effect to the provided child component. This popular design technique adds depth, creates an immersive experience, and makes your website feel more engaging.",
+  "dependencies": [
+    "motion",
+    "clsx",
+    "tw-merge"
+  ],
+  "files": [
+    {
+      "path": "components/(package)/parallax-container/parallax-container.tsx",
+      "content": "\"use client\";\r\n\r\nimport * as React from \"react\";\r\nimport {\r\n  useScroll,\r\n  useTransform,\r\n  motion,\r\n  useMotionValue,\r\n  useSpring,\r\n} from \"motion/react\";\r\n\r\nimport { useIsServer } from \"@/hooks/use-is-server\";\r\n\r\nexport interface ParallaxContainerProps {\r\n  children: React.ReactElement;\r\n  maxScale?: number;\r\n  className?: string;\r\n  style?: React.CSSProperties;\r\n}\r\n\r\nexport function ParallaxContainer({\r\n  children,\r\n  maxScale = 1.1,\r\n  className,\r\n  style,\r\n}: ParallaxContainerProps) {\r\n  const containerRef = React.useRef<HTMLDivElement>(null);\r\n  const isServer = useIsServer();\r\n\r\n  const scale = useMotionValue(1);\r\n  const springifyScale = useSpring(scale, {\r\n    mass: 1,\r\n    damping: 45,\r\n    stiffness: 350,\r\n  });\r\n  const { scrollYProgress } = useScroll({\r\n    target: containerRef,\r\n    offset: [\"start end\", \"end start\"],\r\n  });\r\n\r\n  const scrollYOffset = useTransform(scrollYProgress, (latest) => {\r\n    if (isServer || !containerRef.current) return 0;\r\n\r\n    const viewportHeight = window.innerHeight;\r\n    const { height: containerHeight } =\r\n      containerRef.current.getBoundingClientRect();\r\n\r\n    return latest * (viewportHeight + containerHeight);\r\n  });\r\n\r\n  const y = useTransform(scrollYOffset, (latest) => {\r\n    if (isServer || !containerRef.current) return \"0%\";\r\n\r\n    const viewportHeight = window.innerHeight;\r\n    const { height: containerHeight } =\r\n      containerRef.current.getBoundingClientRect();\r\n\r\n    if (containerHeight >= viewportHeight) return \"0%\";\r\n\r\n    const effectiveMaxScale = Math.min(\r\n      maxScale,\r\n      viewportHeight / containerHeight,\r\n    );\r\n\r\n    const percent =\r\n      ((effectiveMaxScale % 1) / (viewportHeight - containerHeight)) *\r\n      (latest - containerHeight) *\r\n      100;\r\n\r\n    return `${percent}%`;\r\n  });\r\n\r\n  React.useEffect(() => {\r\n    if (!containerRef.current) return;\r\n\r\n    const updateScale = () => {\r\n      const viewportHeight = window.innerHeight;\r\n      const { height: containerHeight } =\r\n        containerRef.current!.getBoundingClientRect();\r\n\r\n      const effectiveMaxScale = Math.min(\r\n        maxScale,\r\n        viewportHeight / containerHeight,\r\n      );\r\n\r\n      scale.set(containerHeight >= viewportHeight ? 1 : effectiveMaxScale);\r\n    };\r\n\r\n    updateScale();\r\n\r\n    window.addEventListener(\"resize\", updateScale);\r\n\r\n    return () => window.removeEventListener(\"resize\", updateScale);\r\n  }, [scale, maxScale]);\r\n\r\n  return (\r\n    <>\r\n      <style>{`html { scroll-behavior: smooth; }`}</style>\r\n      <div\r\n        ref={containerRef}\r\n        className={className}\r\n        style={{ ...style, overflow: \"hidden\" }}\r\n      >\r\n        <motion.div\r\n          style={{\r\n            y,\r\n            scale: springifyScale,\r\n            transformOrigin: \"bottom\",\r\n          }}\r\n        >\r\n          {children}\r\n        </motion.div>\r\n      </div>\r\n    </>\r\n  );\r\n}\r\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\nimport * as React from \"react\";\nimport { isValidElement } from \"react\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n\nexport function assertOnlyChild(children: React.ReactNode) {\n  if (Array.isArray(children))\n    throw new Error(\n      \"A single child is required, but received multiple siblings.\",\n    );\n  if (\n    children &&\n    isValidElement(children) &&\n    children.type === React.Fragment &&\n    Array.isArray((children.props as React.FragmentProps).children)\n  )\n    throw new Error(\n      \"A single child is required; fragments that render multiple siblings are not allowed.\",\n    );\n}\n",
+      "type": "registry:lib"
+    },
+    {
+      "path": "hooks/use-is-server.ts",
+      "content": "import * as React from \"react\";\r\n\r\nexport function useIsServer() {\r\n  const isServer = React.useRef(typeof window === \"undefined\");\r\n  return isServer.current;\r\n}\r\n",
+      "type": "registry:hook"
+    }
+  ]
+}

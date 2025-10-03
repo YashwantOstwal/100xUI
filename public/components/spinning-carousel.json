@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "spinning-carousel",
+  "type": "registry:block",
+  "title": "Spinning carousel",
+  "description": "A reusable, responsive carousel that loops through any number of cards in a smooth spinning motion, automatically showcasing content in compact spaces, perfect for testimonials, product highlights, or feature lists.",
+  "dependencies": [
+    "motion",
+    "clsx",
+    "tw-merge"
+  ],
+  "files": [
+    {
+      "path": "components/(package)/spinning-carousel/spinning-carousel.tsx",
+      "content": "\"use client\";\r\n\r\nimport * as React from \"react\";\r\nimport { motion, MotionProps, useInView } from \"motion/react\";\r\n\r\nimport { cn } from \"@/lib/utils\";\r\n\r\nconst CARD_STATES = [\r\n  { opacity: 0.6, zIndex: 2, x: \"-100%\" },\r\n  { opacity: 1, zIndex: 3, x: \"0%\" },\r\n  { opacity: 0.6, zIndex: 2, x: \"100%\" },\r\n  { opacity: 0, zIndex: 1, x: \"0%\" },\r\n];\r\nconst TOTAL_CARDS = 4;\r\n\r\nexport interface SpinningCarouselProps {\r\n  children: React.ReactNode[];\r\n  readTimeInSec?: number;\r\n  animationDurationInSec?: number;\r\n  className?: string;\r\n  style?: React.CSSProperties;\r\n}\r\n\r\nexport function SpinningCarousel({\r\n  children,\r\n  readTimeInSec = 4,\r\n  animationDurationInSec = 0.8,\r\n  className,\r\n  style,\r\n}: SpinningCarouselProps) {\r\n  const containerRef = React.useRef(null);\r\n  const isInView = useInView(containerRef);\r\n  const intervalRef = React.useRef<NodeJS.Timeout>(undefined);\r\n\r\n  const [carouselState, setCarouselState] = React.useState<{\r\n    index: number;\r\n    visibleCardIndices: number[];\r\n  }>({\r\n    index: 0,\r\n    visibleCardIndices: Array.from(\r\n      { length: TOTAL_CARDS },\r\n      (_, i) => i % children.length,\r\n    ),\r\n  });\r\n\r\n  React.useEffect(() => {\r\n    if (isInView) {\r\n      intervalRef.current = setInterval(\r\n        () => {\r\n          setCarouselState(({ index, visibleCardIndices }) => {\r\n            const nextIndex = index + 1;\r\n\r\n            const updatedVisibleIndices = visibleCardIndices.map(\r\n              (cardIndex, i) =>\r\n                (i - (nextIndex % TOTAL_CARDS) + TOTAL_CARDS) % TOTAL_CARDS ===\r\n                2\r\n                  ? (index + TOTAL_CARDS - 1) % children.length\r\n                  : cardIndex,\r\n            );\r\n\r\n            return {\r\n              index: nextIndex,\r\n              visibleCardIndices: updatedVisibleIndices,\r\n            };\r\n          });\r\n        },\r\n        (readTimeInSec + animationDurationInSec) * 1000,\r\n      );\r\n    }\r\n\r\n    return () => clearInterval(intervalRef.current);\r\n  }, [animationDurationInSec, children.length, readTimeInSec, isInView]);\r\n\r\n  return (\r\n    <div\r\n      ref={containerRef}\r\n      className={cn(\r\n        \"grid w-full grid-cols-7 !overflow-hidden lg:grid-cols-4\",\r\n        className,\r\n      )}\r\n      style={style}\r\n    >\r\n      {carouselState.visibleCardIndices.map((cardIndex, i) => {\r\n        const newState =\r\n          (i - (carouselState.index % TOTAL_CARDS) + TOTAL_CARDS) % TOTAL_CARDS;\r\n\r\n        return (\r\n          <CarouselCard\r\n            key={`carouselCards[${i}]`}\r\n            initial={CARD_STATES[i]}\r\n            animate={CARD_STATES[newState]}\r\n            transition={{\r\n              duration: animationDurationInSec,\r\n              ease: [0.33, 1, 0.68, 1], // easeInOutCubic\r\n            }}\r\n          >\r\n            {children[cardIndex]}\r\n          </CarouselCard>\r\n        );\r\n      })}\r\n    </div>\r\n  );\r\n}\r\n\r\nfunction CarouselCard({ children, ...motionProps }: MotionProps) {\r\n  return (\r\n    <motion.div\r\n      {...motionProps}\r\n      className=\"col-span-5 col-start-2 row-start-1 grid p-1.5 sm:p-2 lg:col-span-2 lg:col-start-2 lg:p-3\"\r\n    >\r\n      {children}\r\n    </motion.div>\r\n  );\r\n}\r\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\nimport * as React from \"react\";\nimport { isValidElement } from \"react\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n\nexport function assertOnlyChild(children: React.ReactNode) {\n  if (Array.isArray(children))\n    throw new Error(\n      \"A single child is required, but received multiple siblings.\",\n    );\n  if (\n    children &&\n    isValidElement(children) &&\n    children.type === React.Fragment &&\n    Array.isArray((children.props as React.FragmentProps).children)\n  )\n    throw new Error(\n      \"A single child is required; fragments that render multiple siblings are not allowed.\",\n    );\n}\n",
+      "type": "registry:lib"
+    }
+  ]
+}
