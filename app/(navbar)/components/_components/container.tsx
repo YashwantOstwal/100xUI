@@ -186,7 +186,7 @@ ComponentPage.Dependencies = function Dependencies({
   dependencies,
   ...rest
 }: {
-  dependencies: ("motion" | "lucide-react" | "tw-merge" | "clsx")[];
+  dependencies: ("motion" | "lucide-react" | "tailwind-merge" | "clsx")[];
 } & React.ComponentProps<"section">) {
   const stringifiedDependencies = dependencies.sort().join(" ");
 

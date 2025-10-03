@@ -14,7 +14,7 @@ const LogoIcon = ({
     style={style}
   >
     100<span className="text-destructive">x</span>
-    <div className="-indent-[7px text-[38px] leading-[26px]">
+    <div className="text-[38px] leading-[26px]">
       U<span className="text-destructive">I</span>
     </div>
   </div>

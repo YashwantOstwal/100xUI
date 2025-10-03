@@ -1,6 +1,7 @@
 import LogoIcon from "@/icons/logo.icon";
 import * as motion from "motion/react-client";
 import { UnderlineLink } from "./underline-link";
+
 export function Footer() {
   return (
     <footer className="divide-border mt-24 flex flex-col divide-y divide-dashed text-sm">

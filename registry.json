@@ -18,7 +18,7 @@
           "type": "registry:lib"
         }
       ],
-      "dependencies": ["clsx", "tw-merge", "motion"]
+      "dependencies": ["clsx", "tailwind-merge", "motion"]
     },
     {
       "name": "text-switcher",
@@ -35,7 +35,7 @@
           "type": "registry:lib"
         }
       ],
-      "dependencies": ["motion", "clsx", "tw-merge"]
+      "dependencies": ["motion", "clsx", "tailwind-merge"]
     },
     {
       "name": "in-page-navbar",
@@ -56,7 +56,7 @@
           "type": "registry:hook"
         }
       ],
-      "dependencies": ["motion", "clsx", "tw-merge", "lucide-react"]
+      "dependencies": ["motion", "clsx", "tailwind-merge", "lucide-react"]
     },
     {
       "name": "motion-dock",
@@ -81,7 +81,7 @@
           "type": "registry:hook"
         }
       ],
-      "dependencies": ["motion", "clsx", "tw-merge"]
+      "dependencies": ["motion", "clsx", "tailwind-merge"]
     }
   ]
 }

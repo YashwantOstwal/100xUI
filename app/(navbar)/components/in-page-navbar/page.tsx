@@ -83,7 +83,12 @@ export default function InPageNavbarPage() {
                 Install the following dependencies.
               </ComponentPage.Note>
               <ComponentPage.Dependencies
-                dependencies={["clsx", "lucide-react", "motion", "tw-merge"]}
+                dependencies={[
+                  "clsx",
+                  "lucide-react",
+                  "motion",
+                  "tailwind-merge",
+                ]}
               />
             </div>
             <div className="mb-6" data-tracker="step-2">

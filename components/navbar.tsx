@@ -1,6 +1,7 @@
 import LogoIcon from "@/icons/logo.icon";
 import Link from "next/link";
 import { ModeToggle } from "./mode-toggle";
+import { ViewX } from "./view-x";
 import { ViewGithub } from "./view-github";
 export default function Navbar() {
   return (
@@ -13,9 +14,10 @@ export default function Navbar() {
           >
             <LogoIcon />
           </Link>
-          <div className="flex gap-3 lg:pointer-events-auto">
+          <div className="flex gap-1 lg:pointer-events-auto">
+            <ViewX />
             <ViewGithub />
-            <ModeToggle />
+            <ModeToggle className="ml-1.5" />
           </div>
         </div>
       </div>

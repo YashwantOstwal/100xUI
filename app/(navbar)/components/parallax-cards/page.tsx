@@ -61,7 +61,7 @@ export default function ParallaxCardsPage() {
                 Install the following dependencies.
               </ComponentPage.Note>
               <ComponentPage.Dependencies
-                dependencies={["motion", "clsx", "tw-merge"]}
+                dependencies={["motion", "clsx", "tailwind-merge"]}
               />
             </div>
             <div className="mb-6" data-tracker="step-2">
