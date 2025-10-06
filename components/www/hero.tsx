@@ -44,7 +44,10 @@ export function Hero() {
             Browse Components
           </SmoothScrollA>
         </div>
-        <LastlyAdded lastAddedDate={new Date("2025-10-06T00:47+05:30")} />
+        <LastlyAdded
+          href="/components/spinning-testimonials"
+          lastAddedDate={new Date("2025-10-07T00:47+05:30")}
+        />
       </div>
     </div>
   );

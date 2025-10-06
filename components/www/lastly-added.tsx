@@ -3,7 +3,13 @@ import React, { useEffect, useState } from "react";
 import { UnderlineLink } from "./underline-link";
 import { ArrowRightIcon } from "lucide-react";
 
-function LastlyAdded({ lastAddedDate }: { lastAddedDate: Date }) {
+function LastlyAdded({
+  lastAddedDate,
+  href,
+}: {
+  lastAddedDate: Date;
+  href: string;
+}) {
   const [textContent, setTextContent] = useState("Lastly added 0 hours ago");
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
@@ -26,7 +32,7 @@ function LastlyAdded({ lastAddedDate }: { lastAddedDate: Date }) {
 
   return (
     <UnderlineLink
-      href="/components/parallax-cards"
+      href={href}
       className="my-auto flex items-center text-sm"
       variants={{
         initial: { opacity: 0, gap: "4px" },
