@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist_Mono, Poppins } from "next/font/google";
 
 import { cn } from "@/lib/utils";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Footer } from "@/components/footer";
+import { ThemeProvider } from "@/components/www/theme-provider";
+import { Footer } from "@/components/www/footer";
 
 import "./globals.css";
 
@@ -71,6 +71,7 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
+          themes={["light-vercel", "dark-vercel", "light", "dark"]}
         >
           <div className="mx-auto max-w-screen-2xl px-3 lg:px-4">
             <div className="bg-background text-foreground min-h-screen border-x border-dashed px-3 pt-26 pb-16 lg:px-4">

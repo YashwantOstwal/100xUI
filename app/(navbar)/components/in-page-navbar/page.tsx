@@ -9,10 +9,11 @@ import {
   USAGE,
 } from "./page.data";
 import { Metadata } from "next";
-import { PackageManagerProvider } from "@/components/package-manager-providers";
-import AnimatedTab from "@/components/animated-tab";
-import { AnimatedTabsProvider } from "@/components/animated-tabs-provider";
-import PlaceHolder from "@/components/place-holder";
+import { PackageManagerProvider } from "@/components/www/package-manager-providers";
+import AnimatedTab from "@/components/www/animated-tab";
+import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
+import PlaceHolder from "@/components/www/place-holder";
+import React from "react";
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
@@ -115,7 +116,20 @@ export default function InPageNavbarPage() {
         </PackageManagerProvider>
       </ComponentPage.Installation>
       <ComponentPage.Documentation id="documentation">
-        <ComponentPage.PropsTable tableData={PROP_TABLE.tableData} />
+        {PROP_TABLE.data.map(({ title, tableData }, i) => (
+          <React.Fragment key={i}>
+            <ComponentPage.SubSubTitle className="flex flex-col items-start text-base font-medium sm:text-lg">
+              {title.map((eachTitle) => (
+                <React.Fragment key={eachTitle}>
+                  <span className="bg-muted text-muted-foreground p-0.5">
+                    {eachTitle}
+                  </span>
+                </React.Fragment>
+              ))}
+            </ComponentPage.SubSubTitle>
+            <ComponentPage.PropsTable tableData={tableData} />
+          </React.Fragment>
+        ))}
         {ADDITIONAL_INFORMATION.map((props, index) => (
           <ComponentPage.ListContainer
             {...props}

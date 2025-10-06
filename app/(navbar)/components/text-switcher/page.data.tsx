@@ -1,8 +1,8 @@
-import SyntaxHighlighterServer from "@/components/syntax-highlighter/server";
+import SyntaxHighlighterServer from "@/components/www/syntax-highlighter/server";
 import {
   type ActiveFile,
   type DirectoryItem,
-} from "@/components/file-explorer/file-explorer.types";
+} from "@/components/www/file-explorer/file-explorer.types";
 import type { PropTableProps } from "../_components/prop-table";
 import {
   styleProp,
@@ -198,30 +198,36 @@ const DEFAULT_ACTIVE_FILE: ActiveFile = {
 };
 
 const PROP_TABLE: PropTableProps = {
-  tableData: [
+  data: [
     {
-      prop: <code>phrases</code>,
-      type: <SyntaxHighlighterServer>{`string[]`}</SyntaxHighlighterServer>,
-      description: "An array of strings that the component will cycle through.",
-      defaultValue: (
-        <SyntaxHighlighterServer>(required)</SyntaxHighlighterServer>
-      ),
+      title: ["<TextSwitcher/>"],
+      tableData: [
+        {
+          prop: <code>phrases</code>,
+          type: <SyntaxHighlighterServer>{`string[]`}</SyntaxHighlighterServer>,
+          description:
+            "An array of strings that the component will cycle through.",
+          defaultValue: (
+            <SyntaxHighlighterServer>(required)</SyntaxHighlighterServer>
+          ),
+        },
+        {
+          prop: <code>animationDurationInSec?</code>,
+          type: <SyntaxHighlighterServer>number</SyntaxHighlighterServer>,
+          description: `The duration, in seconds, of the enter and exit animations for each phrase.`,
+          defaultValue: <SyntaxHighlighterServer>0.4</SyntaxHighlighterServer>,
+        },
+        {
+          prop: <code>readTimeInSec?</code>,
+          type: <SyntaxHighlighterServer>number</SyntaxHighlighterServer>,
+          description:
+            "The display duration, in seconds, for each phrase before its exit animation starts.",
+          defaultValue: <SyntaxHighlighterServer>2</SyntaxHighlighterServer>,
+        },
+        styleProp,
+        classNameProp,
+      ],
     },
-    {
-      prop: <code>animationDurationInSec?</code>,
-      type: <SyntaxHighlighterServer>number</SyntaxHighlighterServer>,
-      description: `The duration, in seconds, of the enter and exit animations for each phrase.`,
-      defaultValue: <SyntaxHighlighterServer>0.4</SyntaxHighlighterServer>,
-    },
-    {
-      prop: <code>readTimeInSec?</code>,
-      type: <SyntaxHighlighterServer>number</SyntaxHighlighterServer>,
-      description:
-        "The display duration, in seconds, for each phrase before its exit animation starts.",
-      defaultValue: <SyntaxHighlighterServer>2</SyntaxHighlighterServer>,
-    },
-    styleProp,
-    classNameProp,
   ],
 };
 const TITLE = "Text switcher",

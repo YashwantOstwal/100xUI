@@ -1,8 +1,8 @@
-import SyntaxHighlighterServer from "@/components/syntax-highlighter/server";
+import SyntaxHighlighterServer from "@/components/www/syntax-highlighter/server";
 import {
   type ActiveFile,
   type DirectoryItem,
-} from "@/components/file-explorer/file-explorer.types";
+} from "@/components/www/file-explorer/file-explorer.types";
 import type { PropTableProps } from "../_components/prop-table";
 import { USE_PREVIOUS_TS, USE_DEBOUNCED_STATE_TS } from "@/hooks/code-strings";
 import { UTILS_TS } from "@/lib/code-strings";
@@ -42,7 +42,7 @@ const TRANSITION: Transition = {
 export function MotionDock({
   dockItems,
   className,
-  tooltipBorderRadius = "var(--radius-sm,4px)",
+  tooltipBorderRadius = "var(--radius-sm)",
   ...rest
 }: MotionDockProps) {
   const [activeItem, setActiveItem] = useDebouncedState<number>(-1, 100);
@@ -73,7 +73,7 @@ export function MotionDock({
               }}
               data-dockitem={i}
               className={cn(
-                "hover:text-accent-foreground hover:bg-accent focus-visible:text-accent-foreground focus-visible:bg-accent focus-visible:ring-ring focus-visible:ring-offset-background cursor-pointer rounded-full p-1.5 transition-colors duration-150 ease-out focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:outline-none [&>svg]:size-4.5",
+                "hover:text-accent-foreground hover:bg-accent focus-visible:text-accent-foreground focus-visible:bg-accent focus-visible:ring-ring focus-visible:ring-offset-background cursor-pointer rounded-full p-1.5 transition-colors duration-150 ease-out focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:outline-none",
                 className,
               )}
               {...rest}
@@ -243,7 +243,7 @@ const MOTION_DOCK_DEMO_TSX = `import {
 import { MotionDock, type MotionDockProps } from "./motion-dock";
 
 export function MotionDockDemo() {
-  return <MotionDock {...demoProps} />;
+  return <MotionDock className="[&_svg]:size-4.5" {...demoProps} />;
 }
 const demoProps: MotionDockProps = {
   dockItems: [
@@ -321,69 +321,77 @@ export const DEFAULT_ACTIVE_FILE: ActiveFile = {
 };
 
 export const PROP_TABLE: PropTableProps = {
-  tableData: [
+  data: [
     {
-      prop: <code>dockItems</code>,
-      type: (
-        <SyntaxHighlighterServer>{`{
+      title: ["<MotionDock/>"],
+      tableData: [
+        {
+          prop: <code>dockItems</code>,
+          type: (
+            <SyntaxHighlighterServer>{`{
   icon: React.ReactElement;
   tooltip: string;
   ...rest: Omit<HTMLMotionProps<"button">, "ref">;
 }[];`}</SyntaxHighlighterServer>
-      ),
-      description: (
-        <>
-          <div className="mb-1">
-            <code className="inline-block">icon:</code>&nbsp;The visual element
-            for the button, such as an SVG icon or a text string.
-          </div>
-          <div className="mb-1">
-            <code>tooltip:</code>&nbsp;The text that shows up when a user hovers
-            over the button or focuses on it with keyboard navigation.
-          </div>
-          <div className="mb-1">
-            <code>rest:</code>&nbsp;Any standard React button props, like&nbsp;
-            <code>onClick</code>&nbsp;handlers or <code>disabled</code> states,
-            which will be applied directly to the button, except for&nbsp;
-            <code>ref</code>.
-          </div>
-        </>
-      ),
-      defaultValue: (
-        <SyntaxHighlighterServer>(required)</SyntaxHighlighterServer>
-      ),
-    },
-    {
-      prop: <code>tooltipBorderRadius?</code>,
-      type: (
-        <SyntaxHighlighterServer>
-          {`React.CSSProperties["borderRadius"]`}
-        </SyntaxHighlighterServer>
-      ),
-      description: <>Specifies the border radius of the tooltip.</>,
-      defaultValue: (
-        <SyntaxHighlighterServer>
-          {`"var(--radius-sm,4px)"`}
-        </SyntaxHighlighterServer>
-      ),
-    },
-    {
-      prop: <code>...rest</code>,
-      type: (
-        <SyntaxHighlighterServer>
-          {`React.ComponentProps<"div">`}
-        </SyntaxHighlighterServer>
-      ),
-      description: (
-        <>
-          Any standard React div props, like&nbsp;
-          <code>id, style or className</code>, which will be applied directly to
-          the component&apos;s root element.
-        </>
-      ),
-      defaultValue: (
-        <SyntaxHighlighterServer>undefined</SyntaxHighlighterServer>
-      ),
+          ),
+          description: (
+            <>
+              <div className="mb-1">
+                <code className="inline-block">icon:</code>&nbsp;The visual
+                element for the button, such as an SVG icon or a text string.
+              </div>
+              <div className="mb-1">
+                <code>tooltip:</code>&nbsp;The text that shows up when a user
+                hovers over the button or focuses on it with keyboard
+                navigation.
+              </div>
+              <div className="mb-1">
+                <code>rest:</code>&nbsp;Any standard React button props,
+                like&nbsp;
+                <code>onClick</code>&nbsp;handlers or <code>disabled</code>{" "}
+                states, which will be applied directly to the button, except
+                for&nbsp;
+                <code>ref</code>.
+              </div>
+            </>
+          ),
+          defaultValue: (
+            <SyntaxHighlighterServer>(required)</SyntaxHighlighterServer>
+          ),
+        },
+        {
+          prop: <code>tooltipBorderRadius?</code>,
+          type: (
+            <SyntaxHighlighterServer>
+              {`React.CSSProperties["borderRadius"]`}
+            </SyntaxHighlighterServer>
+          ),
+          description: <>Specifies the border radius of the tooltip.</>,
+          defaultValue: (
+            <SyntaxHighlighterServer>
+              {`"var(--radius-sm)"`}
+            </SyntaxHighlighterServer>
+          ),
+        },
+        {
+          prop: <code>...rest</code>,
+          type: (
+            <SyntaxHighlighterServer>
+              {`React.ComponentProps<"div">`}
+            </SyntaxHighlighterServer>
+          ),
+          description: (
+            <>
+              Any standard React div props, like&nbsp;
+              <code>id, style or className</code>, which will be applied
+              directly to the component&apos;s root element.
+            </>
+          ),
+          defaultValue: (
+            <SyntaxHighlighterServer>undefined</SyntaxHighlighterServer>
+          ),
+        },
+      ],
     },
   ],
 };

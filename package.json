@@ -12,6 +12,7 @@
     "registry:host": "shadcn build --output ./public/components & next dev --turbopack"
   },
   "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.10",
     "clsx": "^2.1.1",
     "hast-util-to-jsx-runtime": "^2.3.6",
     "lucide-react": "^0.522.0",

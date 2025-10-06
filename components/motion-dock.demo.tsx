@@ -6,10 +6,10 @@ import {
   AudioLinesIcon,
 } from "lucide-react";
 
-import { MotionDock, type MotionDockProps } from "./motion-dock";
+import { MotionDock, type MotionDockProps } from "@/components/motion-dock";
 
 export function MotionDockDemo() {
-  return <MotionDock {...demoProps} />;
+  return <MotionDock className="[&_svg]:size-4.5" {...demoProps} />;
 }
 const demoProps: MotionDockProps = {
   dockItems: [

@@ -1,5 +1,5 @@
-import { ComponentsGrid } from "@/components/components-grid";
-import { Hero } from "@/components/hero";
+import { ComponentsGrid } from "@/components/www/components-grid";
+import { Hero } from "@/components/www/hero";
 
 export default function Page() {
   return (

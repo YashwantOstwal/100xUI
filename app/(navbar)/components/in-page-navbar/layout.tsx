@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { InPageNavbarDemo } from "@/components/(package)/in-page-navbar/in-page-navbar.demo";
-import { ModeToggle } from "@/components/mode-toggle";
+import { InPageNavbarDemo } from "@/components/in-page-navbar.demo";
+import { ModeToggle } from "@/components/www/mode-toggle";
 
 export const metadata: Metadata = {
   title: "In-Page-Navbar",

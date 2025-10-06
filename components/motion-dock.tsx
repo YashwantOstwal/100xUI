@@ -33,7 +33,7 @@ const TRANSITION: Transition = {
 export function MotionDock({
   dockItems,
   className,
-  tooltipBorderRadius = "var(--radius-sm,4px)",
+  tooltipBorderRadius = "var(--radius-sm)",
   ...rest
 }: MotionDockProps) {
   const [activeItem, setActiveItem] = useDebouncedState<number>(-1, 100);
@@ -64,7 +64,7 @@ export function MotionDock({
               }}
               data-dockitem={i}
               className={cn(
-                "hover:text-accent-foreground hover:bg-accent focus-visible:text-accent-foreground focus-visible:bg-accent focus-visible:ring-ring focus-visible:ring-offset-background cursor-pointer rounded-full p-1.5 transition-colors duration-150 ease-out focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:outline-none [&>svg]:size-4.5",
+                "hover:text-accent-foreground hover:bg-accent focus-visible:text-accent-foreground focus-visible:bg-accent focus-visible:ring-ring focus-visible:ring-offset-background cursor-pointer rounded-full p-1.5 transition-colors duration-150 ease-out focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:outline-none",
                 className,
               )}
               {...rest}

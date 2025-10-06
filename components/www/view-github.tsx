@@ -14,7 +14,7 @@ export function ViewGithub({ className }: TailwindCSSClassname) {
   React.useEffect(() => {
     async function fetchAndAnimateStars() {
       const res = await fetch(
-        "https://api.github.com/repos/YashwantOstwal/UI-lib",
+        "https://api.github.com/repos/YashwantOstwal/100xUI",
       );
       const data = await res.json();
       const starsCount = data.stargazers_count;

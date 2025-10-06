@@ -1,6 +1,6 @@
 "use client";
 
-import Button from "@/components/file-explorer/button";
+import Button from "@/components/www/file-explorer/button";
 export function SmoothScrollA({
   href,
   ...rest

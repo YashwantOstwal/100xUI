@@ -8,11 +8,12 @@ import {
   ADDITIONAL_INFORMATION,
   USAGE,
 } from "./page.data";
-import { ParallaxCardsDemo } from "@/components/(package)/parallax-cards/parallax-cards.demo";
+import { ParallaxCardsDemo } from "@/components/parallax-cards.demo";
 import { Metadata } from "next";
-import { PackageManagerProvider } from "@/components/package-manager-providers";
-import AnimatedTab from "@/components/animated-tab";
-import { AnimatedTabsProvider } from "@/components/animated-tabs-provider";
+import { PackageManagerProvider } from "@/components/www/package-manager-providers";
+import AnimatedTab from "@/components/www/animated-tab";
+import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
+import React from "react";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -88,7 +89,21 @@ export default function ParallaxCardsPage() {
         </PackageManagerProvider>
       </ComponentPage.Installation>
       <ComponentPage.Documentation>
-        <ComponentPage.PropsTable tableData={PROP_TABLE.tableData} />
+        {PROP_TABLE.data.map(({ title, tableData }, i) => (
+          <React.Fragment key={i}>
+            <ComponentPage.SubSubTitle className="flex flex-col items-start text-base font-medium sm:text-lg">
+              {title.map((eachTitle) => (
+                <span
+                  key={eachTitle}
+                  className="bg-muted text-muted-foreground border border-dashed p-0.5"
+                >
+                  {eachTitle}
+                </span>
+              ))}
+            </ComponentPage.SubSubTitle>
+            <ComponentPage.PropsTable tableData={tableData} />
+          </React.Fragment>
+        ))}
         {ADDITIONAL_INFORMATION.map((props, index) => (
           <ComponentPage.ListContainer
             {...props}

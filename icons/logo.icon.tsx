@@ -1,4 +1,4 @@
-import { TailwindCSSClassname } from "@/components/file-explorer/file-explorer.types";
+import { TailwindCSSClassname } from "@/components/www/file-explorer/file-explorer.types";
 import { cn } from "@/lib/utils";
 import React from "react";
 

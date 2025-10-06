@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "spinning-testimonials",
+  "type": "registry:block",
+  "title": "Spinning testimonials",
+  "description": "A sleek, reusable testimonial carousel that smoothly spins through any number of testimonials. Designed to be fully responsive, it automatically converts its direct children into carousel slides, making it perfect for highlighting customer feedback in a compact, eye-catching way.",
+  "dependencies": [
+    "motion",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [
+    "avatar"
+  ],
+  "files": [
+    {
+      "path": "components/spinning-carousel.tsx",
+      "content": "\"use client\";\r\n\r\nimport React from \"react\";\r\nimport {\r\n  cubicBezier,\r\n  motion,\r\n  MotionConfig,\r\n  type HTMLMotionProps,\r\n} from \"motion/react\";\r\n\r\nimport { cn } from \"@/lib/utils\";\r\nimport { useInViewInterval } from \"@/hooks/use-in-view-interval\";\r\n\r\nconst CAROUSEL_CARD_POSITIONS = [\r\n  { opacity: 0.5, zIndex: 2, x: \"-100%\" },\r\n  { opacity: 1, zIndex: 3, x: \"0%\" },\r\n  { opacity: 0.5, zIndex: 2, x: \"100%\" },\r\n  { opacity: 0, zIndex: 1, x: \"0%\" },\r\n];\r\n\r\nconst TOTAL_CARDS = 4;\r\n\r\nexport interface SpinningCarouselProps\r\n  extends React.ComponentPropsWithoutRef<\"div\"> {\r\n  children: React.ReactElement[];\r\n  readTimeInSec?: number;\r\n  animationDurationInSec?: number;\r\n}\r\n\r\nexport function SpinningCarousel({\r\n  children,\r\n  readTimeInSec = 4,\r\n  animationDurationInSec = 1,\r\n  className,\r\n  ...rest\r\n}: SpinningCarouselProps) {\r\n  const totalChildren = children.length;\r\n\r\n  const [carouselState, setCarouselState] = React.useState<{\r\n    index: number;\r\n    visibleCardIndices: number[];\r\n  }>({\r\n    index: 0,\r\n    visibleCardIndices: Array.from(\r\n      { length: TOTAL_CARDS },\r\n      (_, i) => i % totalChildren,\r\n    ),\r\n  });\r\n\r\n  const containerRef = React.useRef<HTMLDivElement>(null);\r\n\r\n  const handleInterval = React.useCallback(() => {\r\n    setCarouselState(({ index, visibleCardIndices }) => {\r\n      const nextIndex = index + 1;\r\n\r\n      const updatedVisibleIndices = visibleCardIndices.map((cardIndex, i) =>\r\n        (i - (nextIndex % TOTAL_CARDS) + TOTAL_CARDS) % TOTAL_CARDS === 2\r\n          ? (index + TOTAL_CARDS - 1) % totalChildren\r\n          : cardIndex,\r\n      );\r\n\r\n      return {\r\n        index: nextIndex,\r\n        visibleCardIndices: updatedVisibleIndices,\r\n      };\r\n    });\r\n  }, [totalChildren]);\r\n\r\n  useInViewInterval(\r\n    containerRef,\r\n    handleInterval,\r\n    (readTimeInSec + animationDurationInSec) * 1000,\r\n  );\r\n\r\n  return (\r\n    <div\r\n      ref={containerRef}\r\n      className={cn(\r\n        \"w-full\",\r\n        className,\r\n        \"!grid !grid-cols-7 !overflow-hidden lg:!grid-cols-4 lg:py-3\",\r\n      )}\r\n      {...rest}\r\n    >\r\n      <MotionConfig\r\n        transition={{\r\n          duration: animationDurationInSec,\r\n          ease: cubicBezier(0.08, 0.82, 0.17, 1),\r\n        }}\r\n      >\r\n        {carouselState.visibleCardIndices.map((cardIndex, i) => {\r\n          const positionIndex =\r\n            (i - (carouselState.index % TOTAL_CARDS) + TOTAL_CARDS) %\r\n            TOTAL_CARDS;\r\n\r\n          return (\r\n            <SpinningCarouselCard\r\n              key={`SpinningCarouselCard[${i}]`}\r\n              initial={CAROUSEL_CARD_POSITIONS[i]}\r\n              animate={CAROUSEL_CARD_POSITIONS[positionIndex]}\r\n            >\r\n              {children[cardIndex]}\r\n            </SpinningCarouselCard>\r\n          );\r\n        })}\r\n      </MotionConfig>\r\n    </div>\r\n  );\r\n}\r\n\r\nfunction SpinningCarouselCard(props: HTMLMotionProps<\"div\">) {\r\n  return (\r\n    <motion.div\r\n      {...props}\r\n      className=\"col-span-5 col-start-2 row-start-1 grid px-2 lg:col-span-2 lg:col-start-2 lg:px-3\"\r\n    />\r\n  );\r\n}\r\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib"
+    },
+    {
+      "path": "hooks/use-in-view-interval.ts",
+      "content": "import { useInView, type UseInViewOptions } from \"motion/react\";\nimport React from \"react\";\n\nexport function useInViewInterval<T extends HTMLElement | null>(\n  ref: React.RefObject<T>,\n  handleInterval: () => void,\n  time: number,\n  option?: UseInViewOptions,\n) {\n  const isInView = useInView(ref, option);\n  const intervalRef = React.useRef<NodeJS.Timeout>(undefined);\n\n  React.useEffect(() => {\n    if (!isInView) return;\n\n    intervalRef.current = setInterval(handleInterval, time);\n\n    return () => clearInterval(intervalRef.current);\n  }, [time, isInView]);\n}\n",
+      "type": "registry:hook"
+    },
+    {
+      "path": "components/ui/testimonial.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\nimport { Avatar, AvatarImage, AvatarFallback } from \"@/components/ui/avatar\";\n\nconst TestimonialCard = ({\n  className,\n  ...rest\n}: React.ComponentProps<\"div\">) => (\n  <div\n    className={cn(\n      \"bg-card text-card-foreground border-border/40 inset-shadow-border/40 flex flex-col justify-between gap-10 rounded-4xl border px-5 py-4 shadow-md inset-shadow-2xs lg:px-7 lg:py-6\",\n      className,\n    )}\n    {...rest}\n  />\n);\n\nconst TestimonialContent = ({\n  className,\n  ...rest\n}: React.ComponentProps<\"div\">) => (\n  <div className={cn(\"text-lg font-medium lg:text-2xl\", className)} {...rest} />\n);\n\nconst TestimonialAuthor = ({\n  className,\n  ...rest\n}: React.ComponentProps<\"div\">) => (\n  <div\n    className={cn(\n      \"grid grid-cols-[auto_1fr] grid-rows-[auto_auto] gap-x-3 lg:gap-x-4\",\n      className,\n    )}\n    {...rest}\n  />\n);\n\nconst TestimonialAvatar = ({\n  className,\n  ...rest\n}: React.ComponentProps<typeof Avatar>) => (\n  <Avatar\n    className={cn(\"col-start-1 row-span-2 row-start-1 my-auto\", className)}\n    {...rest}\n  />\n);\n\nconst TestimonialAvatarImage = (\n  props: React.ComponentProps<typeof AvatarImage>,\n) => <AvatarImage {...props} />;\n\nconst TestimonialAvatarFallback = (\n  props: React.ComponentProps<typeof AvatarFallback>,\n) => <AvatarFallback {...props} />;\n\nconst TestimonialName = ({\n  className,\n  ...rest\n}: React.ComponentProps<\"div\">) => (\n  <div\n    className={cn(\n      \"col-start-2 row-start-1 text-sm font-medium lg:text-base\",\n      className,\n    )}\n    {...rest}\n  />\n);\n\nconst TestimonialPosition = ({\n  className,\n  ...rest\n}: React.ComponentProps<\"div\">) => (\n  <div\n    className={cn(\n      \"text-muted-foreground col-start-2 row-start-2 text-xs lg:text-sm\",\n      className,\n    )}\n    {...rest}\n  />\n);\n\nexport {\n  TestimonialCard,\n  TestimonialContent,\n  TestimonialAuthor,\n  TestimonialAvatar,\n  TestimonialName,\n  TestimonialPosition,\n  TestimonialAvatarFallback,\n  TestimonialAvatarImage,\n};\n",
+      "type": "registry:ui"
+    }
+  ]
+}

@@ -96,6 +96,7 @@ html.dark .shiki {
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+.dark-vercel,
 .dark {
   --layout: color-mix(
     in oklch,

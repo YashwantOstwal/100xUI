@@ -1,4 +1,7 @@
-export const GLOBALS_CSS = `@theme inline {
+export const GLOBALS_CSS = `
+// Theme - shadcn/ui Neutral
+
+@theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

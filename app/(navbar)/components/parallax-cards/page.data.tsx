@@ -1,10 +1,10 @@
 import {
   type ActiveFile,
   type DirectoryItem,
-} from "@/components/file-explorer/file-explorer.types";
-import { ListContainerProps } from "@/components/list-container";
-import type { PropTableProps } from "../_components/prop-table";
-import SyntaxHighlighterServer from "@/components/syntax-highlighter/server";
+} from "@/components/www/file-explorer/file-explorer.types";
+import { ListContainerProps } from "@/components/www/list-container";
+import type { PropTableProps } from "@/app/(navbar)/components/_components/prop-table";
+import SyntaxHighlighterServer from "@/components/www/syntax-highlighter/server";
 import { UTILS_TS } from "@/lib/code-strings";
 const PARALLAX_CARDS_DEMO_TSX = `import { PlusIcon } from "lucide-react";
 
@@ -272,66 +272,77 @@ const DEFAULT_ACTIVE_FILE: ActiveFile = {
 };
 
 const PROP_TABLE: PropTableProps = {
-  tableData: [
+  data: [
     {
-      prop: <code>children</code>,
-      type: (
-        <SyntaxHighlighterServer>React.ReactElement[]</SyntaxHighlighterServer>
-      ),
-      description: (
-        <div>
-          An array of &nbsp;<code>ReactElements</code> to be rendered as
-          individual cards in the parallax sequence.
-        </div>
-      ),
-      defaultValue: (
-        <SyntaxHighlighterServer>(required)</SyntaxHighlighterServer>
-      ),
-    },
-    {
-      prop: <code>maxStackedCards?</code>,
-      type: <SyntaxHighlighterServer>number</SyntaxHighlighterServer>,
-      description:
-        "The number of cards that remain visibly stacked on top of each other before the bottom-most card begins to fade and scroll out of view.",
-      defaultValue: <SyntaxHighlighterServer>3</SyntaxHighlighterServer>,
-    },
-    {
-      prop: <code>top?</code>,
-      type: <SyntaxHighlighterServer>string</SyntaxHighlighterServer>,
-      description: `The CSS top offset for the sticky cards. This determines how far from the top of the window each card "sticks" as you scroll.`,
-      defaultValue: (
-        <SyntaxHighlighterServer>&quot;50px&quot;</SyntaxHighlighterServer>
-      ),
-    },
-    {
-      prop: <code>forceParallax?</code>,
-      type: <SyntaxHighlighterServer>boolean</SyntaxHighlighterServer>,
-      description: (
-        <div>
-          If set to&nbsp;<code>true</code>, enforces the parallax effect to run
-          even when the card would be clipped at the bottom of the viewport
-          (i.e., when card height + top offset &gt; viewport height).
-        </div>
-      ),
-      defaultValue: <SyntaxHighlighterServer>false</SyntaxHighlighterServer>,
-    },
-    {
-      prop: <code>...rest</code>,
-      type: (
-        <SyntaxHighlighterServer>
-          {`React.ComponentPropsWithoutRef<"div">`}
-        </SyntaxHighlighterServer>
-      ),
-      description: (
-        <>
-          Any standard React div props, like&nbsp;
-          <code>id, style or className</code>, which will be applied directly to
-          the component&apos;s root element except for&nbsp;<code>ref</code>.
-        </>
-      ),
-      defaultValue: (
-        <SyntaxHighlighterServer>undefined</SyntaxHighlighterServer>
-      ),
+      title: ["<ParallaxCards/>"],
+      tableData: [
+        {
+          prop: <code>children</code>,
+          type: (
+            <SyntaxHighlighterServer>
+              React.ReactElement[]
+            </SyntaxHighlighterServer>
+          ),
+          description: (
+            <div>
+              An array of &nbsp;<code>ReactElements</code> to be rendered as
+              individual cards in the parallax sequence.
+            </div>
+          ),
+          defaultValue: (
+            <SyntaxHighlighterServer>(required)</SyntaxHighlighterServer>
+          ),
+        },
+        {
+          prop: <code>maxStackedCards?</code>,
+          type: <SyntaxHighlighterServer>number</SyntaxHighlighterServer>,
+          description:
+            "The number of cards that remain visibly stacked on top of each other before the bottom-most card begins to fade and scroll out of view.",
+          defaultValue: <SyntaxHighlighterServer>3</SyntaxHighlighterServer>,
+        },
+        {
+          prop: <code>top?</code>,
+          type: <SyntaxHighlighterServer>string</SyntaxHighlighterServer>,
+          description: `The CSS top offset for the sticky cards. This determines how far from the top of the window each card "sticks" as you scroll.`,
+          defaultValue: (
+            <SyntaxHighlighterServer>&quot;50px&quot;</SyntaxHighlighterServer>
+          ),
+        },
+        {
+          prop: <code>forceParallax?</code>,
+          type: <SyntaxHighlighterServer>boolean</SyntaxHighlighterServer>,
+          description: (
+            <div>
+              If set to&nbsp;<code>true</code>, enforces the parallax effect to
+              run even when the card would be clipped at the bottom of the
+              viewport (i.e., when card height + top offset &gt; viewport
+              height).
+            </div>
+          ),
+          defaultValue: (
+            <SyntaxHighlighterServer>false</SyntaxHighlighterServer>
+          ),
+        },
+        {
+          prop: <code>...rest</code>,
+          type: (
+            <SyntaxHighlighterServer>
+              {`React.ComponentPropsWithoutRef<"div">`}
+            </SyntaxHighlighterServer>
+          ),
+          description: (
+            <>
+              Any standard React div props, like&nbsp;
+              <code>id, style or className</code>, which will be applied
+              directly to the component&apos;s root element except for&nbsp;
+              <code>ref</code>.
+            </>
+          ),
+          defaultValue: (
+            <SyntaxHighlighterServer>undefined</SyntaxHighlighterServer>
+          ),
+        },
+      ],
     },
   ],
 };

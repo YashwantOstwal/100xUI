@@ -1,10 +1,11 @@
 import {
   type ActiveFile,
   type DirectoryItem,
-} from "@/components/file-explorer/file-explorer.types";
-import { ListContainerProps } from "@/components/list-container";
+} from "@/components/www/file-explorer/file-explorer.types";
+import { ListContainerProps } from "@/components/www/list-container";
 import type { PropTableProps } from "../_components/prop-table";
-import SyntaxHighlighterServer from "@/components/syntax-highlighter/server";
+import SyntaxHighlighterServer from "@/components/www/syntax-highlighter/server";
+import { UTILS_TS } from "@/lib/code-strings";
 
 const IN_PAGE_NAVBAR_DEMO_TSX = `import { InPageNavbar } from "./in-page-navbar";
 
@@ -416,6 +417,17 @@ const ROOT_DIRECTORY: DirectoryItem[] = [
     ],
   },
   {
+    name: "lib",
+    type: "directory",
+    items: [
+      {
+        name: "utils.ts",
+        type: "file",
+        code: UTILS_TS,
+      },
+    ],
+  },
+  {
     name: "hooks",
     type: "directory",
     items: [{ name: "use-is-server.ts", type: "file", code: USE_IS_SERVER }],
@@ -427,65 +439,73 @@ const DEFAULT_ACTIVE_FILE: ActiveFile = {
 };
 
 const PROP_TABLE: PropTableProps = {
-  tableData: [
+  data: [
     {
-      prop: <code>logo</code>,
-      type: (
-        <SyntaxHighlighterServer>React.ReactElement</SyntaxHighlighterServer>
-      ),
-      description:
-        "The logo to be displayed, typically on the left side of the navbar. Accepts any renderable React element.",
-      defaultValue: (
-        <SyntaxHighlighterServer>(required)</SyntaxHighlighterServer>
-      ),
-    },
-    {
-      prop: <code>sections</code>,
-      type: (
-        <SyntaxHighlighterServer>{`{
+      title: ["<InPageNavbar/>"],
+      tableData: [
+        {
+          prop: <code>logo</code>,
+          type: (
+            <SyntaxHighlighterServer>
+              React.ReactElement
+            </SyntaxHighlighterServer>
+          ),
+          description:
+            "The logo to be displayed, typically on the left side of the navbar. Accepts any renderable React element.",
+          defaultValue: (
+            <SyntaxHighlighterServer>(required)</SyntaxHighlighterServer>
+          ),
+        },
+        {
+          prop: <code>sections</code>,
+          type: (
+            <SyntaxHighlighterServer>{`{
   label: string;
   id: string;
   ...rest: Omit<React.ComponentProps<"a">, "href">;
 }[]`}</SyntaxHighlighterServer>
-      ),
-      description: (
-        <>
-          <div className="mb-1">
-            <code className="inline-block">label:</code>&nbsp;The text displayed
-            for the navigation link.
-          </div>
-          <div className="mb-1">
-            <code>id:</code>&nbsp;The id of the section element used for
-            progress tracking and as a link target for smooth scrolling.
-          </div>
-          <div className="mb-1">
-            <code>rest:</code>&nbsp;Any standard React anchor props, like&nbsp;
-            <code>target, rel, or className</code>, which will be applied
-            directly to the element, except for&nbsp;<code>href</code>.
-          </div>
-        </>
-      ),
-      defaultValue: (
-        <SyntaxHighlighterServer>(required)</SyntaxHighlighterServer>
-      ),
-    },
-    {
-      prop: <code>...rest</code>,
-      type: (
-        <SyntaxHighlighterServer>
-          {"React.ComponentProps<'div'>"}
-        </SyntaxHighlighterServer>
-      ),
-      description: (
-        <>
-          Any standard React div props, like&nbsp;
-          <code>id, style or className</code>, which will be applied directly to
-          the component&pos;s root element.
-        </>
-      ),
-      defaultValue: (
-        <SyntaxHighlighterServer>undefined</SyntaxHighlighterServer>
-      ),
+          ),
+          description: (
+            <>
+              <div className="mb-1">
+                <code className="inline-block">label:</code>&nbsp;The text
+                displayed for the navigation link.
+              </div>
+              <div className="mb-1">
+                <code>id:</code>&nbsp;The id of the section element used for
+                progress tracking and as a link target for smooth scrolling.
+              </div>
+              <div className="mb-1">
+                <code>rest:</code>&nbsp;Any standard React anchor props,
+                like&nbsp;
+                <code>target, rel, or className</code>, which will be applied
+                directly to the element, except for&nbsp;<code>href</code>.
+              </div>
+            </>
+          ),
+          defaultValue: (
+            <SyntaxHighlighterServer>(required)</SyntaxHighlighterServer>
+          ),
+        },
+        {
+          prop: <code>...rest</code>,
+          type: (
+            <SyntaxHighlighterServer>
+              {"React.ComponentProps<'div'>"}
+            </SyntaxHighlighterServer>
+          ),
+          description: (
+            <>
+              Any standard React div props, like&nbsp;
+              <code>id, style or className</code>, which will be applied
+              directly to the component&pos;s root element.
+            </>
+          ),
+          defaultValue: (
+            <SyntaxHighlighterServer>undefined</SyntaxHighlighterServer>
+          ),
+        },
+      ],
     },
   ],
 };

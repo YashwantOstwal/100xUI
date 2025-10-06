@@ -1,6 +1,6 @@
 import { PlusIcon } from "lucide-react";
 
-import { ParallaxCards } from "./parallax-cards";
+import { ParallaxCards } from "@/components/parallax-cards";
 
 export function ParallaxCardsDemo() {
   return (

@@ -10,7 +10,7 @@
       "description": "A reusable and responsive component that gives each of its children a smooth parallax effect, adding a modern, interactive touch to your website. Perfect for showcasing lists of content blocks, feature cards, or image galleries.",
       "files": [
         {
-          "path": "components/(package)/parallax-cards/parallax-cards.tsx",
+          "path": "components/parallax-cards.tsx",
           "type": "registry:component"
         },
         {
@@ -27,7 +27,7 @@
       "description": "A reusable component that creates an engaging animation effect by smoothly transitioning between a list of phrases. The animation, driven by a moving dot, makes it ideal for dynamically completing a sentence or tagline.",
       "files": [
         {
-          "path": "components/(package)/text-switcher/text-switcher.tsx",
+          "path": "components/text-switcher.tsx",
           "type": "registry:component"
         },
         {
@@ -44,7 +44,7 @@
       "description": "A smart, fully responsive, and accessible navigation bar that tracks section progress as you scroll, providing a clear visual indicator of your journey through the page. Best suited for single-page layouts where all content lives on a single page.",
       "files": [
         {
-          "path": "components/(package)/in-page-navbar/in-page-navbar.tsx",
+          "path": "components/in-page-navbar.tsx",
           "type": "registry:component"
         },
         {
@@ -65,7 +65,7 @@
       "description": "A reusable component where tooltips slide smoothly between dock items, making the motion dock feel natural and easy to use.",
       "files": [
         {
-          "path": "components/(package)/motion-dock/motion-dock.tsx",
+          "path": "components/motion-dock.tsx",
           "type": "registry:component"
         },
         {
@@ -79,6 +79,32 @@
         {
           "path": "hooks/use-previous.ts",
           "type": "registry:hook"
+        }
+      ],
+      "dependencies": ["motion", "clsx", "tailwind-merge"]
+    },
+    {
+      "name": "spinning-testimonials",
+      "type": "registry:block",
+      "title": "Spinning testimonials",
+      "description": "A sleek, reusable testimonial carousel that smoothly spins through any number of testimonials. Designed to be fully responsive, it automatically converts its direct children into carousel slides, making it perfect for highlighting customer feedback in a compact, eye-catching way.",
+      "registryDependencies": ["avatar"],
+      "files": [
+        {
+          "path": "components/spinning-carousel.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "hooks/use-in-view-interval.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "components/ui/testimonial.tsx",
+          "type": "registry:ui"
         }
       ],
       "dependencies": ["motion", "clsx", "tailwind-merge"]

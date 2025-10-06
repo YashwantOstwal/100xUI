@@ -7,11 +7,15 @@ interface RowData {
   description?: React.ReactNode;
   defaultValue: React.ReactNode;
 }
-type PropTableProps = React.ComponentProps<"div"> & {
+interface Data {
+  title: string[];
+  description?: string;
   tableData: RowData[];
-};
+}
+interface PropTableProps extends React.ComponentProps<"div"> {
+  data: Data[];
+}
 
-export type { RowData, PropTableProps };
 const COLUMN_HEADERS = ["Props", "Type", "Description", "Default value"];
 
 export function PropsTable({
@@ -21,7 +25,10 @@ export function PropsTable({
 }: { tableData: RowData[] } & React.ComponentProps<"table">) {
   return (
     <table
-      className={cn("border-border border border-dashed text-left", className)}
+      className={cn(
+        "border-border mb-10 border border-dashed text-left",
+        className,
+      )}
       {...rest}
     >
       <thead>
@@ -62,3 +69,4 @@ export function PropsTable({
     </table>
   );
 }
+export type { RowData, PropTableProps };

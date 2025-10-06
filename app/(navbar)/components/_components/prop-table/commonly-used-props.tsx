@@ -1,4 +1,4 @@
-import SyntaxHighlighterServer from "@/components/syntax-highlighter/server";
+import SyntaxHighlighterServer from "@/components/www/syntax-highlighter/server";
 import type { RowData } from "./";
 
 const classNameProp: RowData = {

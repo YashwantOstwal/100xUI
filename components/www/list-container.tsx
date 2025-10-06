@@ -26,7 +26,7 @@ export default function ListContainer({
         className={cn(
           "font-medium capitalize",
           variant === "pro-tips" && "text-[#032f62] dark:text-[#99ffe4]",
-          variant === "caveats" && "text-[#6f42c1] dark:text-[#ffc799]",
+          variant === "caveats" && "text-[#24292e] dark:text-[#ffc799]",
         )}
       >
         {title}
@@ -35,7 +35,7 @@ export default function ListContainer({
         className={cn(
           "space-y-4 p-5 pb-0",
           variant === "pro-tips" && "text-[#032f62] dark:text-[#99ffe4]",
-          variant === "caveats" && "text-[#6f42c1] dark:text-[#ffc799]",
+          variant === "caveats" && "text-[#24292e] dark:text-[#ffc799]",
         )}
       >
         {list.map((eachListItem, i) => (

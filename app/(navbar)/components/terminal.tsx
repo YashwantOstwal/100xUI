@@ -1,13 +1,13 @@
 "use client";
 
-import { CopyButton } from "@/components/copy-button";
-import { CodeCanvas } from "@/components/file-explorer/code-canvas";
-import { CardHeader } from "@/components/file-explorer/card-header";
+import { CopyButton } from "@/components/www/copy-button";
+import { CodeCanvas } from "@/components/www/file-explorer/code-canvas";
+import { CardHeader } from "@/components/www/file-explorer/card-header";
 import { cn } from "@/lib/utils";
 import { SquareTerminalIcon } from "lucide-react";
-import { CodeCard } from "@/components/code-card";
-import SyntaxHighlighterClient from "@/components/syntax-highlighter/client";
-import { usePackageManager } from "@/components/package-manager-providers";
+import { CodeCard } from "@/components/www/code-card";
+import SyntaxHighlighterClient from "@/components/www/syntax-highlighter/client";
+import { usePackageManager } from "@/components/www/package-manager-providers";
 
 type packageManagers = "pnpm" | "npm" | "bun" | "yarn";
 export function Terminal({

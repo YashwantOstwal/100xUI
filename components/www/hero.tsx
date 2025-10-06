@@ -44,7 +44,7 @@ export function Hero() {
             Browse Components
           </SmoothScrollA>
         </div>
-        <LastlyAdded lastAddedDate={new Date("2025-10-03T20:00+05:30")} />
+        <LastlyAdded lastAddedDate={new Date("2025-10-06T00:47+05:30")} />
       </div>
     </div>
   );

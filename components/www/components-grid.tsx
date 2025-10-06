@@ -1,9 +1,19 @@
 import Card from "./card";
+import SpinningTestimonialsShowcase from "@/public/og/spinning-testimonials.png";
+
 import ParallaxCardsShowcase from "@/public/og/parallax-cards.png";
 import InPageNavbarShowcase from "@/public/og/in-page-navbar.png";
 import MotionDockShowcase from "@/public/og/motion-dock.png";
 import TextSwitcherShowcase from "@/public/og/text-switcher.png";
 const components = [
+  {
+    name: "Spinning testimonials",
+    href: "/components/spinning-testimonials",
+    imgProps: {
+      src: SpinningTestimonialsShowcase,
+      alt: "spinning-testimonials",
+    },
+  },
   {
     name: "Parallax cards",
     href: "/components/parallax-cards",

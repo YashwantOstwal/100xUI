@@ -1,25 +1,25 @@
-import FileExplorer from "@/components/file-explorer";
-import type { FileExplorerProps } from "@/components/file-explorer/file-explorer.types";
+import FileExplorer from "@/components/www/file-explorer";
+import type { FileExplorerProps } from "@/components/www/file-explorer/file-explorer.types";
 import { PropsTable } from "../_components/prop-table";
 // import type { PropTableProps } from "../_components/prop-table";
 
-import { HomeLink } from "@/components/home-link";
-import Description from "@/components/description";
-import Preview from "@/components/preview";
-import Title from "@/components/title";
+import { HomeLink } from "@/components/www/home-link";
+import Description from "@/components/www/description";
+import Preview from "@/components/www/preview";
+import Title from "@/components/www/title";
 import { cn } from "@/lib/utils";
 import React, { ComponentProps } from "react";
-import { CardHeader } from "@/components/file-explorer/card-header";
-import SubTitle from "@/components/sub-title";
+import { CardHeader } from "@/components/www/file-explorer/card-header";
+import SubTitle from "@/components/www/sub-title";
 
 import { Terminal } from "../terminal";
-import SyntaxHighlighterServer from "@/components/syntax-highlighter/server";
-import { CodeCanvas } from "@/components/file-explorer/code-canvas";
-import { CopyButton } from "@/components/copy-button";
-import FileExtensionIcon from "@/components/file-explorer/file-extension";
-import { CodeCard } from "@/components/code-card";
-import ListContainer from "@/components/list-container";
-import { SubSubTitle } from "@/components/sub-sub-title";
+import SyntaxHighlighterServer from "@/components/www/syntax-highlighter/server";
+import { CodeCanvas } from "@/components/www/file-explorer/code-canvas";
+import { CopyButton } from "@/components/www/copy-button";
+import FileExtensionIcon from "@/components/www/file-explorer/file-extension";
+import { CodeCard } from "@/components/www/code-card";
+import ListContainer from "@/components/www/list-container";
+import { SubSubTitle } from "@/components/www/sub-sub-title";
 // type ContainerProps = TailwindCSSClassname & ComponentProps<"main">;
 
 export function ComponentPage({
@@ -139,13 +139,15 @@ const NOTES = {
         1
       </div>
       <div>
-        Run the command below to add the component to your project. It will also
-        generate the required base stylesheet if one doesn&apos;t already exist
-        and guide you through setting up the import alias&nbsp;
-        <code className="text-[#032f62] dark:text-[#99ffe4]">
-          @/components/...
-        </code>
-        &nbsp;if it isn&apos;t already configured.
+        Run the command below to add the component to your project.
+        <div className="text-muted-foreground">
+          It will also generate the required base stylesheet if one doesn&apos;t
+          already exist and guide you through setting up the import alias&nbsp;
+          <code className="text-[#032f62] dark:text-[#99ffe4]">
+            @/components/...
+          </code>
+          &nbsp;if it isn&apos;t already configured.
+        </div>
       </div>
     </>
   ),
@@ -186,7 +188,13 @@ ComponentPage.Dependencies = function Dependencies({
   dependencies,
   ...rest
 }: {
-  dependencies: ("motion" | "lucide-react" | "tailwind-merge" | "clsx")[];
+  dependencies: (
+    | "motion"
+    | "lucide-react"
+    | "tailwind-merge"
+    | "clsx"
+    | "@radix-ui/react-avatar"
+  )[];
 } & React.ComponentProps<"section">) {
   const stringifiedDependencies = dependencies.sort().join(" ");
 
