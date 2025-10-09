@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     description: `Exclusive to Next.js. A reusable component that extends the <Link/> component from "next/link" to power interactive animations using motion.dev. It includes three predefined variants: <MotionLinkUnderline/>, <MotionLinkSlideText/>, and <MotionLinkWithIcon/>, while the base <MotionLink/> provides full flexibility to define custom animations with MotionProps like whileFocus, whileHover, and whileInView.`,
     images: [
       {
-        url: `/og/motion-dock.png`,
+        url: `/og/motion-link.png`,
         width: 1200,
         height: 630,
       },
