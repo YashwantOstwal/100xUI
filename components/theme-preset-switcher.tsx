@@ -52,6 +52,7 @@ export function ThemePresetSwitcher() {
       <div className="flex items-center -space-x-4">
         {themesPresets.map(({ id, label, className }) => (
           <ThemePreset
+            key={id}
             themeCtx={themeCtx}
             id={id}
             label={label}
