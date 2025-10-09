@@ -1,21 +1,17 @@
 "use client";
 
-import { UnderlineLink } from "./underline-link";
+import { MotionLinkUnderline } from "../motion-link";
 import { ArrowLeftIcon } from "lucide-react";
 export function HomeLink() {
   return (
-    <UnderlineLink
+    <MotionLinkUnderline
+      startDirection="right"
+      endDirection="left"
       href="/"
-      className="flex items-center px-0.5 pt-1 pb-0 text-sm font-medium"
-      variants={{
-        initial: { gap: "4px" },
-        whileHover: { gap: "6px", x: "-2px" },
-        whileFocus: { gap: "6px", x: "-2px" },
-      }}
-      transition={{ ease: "easeInOut" }}
+      className="group flex items-center gap-x-2 px-0.5 pt-1 pb-0 text-sm font-medium"
     >
-      <ArrowLeftIcon className="size-4" />
+      <ArrowLeftIcon className="size-4 translate-x-0.5 transition-transform ease-in-out group-hover:translate-x-0 group-focus-visible:translate-x-0" />
       Back
-    </UnderlineLink>
+    </MotionLinkUnderline>
   );
 }

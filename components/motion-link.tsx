@@ -49,7 +49,7 @@ export function MotionLinkUnderline({
       whileFocus="whileFocus"
       whileHover="whileHover"
       className={cn(
-        "!relative !text-nowrap text-inherit focus-visible:!outline-0",
+        "!relative w-fit !text-nowrap text-inherit focus-visible:!outline-0",
         className,
       )}
       {...rest}
