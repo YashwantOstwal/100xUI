@@ -7,7 +7,7 @@
     "build": "shadcn build --output ./public/components & next build",
     "start": "next start",
     "lint": "next lint",
-    "prod": "next build && next start",
+    "prod": "shadcn build --output ./public/components & next build & next start",
     "registry:build": "shadcn build --output ./public/components",
     "registry:host": "shadcn build --output ./public/components & next dev --turbopack"
   },

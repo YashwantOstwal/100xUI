@@ -67,7 +67,7 @@ ComponentPage.Documentation = function ComponentPageDocumentation({
 }: ComponentProps<"section">) {
   return (
     <section {...rest}>
-      <ComponentPage.SubTitle>Documentation</ComponentPage.SubTitle>
+      <ComponentPage.SubTitle>API reference</ComponentPage.SubTitle>
       <div className={cn("overflow-x-auto")}>
         <div className="w-fit min-w-full text-[15px] leading-[1.4286] [&>*]:w-full">
           {children}
@@ -89,7 +89,7 @@ ComponentPage.Usage = function ComponentPageUsage({
 
   return (
     <section {...rest}>
-      <ComponentPage.SubTitle>API Usage</ComponentPage.SubTitle>
+      <ComponentPage.SubTitle>API usage</ComponentPage.SubTitle>
       <CodeCard>
         <CardHeader>
           <CardHeader.FlexOneFlex>

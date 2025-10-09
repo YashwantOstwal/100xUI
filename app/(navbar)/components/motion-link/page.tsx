@@ -1,58 +1,55 @@
 import React from "react";
 import { ComponentPage } from "../_components/container";
 import {
-  //   TITLE,
-  //   DESCRIPTION,
-  //   DEFAULT_ACTIVE_FILE,
-  //   ROOT_DIRECTORY,
+  TITLE,
+  DESCRIPTION,
+  DEFAULT_ACTIVE_FILE,
+  ROOT_DIRECTORY,
   PROP_TABLE,
-  //   USAGE,
+  USAGE,
 } from "./page.data";
-// import { Metadata } from "next";
-// import { PackageManagerProvider } from "@/components/www/package-manager-providers";
-// import AnimatedTab from "@/components/www/animated-tab";
-// import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
-// import { MotionDockDemo } from "@/components/motion-dock.demo";
-// import Link from "next/link";
-// import React from "react";
-// import { ThemePresetSwitcher } from "../../dev/_components/theme-preset-switcher";
+import { ThemePresetSwitcher } from "@/components/theme-preset-switcher";
+import { MotionLinkDemo } from "@/components/motion-link.demo";
+import { Metadata } from "next";
+import { PackageManagerProvider } from "@/components/www/package-manager-providers";
+import AnimatedTab from "@/components/www/animated-tab";
+import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
 
-// export const metadata: Metadata = {
-//   title: TITLE,
-//   description: DESCRIPTION,
-//   twitter: {
-//     card: "summary_large_image",
-//   },
-//   openGraph: {
-//     title: `${TITLE} | 100xUI`,
-//     description: DESCRIPTION,
-//     images: [
-//       {
-//         url: `/og/motion-dock.png`,
-//         width: 1200,
-//         height: 630,
-//       },
-//     ],
-//     type: "website",
-//   },
-// };
+export const metadata: Metadata = {
+  title: TITLE,
+  description: `Exclusive to Next.js. A reusable component that extends the <Link/> component from "next/link" to power interactive animations using motion.dev. It includes three predefined variants: <MotionLinkUnderline/>, <MotionLinkSlideText/>, and <MotionLinkWithIcon/>, while the base <MotionLink/> provides full flexibility to define custom animations with MotionProps like whileFocus, whileHover, and whileInView.`,
+  twitter: {
+    card: "summary_large_image",
+  },
+  openGraph: {
+    title: `${TITLE} | 100xUI`,
+    description: `Exclusive to Next.js. A reusable component that extends the <Link/> component from "next/link" to power interactive animations using motion.dev. It includes three predefined variants: <MotionLinkUnderline/>, <MotionLinkSlideText/>, and <MotionLinkWithIcon/>, while the base <MotionLink/> provides full flexibility to define custom animations with MotionProps like whileFocus, whileHover, and whileInView.`,
+    images: [
+      {
+        url: `/og/motion-dock.png`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+    type: "website",
+  },
+};
+
+// const IDS = [
+//   "api-ref-underline",
+//   "api-ref-slide-text",
+//   "api-ref-with-icon",
+//   "api-ref-base",
+// ];
 export default function MotionLink() {
   return (
     <ComponentPage>
-      {/* <ComponentPage.Title>{TITLE}</ComponentPage.Title>
-      <ComponentPage.Description>
-        {DESCRIPTION}&nbsp;Designed by my favorite -&nbsp;
-        <Link
-          href="https://rauno.me/craft"
-          className="text-cyan-700 transition-colors ease-out hover:text-cyan-800"
-        >
-          Rauno Freiberg
-        </Link>
-        .
-      </ComponentPage.Description>
+      <ComponentPage.Title>{TITLE}</ComponentPage.Title>
+      <ComponentPage.Description>{DESCRIPTION}</ComponentPage.Description>
+
       <ThemePresetSwitcher />
       <ComponentPage.Preview>
-        <MotionDockDemo />
+        <MotionLinkDemo />
       </ComponentPage.Preview>
 
       <ComponentPage.Usage {...USAGE} />
@@ -81,7 +78,8 @@ export default function MotionLink() {
             <div className="mb-6" data-tracker="step-2">
               <ComponentPage.Note>
                 <AnimatedTab trackerFor="step-2">2</AnimatedTab>
-                Copy and paste the following code into your project.
+                Copy and paste the following code into your project. To apply
+                your own styles, simply skip copying the stylesheet.
               </ComponentPage.Note>
               <ComponentPage.FileExplorer
                 defaultActiveFile={DEFAULT_ACTIVE_FILE}
@@ -96,9 +94,10 @@ export default function MotionLink() {
             </div>
           </AnimatedTabsProvider>
         </PackageManagerProvider>
-      </ComponentPage.Installation> */}
+      </ComponentPage.Installation>
       <ComponentPage.Documentation>
         {PROP_TABLE.data.map(({ title, tableData }, i) => (
+          // <div key={i} className="not-last:mb-10">
           <React.Fragment key={i}>
             <ComponentPage.SubSubTitle className="flex flex-col items-start text-base font-medium sm:text-lg">
               {title.map((eachTitle) => (
@@ -111,24 +110,9 @@ export default function MotionLink() {
             </ComponentPage.SubSubTitle>
             <ComponentPage.PropsTable tableData={tableData} />
           </React.Fragment>
+          // </div>
         ))}
       </ComponentPage.Documentation>
     </ComponentPage>
   );
 }
-{
-  /* <MotionLinkUnderline href="/" className="">
-//         click me
-//       </MotionLinkUnderline> */
-}
-//       <MotionLinkSlideText href="/" className="text-2xl uppercase italic">
-//         click me
-//       </MotionLinkSlideText>
-//       <MotionLinkWithIcon
-//         children={"Navigate"}
-//         className="p-1"
-//         icon={<ArrowRightIcon className="size-5" />}
-//         iconWidth="calc(var(--spacing) * 5)"
-//         href="/"
-//       />
-//       <MotionLink href="/" />

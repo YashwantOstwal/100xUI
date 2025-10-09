@@ -108,6 +108,23 @@
         }
       ],
       "dependencies": ["motion", "clsx", "tailwind-merge"]
+    },
+    {
+      "name": "motion-link",
+      "type": "registry:block",
+      "title": "Motion link",
+      "description": "Exclusive to Next.js. A reusable component that extends the <Link/> component from \"next/link\" to power interactive animations using motion.dev. It includes three predefined variants: <MotionLinkUnderline/>, <MotionLinkSlideText/>, and <MotionLinkWithIcon/>, while the base <MotionLink/> provides full flexibility to define custom animations with MotionProps like whileFocus, whileHover, and whileInView.",
+      "files": [
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "components/motion-link.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": ["motion", "clsx", "tailwind-merge"]
     }
   ]
 }

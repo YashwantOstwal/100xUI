@@ -1,45 +1,33 @@
 "use client";
+
 import React from "react";
 import Link, { type LinkProps } from "next/link";
-import { motion, type MotionProps, stagger, MotionConfig } from "motion/react";
+import { motion, stagger, MotionConfig, type MotionProps } from "motion/react";
+
 import { cn } from "@/lib/utils";
 
-interface MotionLinkBaseProps extends MotionProps, LinkProps {
-  className?: string;
+const MLink = motion.create(Link);
+
+type CombinedAnchorProps = Omit<
+  React.AnchorHTMLAttributes<HTMLAnchorElement>,
+  keyof LinkProps | "href"
+>;
+
+export type MotionLinkBaseProps = LinkProps & MotionProps & CombinedAnchorProps;
+export function MotionLink(props: MotionLinkBaseProps) {
+  return <MLink {...props} />;
 }
 
-interface MotionLinkUnderlineProps extends LinkProps {
-  children: React.ReactNode;
-  className?: string;
+export interface MotionLinkUnderlineProps extends MotionLinkBaseProps {
   underlineColor?: React.CSSProperties["background"];
   underlineHeight?: React.CSSProperties["height"];
   startDirection?: "left" | "right";
   endDirection?: "left" | "right";
 }
-
-interface MotionLinkSlideTextProps extends LinkProps {
-  children: string;
-  className?: string;
-}
-
-interface MotionLinkWithIconProps extends LinkProps {
-  children: React.ReactNode;
-  icon: React.ReactNode;
-  iconWidth: React.CSSProperties["width"];
-  gap?: React.CSSProperties["gap"];
-  className?: string;
-}
-
-const MLink = motion.create(Link);
-
-export function MotionLink(props: MotionLinkBaseProps) {
-  return <MLink {...props} />;
-}
-
 export function MotionLinkUnderline({
   className,
   children,
-  underlineColor = "var(--foreground)",
+  underlineColor = "var(--color-foreground)",
   underlineHeight = "2px",
   startDirection = "left",
   endDirection = "right",
@@ -61,7 +49,7 @@ export function MotionLinkUnderline({
       whileFocus="whileFocus"
       whileHover="whileHover"
       className={cn(
-        "!relative !text-nowrap focus-visible:!outline-0",
+        "!relative !text-nowrap text-inherit focus-visible:!outline-0",
         className,
       )}
       {...rest}
@@ -86,10 +74,15 @@ export function MotionLinkUnderline({
         transition={{
           left: { duration: 0 },
           right: { duration: 0 },
+          default: { ease: "easeInOut" },
         }}
       />
     </MotionLink>
   );
+}
+
+export interface MotionLinkSlideTextProps extends MotionLinkBaseProps {
+  children: string;
 }
 
 export function MotionLinkSlideText({
@@ -98,7 +91,7 @@ export function MotionLinkSlideText({
   ...rest
 }: MotionLinkSlideTextProps) {
   const characters = children.split("");
-  const staggerDelay = { transition: { delayChildren: stagger(0.025) } };
+  const staggerDelay = { transition: { delayChildren: stagger(0.02) } };
 
   return (
     <MotionLink
@@ -106,7 +99,7 @@ export function MotionLinkSlideText({
       whileHover="whileHover"
       whileFocus="whileFocus"
       className={cn(
-        "inline-block",
+        "inline-block text-inherit",
         "!relative focus-visible:!outline-none",
         className,
       )}
@@ -123,7 +116,7 @@ export function MotionLinkSlideText({
         >
           {characters.map((char, idx) => (
             <motion.span
-              key={`char-top-${idx}`}
+              key={`char-visible-[${idx}]`}
               variants={{
                 initial: { scaleY: 1 },
                 whileHover: { scaleY: 0 },
@@ -146,7 +139,7 @@ export function MotionLinkSlideText({
         >
           {characters.map((char, idx) => (
             <motion.span
-              key={`char-bottom-${idx}`}
+              key={`char-hidden-[${idx}]`}
               variants={{
                 initial: { scaleY: 0 },
                 whileHover: { scaleY: 1 },
@@ -163,6 +156,11 @@ export function MotionLinkSlideText({
     </MotionLink>
   );
 }
+export interface MotionLinkWithIconProps extends MotionLinkBaseProps {
+  icon: React.ReactNode;
+  iconWidth: React.CSSProperties["width"];
+  gap?: React.CSSProperties["gap"];
+}
 
 export function MotionLinkWithIcon({
   icon,
@@ -178,7 +176,7 @@ export function MotionLinkWithIcon({
       whileHover="whileHover"
       whileFocus="whileFocus"
       className={cn(
-        "inline-block !overflow-hidden focus-visible:!outline-none",
+        "inline-block !overflow-hidden text-inherit focus-visible:!outline-none",
         className,
       )}
       {...rest}
@@ -189,7 +187,7 @@ export function MotionLinkWithIcon({
           whileHover: { x: "0px" },
           whileFocus: { x: "0px" },
         }}
-        transition={{ ease: "backOut" }}
+        transition={{ ease: "easeInOut" }}
         className="flex items-center"
         style={{ gap }}
       >

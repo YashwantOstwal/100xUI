@@ -26,7 +26,7 @@ export function PropsTable({
   return (
     <table
       className={cn(
-        "border-border mb-10 border border-dashed text-left",
+        "border-border border border-dashed text-left not-last:mb-10",
         className,
       )}
       {...rest}

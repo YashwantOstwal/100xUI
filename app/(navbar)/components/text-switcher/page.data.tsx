@@ -53,7 +53,7 @@ export function TextSwitcher({
 
   const dotScaleX = useTransform(dotVelocity, [-120, 0, 120], [3, 1, 3]);
   const dotColor = useTransform(dotVelocity, (latest) => {
-    return Math.round(latest) !== 0 ? "var(--color-destructive)" : "";
+    return Math.round(latest) !== 0 ? "var(--destructive)" : "";
   });
 
   React.useEffect(() => {

@@ -38,5 +38,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.3,
     },
+    {
+      url: `https://100xui.com/components/motion-link`,
+      lastModified: "2025-10-10",
+      changeFrequency: "monthly",
+      priority: 0.3,
+    },
   ];
 }
