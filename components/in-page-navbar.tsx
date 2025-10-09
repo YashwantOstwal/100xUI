@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import {
   AnimatePresence,
@@ -10,7 +9,6 @@ import {
   type MotionValue,
 } from "motion/react";
 import { EqualIcon, XIcon } from "lucide-react";
-
 import { useIsServer } from "@/hooks/use-is-server";
 import { cn } from "@/lib/utils";
 
@@ -37,7 +35,6 @@ export function InPageNavbar({
 }: InPageNavbarProps) {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const [isSmallScreen, setIsSmallScreen] = React.useState(false);
-
   const isServer = useIsServer();
 
   const navButtons = (
@@ -51,10 +48,8 @@ export function InPageNavbar({
   React.useEffect(() => {
     const handleMediaQuery = ({ matches }: { matches: boolean }) =>
       setIsSmallScreen(matches);
-
     const mediaQuery = window.matchMedia("(max-width:639px)");
     mediaQuery.addEventListener("change", handleMediaQuery);
-
     return () => mediaQuery.removeEventListener("change", handleMediaQuery);
   }, []);
 
@@ -72,7 +67,7 @@ export function InPageNavbar({
           initial={false}
           animate={isSidebarOpen && isSmallScreen ? "fadeOut" : "fadeIn"}
           variants={fadeVariants}
-          className="bg-card/85 inset-shadow-border/40 pointer-events-auto mx-auto flex max-w-xl items-center justify-between rounded-lg p-3 text-sm font-medium shadow-md inset-shadow-2xs backdrop-blur-[2px] sm:rounded-xl"
+          className="bg-card/85 border-border/50 pointer-events-auto mx-auto flex max-w-xl items-center justify-between rounded-lg border p-3 text-sm font-medium shadow-md backdrop-blur-[2px] sm:rounded-xl"
         >
           <a
             href="#"
@@ -109,7 +104,7 @@ export function InPageNavbar({
             animate="fadeIn"
             exit="fadeOut"
             variants={fadeVariants}
-            className="bg-card/85 inset-shadow-border/40 [&_a,button]:focus-visible:ring-offset-background [&_a,button]:focus-visible:ring-ring fixed inset-x-4.5 top-1.5 z-[110] overflow-hidden rounded-lg shadow-md inset-shadow-2xs backdrop-blur-[2px] [&_a,button]:transition-opacity [&_a,button]:duration-150 [&_a,button]:ease-out [&_a,button]:hover:opacity-70 [&_a,button]:focus-visible:opacity-70 [&_a,button]:focus-visible:ring-1 [&_a,button]:focus-visible:ring-offset-1 [&_a,button]:focus-visible:outline-0"
+            className="bg-card/85 border-border/50 [&_a,button]:focus-visible:ring-offset-background [&_a,button]:focus-visible:ring-ring fixed inset-x-4.5 top-1.5 z-[110] overflow-hidden rounded-lg border shadow-md backdrop-blur-[2px] [&_a,button]:transition-opacity [&_a,button]:duration-150 [&_a,button]:ease-out [&_a,button]:hover:opacity-70 [&_a,button]:focus-visible:opacity-70 [&_a,button]:focus-visible:ring-1 [&_a,button]:focus-visible:ring-offset-1 [&_a,button]:focus-visible:outline-0"
           >
             <button
               tabIndex={3}
@@ -174,14 +169,11 @@ function NavItem({
 
   const sectionProgress = useTransform(scrollY, (latest) => {
     if (isServer || !targetElement) return 0;
-
     const viewportHeight = window.innerHeight;
     const targetElementTop = targetElement.offsetTop;
     const targetElementHeight = targetElement.offsetHeight;
-
     const visibleRatio =
       (latest + viewportHeight - targetElementTop) / targetElementHeight;
-
     return Math.min(1, Math.max(visibleRatio, 0));
   });
 
@@ -218,7 +210,6 @@ function NavItem({
       <span className="relative z-20 inline-block size-full px-4 py-2.5 text-center leading-none sm:px-3 sm:py-2">
         {label}
       </span>
-
       {targetElement && (
         <motion.span
           initial="fadeOut"

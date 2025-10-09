@@ -45,7 +45,7 @@ export function MotionDock({
     <div className={cn(className, "!relative !w-fit")} {...rest}>
       <div
         ref={dockRef}
-        className="bg-background text-foregroud border-border flex gap-0.5 rounded-full border p-1 shadow-sm"
+        className="bg-background text-foreground border-border flex gap-0.5 rounded-full border p-1 shadow-sm"
         onMouseLeave={handleReset}
         onBlurCapture={handleReset}
       >

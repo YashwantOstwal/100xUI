@@ -54,7 +54,7 @@ export function MotionDock({
     <div className={cn(className, "!relative !w-fit")} {...rest}>
       <div
         ref={dockRef}
-        className="bg-background text-foregroud border-border flex gap-0.5 rounded-full border p-1 shadow-sm"
+        className="bg-background text-foreground border-border flex gap-0.5 rounded-full border p-1 shadow-sm"
         onMouseLeave={handleReset}
         onBlurCapture={handleReset}
       >
@@ -155,7 +155,7 @@ function ToolTipsContainer({
 
       return clipPath;
     },
-    [tooltips.length, tooltipContainerScope],
+    [tooltips.length, tooltipContainerScope, tooltipBorderRadius],
   );
 
   React.useEffect(() => {
@@ -230,7 +230,7 @@ function ToolTipsContainer({
       ))}
     </motion.div>
   );
-};`;
+}`;
 
 const MOTION_DOCK_DEMO_TSX = `import {
   CpuIcon,
@@ -267,8 +267,7 @@ const demoProps: MotionDockProps = {
     {
       icon: <AudioLinesIcon />,
       tooltip: "Voice mode",
-      className:
-        "text-cyan-600 hover:text-cyan-500 focus-visible:text-cyan-500",
+      className: "text-destructive",
     },
   ],
 };`;

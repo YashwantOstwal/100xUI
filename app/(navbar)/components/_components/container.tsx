@@ -128,7 +128,7 @@ ComponentPage.FileExplorer = function ComponentPageFileExplorer({
 ComponentPage.Preview = function ComponentPagePreview({
   className,
   ...rest
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div"> & { container?: boolean }) {
   return <Preview className={cn("mt-10", className)} {...rest} />;
 };
 

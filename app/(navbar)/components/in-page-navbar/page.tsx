@@ -14,6 +14,7 @@ import AnimatedTab from "@/components/www/animated-tab";
 import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
 import PlaceHolder from "@/components/www/place-holder";
 import React from "react";
+import { ThemePresetSwitcher } from "../../../../components/theme-preset-switcher";
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
@@ -38,6 +39,8 @@ export default function InPageNavbarPage() {
     <ComponentPage>
       <ComponentPage.Title>{TITLE}</ComponentPage.Title>
       <ComponentPage.Description>{DESCRIPTION}</ComponentPage.Description>
+      <ThemePresetSwitcher />
+
       <div className="-mx-2 space-y-1 py-10 lg:-mx-3">
         {[
           {

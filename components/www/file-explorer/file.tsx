@@ -5,7 +5,7 @@ import {
   useIsCopyTrackerOn,
 } from "./providers/CopiedFilesTrackerProvider";
 import { useActiveFile } from "./providers/ActiveFileProvider";
-import { EnhancedFile } from "./file-explorer.types";
+import type { EnhancedFile } from "./file-explorer.types";
 import ArrowDownIcon from "./icons/ArrowDown";
 import FileIcon from "./icons/File";
 

@@ -1,48 +1,58 @@
+import React from "react";
 import { ComponentPage } from "../_components/container";
 import {
-  TITLE,
-  DESCRIPTION,
-  DEFAULT_ACTIVE_FILE,
-  ROOT_DIRECTORY,
+  //   TITLE,
+  //   DESCRIPTION,
+  //   DEFAULT_ACTIVE_FILE,
+  //   ROOT_DIRECTORY,
   PROP_TABLE,
-  // ADDITIONAL_INFORMATION,
-  USAGE,
+  //   USAGE,
 } from "./page.data";
-import { Metadata } from "next";
-import { PackageManagerProvider } from "@/components/www/package-manager-providers";
-import AnimatedTab from "@/components/www/animated-tab";
-import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
-import { TextSwitcherDemo } from "@/components/text-switcher.demo";
-import React from "react";
-import { ThemePresetSwitcher } from "../../../../components/theme-preset-switcher";
+// import { Metadata } from "next";
+// import { PackageManagerProvider } from "@/components/www/package-manager-providers";
+// import AnimatedTab from "@/components/www/animated-tab";
+// import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
+// import { MotionDockDemo } from "@/components/motion-dock.demo";
+// import Link from "next/link";
+// import React from "react";
+// import { ThemePresetSwitcher } from "../../dev/_components/theme-preset-switcher";
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
-  twitter: {
-    card: "summary_large_image",
-  },
-  openGraph: {
-    title: `${TITLE} | 100xUI`,
-    description: DESCRIPTION,
-    images: [
-      {
-        url: `/og/${TITLE.toLowerCase().replaceAll(" ", "-")}.png`,
-        width: 1200,
-        height: 630,
-      },
-    ],
-    type: "website",
-  },
-};
-export default function TextSwitcherPage() {
+// export const metadata: Metadata = {
+//   title: TITLE,
+//   description: DESCRIPTION,
+//   twitter: {
+//     card: "summary_large_image",
+//   },
+//   openGraph: {
+//     title: `${TITLE} | 100xUI`,
+//     description: DESCRIPTION,
+//     images: [
+//       {
+//         url: `/og/motion-dock.png`,
+//         width: 1200,
+//         height: 630,
+//       },
+//     ],
+//     type: "website",
+//   },
+// };
+export default function MotionLink() {
   return (
     <ComponentPage>
-      <ComponentPage.Title>{TITLE}</ComponentPage.Title>
-      <ComponentPage.Description>{DESCRIPTION}</ComponentPage.Description>
+      {/* <ComponentPage.Title>{TITLE}</ComponentPage.Title>
+      <ComponentPage.Description>
+        {DESCRIPTION}&nbsp;Designed by my favorite -&nbsp;
+        <Link
+          href="https://rauno.me/craft"
+          className="text-cyan-700 transition-colors ease-out hover:text-cyan-800"
+        >
+          Rauno Freiberg
+        </Link>
+        .
+      </ComponentPage.Description>
       <ThemePresetSwitcher />
       <ComponentPage.Preview>
-        <TextSwitcherDemo />
+        <MotionDockDemo />
       </ComponentPage.Preview>
 
       <ComponentPage.Usage {...USAGE} />
@@ -86,7 +96,7 @@ export default function TextSwitcherPage() {
             </div>
           </AnimatedTabsProvider>
         </PackageManagerProvider>
-      </ComponentPage.Installation>
+      </ComponentPage.Installation> */}
       <ComponentPage.Documentation>
         {PROP_TABLE.data.map(({ title, tableData }, i) => (
           <React.Fragment key={i}>
@@ -102,13 +112,23 @@ export default function TextSwitcherPage() {
             <ComponentPage.PropsTable tableData={tableData} />
           </React.Fragment>
         ))}
-        {/* {ADDITIONAL_INFORMATION.map((props, index) => (
-          <ComponentPage.ListContainer
-            {...props}
-            key={`container-${index + 1}`}
-          />
-        ))} */}
       </ComponentPage.Documentation>
     </ComponentPage>
   );
 }
+{
+  /* <MotionLinkUnderline href="/" className="">
+//         click me
+//       </MotionLinkUnderline> */
+}
+//       <MotionLinkSlideText href="/" className="text-2xl uppercase italic">
+//         click me
+//       </MotionLinkSlideText>
+//       <MotionLinkWithIcon
+//         children={"Navigate"}
+//         className="p-1"
+//         icon={<ArrowRightIcon className="size-5" />}
+//         iconWidth="calc(var(--spacing) * 5)"
+//         href="/"
+//       />
+//       <MotionLink href="/" />

@@ -12,7 +12,7 @@ const poppins = Poppins({
   subsets: ["latin"],
   display: "swap",
   weight: ["300", "400", "500", "600", "700", "800", "900"],
-  variable: "--font-serif",
+  variable: "--font-sans",
 });
 
 const geistMono = Geist_Mono({
@@ -71,7 +71,16 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-          themes={["light-vercel", "dark-vercel", "light", "dark"]}
+          themes={[
+            "light-perpetuity",
+            "dark-perpetuity",
+            "light",
+            "dark",
+            "light-vercel",
+            "dark-vercel",
+            "light-bubblegum",
+            "dark-bubblegum",
+          ]}
         >
           <div className="mx-auto max-w-screen-2xl px-3 lg:px-4">
             <div className="bg-background text-foreground min-h-screen border-x border-dashed px-3 pt-26 pb-16 lg:px-4">

@@ -15,6 +15,7 @@ import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
 import { MotionDockDemo } from "@/components/motion-dock.demo";
 import Link from "next/link";
 import React from "react";
+import { ThemePresetSwitcher } from "../../../../components/theme-preset-switcher";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -41,11 +42,15 @@ export default function MotionDockPage() {
       <ComponentPage.Title>{TITLE}</ComponentPage.Title>
       <ComponentPage.Description>
         {DESCRIPTION}&nbsp;Designed by my favorite -&nbsp;
-        <Link href="https://rauno.me/craft" className="text-cyan-700">
+        <Link
+          href="https://rauno.me/craft"
+          className="text-cyan-700 transition-colors ease-out hover:text-cyan-800"
+        >
           Rauno Freiberg
         </Link>
         .
       </ComponentPage.Description>
+      <ThemePresetSwitcher />
       <ComponentPage.Preview>
         <MotionDockDemo />
       </ComponentPage.Preview>

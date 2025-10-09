@@ -7,7 +7,7 @@ const TestimonialCard = ({
 }: React.ComponentProps<"div">) => (
   <div
     className={cn(
-      "bg-card text-card-foreground border-border/40 inset-shadow-border/40 flex flex-col justify-between gap-10 rounded-4xl border px-5 py-4 shadow-md inset-shadow-2xs lg:px-7 lg:py-6",
+      "bg-card text-card-foreground border-border/50 flex flex-col justify-between gap-10 rounded-4xl border px-5 py-4 shadow-md lg:px-7 lg:py-6",
       className,
     )}
     {...rest}

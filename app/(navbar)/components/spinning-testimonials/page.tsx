@@ -15,6 +15,7 @@ import AnimatedTab from "@/components/www/animated-tab";
 import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
 import React from "react";
 import Link from "next/link";
+import { ThemePresetSwitcher } from "../../../../components/theme-preset-switcher";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -42,7 +43,10 @@ export default function SpinningTestimonialsPage() {
       <ComponentPage.Description className="mb-16">
         {DESCRIPTION}
       </ComponentPage.Description>
-      <SpinningTestimonialsDemo />
+      <ThemePresetSwitcher></ThemePresetSwitcher>
+      <ComponentPage.Preview container={false}>
+        <SpinningTestimonialsDemo />
+      </ComponentPage.Preview>
       <ComponentPage.Usage {...USAGE} />
       <ComponentPage.Installation>
         <ComponentPage.SubTitle>Installation</ComponentPage.SubTitle>

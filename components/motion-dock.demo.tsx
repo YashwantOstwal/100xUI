@@ -6,7 +6,7 @@ import {
   AudioLinesIcon,
 } from "lucide-react";
 
-import { MotionDock, type MotionDockProps } from "@/components/motion-dock";
+import { MotionDock, type MotionDockProps } from "./motion-dock";
 
 export function MotionDockDemo() {
   return <MotionDock className="[&_svg]:size-4.5" {...demoProps} />;
@@ -33,8 +33,7 @@ const demoProps: MotionDockProps = {
     {
       icon: <AudioLinesIcon />,
       tooltip: "Voice mode",
-      className:
-        "text-cyan-600 hover:text-cyan-500 focus-visible:text-cyan-500",
+      className: "text-destructive",
     },
   ],
 };

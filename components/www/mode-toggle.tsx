@@ -19,14 +19,14 @@ export function ModeToggle({ className }: { className?: string }) {
       <motion.button
         onClick={() => {
           setTheme((currTheme) => {
-            const themePreset = currTheme.split("-")[1] ?? "";
+            const [currMode, currThemePreset] = currTheme.split("-");
             return currTheme.startsWith("light") ||
               (currTheme === "system" && systemTheme === "light")
-              ? themePreset
-                ? `dark-${themePreset}`
+              ? currThemePreset
+                ? `dark-${currThemePreset}`
                 : "dark"
-              : themePreset
-                ? `light-${themePreset}`
+              : currThemePreset
+                ? `light-${currThemePreset}`
                 : "light";
           });
         }}
