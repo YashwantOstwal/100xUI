@@ -8,7 +8,11 @@ import * as motion from "motion/react-client";
 export function ModeToggle({ className }: { className?: string }) {
   const [mounted, setMounted] = React.useState(false);
   const { systemTheme, theme, setTheme } = useTheme();
-  React.useEffect(() => setMounted(true), []);
+  const [isSystem, setIsSystem] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
   return (
     <div
       className={cn(
@@ -18,6 +22,7 @@ export function ModeToggle({ className }: { className?: string }) {
     >
       <motion.button
         onClick={() => {
+          setIsSystem(false);
           setTheme((currTheme) => {
             const currThemePreset = currTheme.split("-")[1];
             return currTheme.startsWith("light") ||
@@ -59,13 +64,21 @@ export function ModeToggle({ className }: { className?: string }) {
         className={cn(
           "bg-secondary text-secondary-foreground border-border/60 focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:bg-accent/85 focus-visible:text-accent-foreground/85 hover:bg-accent/85 hover:text-accent-foreground/85 rounded-full border p-0.5 hover:brightness-[97%] focus-visible:ring focus-visible:ring-offset-2 focus-visible:!outline-0 focus-visible:brightness-[97%] dark:hover:brightness-90 dark:focus-visible:brightness-90",
         )}
-        onClick={() => setTheme("system")}
+        onClick={() => {
+          setTheme((currTheme) => {
+            const currThemePreset = currTheme.split("-")[1];
+            return currThemePreset
+              ? `${systemTheme}-${currThemePreset}`
+              : `${systemTheme}`;
+          });
+          setIsSystem(true);
+        }}
       >
         <div
           className={cn(
             "block rounded-full",
             mounted &&
-              theme === "system" &&
+              (theme === "system" || isSystem) &&
               "bg-primary text-primary-foreground",
           )}
         >

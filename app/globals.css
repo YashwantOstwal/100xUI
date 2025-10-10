@@ -186,7 +186,8 @@ html.dark-vercel .shiki {
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-.light-perpetuity [data-preview] * {
+.light-perpetuity [data-preview] *,
+[data-switch="perpetuity"] {
   --background: oklch(0.9491 0.0085 197.0126);
   --foreground: oklch(0.3772 0.0619 212.664);
   --card: oklch(0.9724 0.0053 197.0692);
@@ -250,7 +251,11 @@ html.dark-vercel .shiki {
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 }
-.dark-perpetuity [data-preview] * {
+.dark-perpetuity [data-preview] *,
+.dark-vercel [data-switch="perpetuity"],
+.dark-perpetuity [data-switch="perpetuity"],
+.dark-bubblegum [data-switch="perpetuity"],
+.dark [data-switch="perpetuity"] {
   --background: oklch(0.2068 0.0247 224.4533);
   --foreground: oklch(0.852 0.1269 195.0354);
   --card: oklch(0.2293 0.0276 216.0674);
@@ -313,7 +318,8 @@ html.dark-vercel .shiki {
   --shadow-2xl: 1px 1px 2px 0px hsl(180 70% 60% / 0.5);
 }
 
-.light-vercel [data-preview] * {
+.light-vercel [data-preview] *,
+[data-switch="vercel"] {
   --background: oklch(0.99 0 0);
   --foreground: oklch(0 0 0);
   --card: oklch(1 0 0);
@@ -372,7 +378,11 @@ html.dark-vercel .shiki {
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 }
-.dark-vercel [data-preview] * {
+.dark-vercel [data-preview] *,
+.dark-vercel [data-switch="vercel"],
+.dark-perpetuity [data-switch="vercel"],
+.dark-bubblegum [data-switch="vercel"],
+.dark [data-switch="vercel"] {
   --background: oklch(0 0 0);
   --foreground: oklch(1 0 0);
   --card: oklch(0.14 0 0);
@@ -430,7 +440,8 @@ html.dark-vercel .shiki {
   --shadow-2xl: 0px 1px 2px 0px hsl(0 0% 0% / 0.45);
 }
 
-.light-bubblegum [data-preview] * {
+.light-bubblegum [data-preview] *,
+[data-switch="bubblegum"] {
   --background: oklch(0.9399 0.0203 345.6985);
   --foreground: oklch(0.4712 0 0);
   --card: oklch(0.9498 0.05 86.8891);
@@ -494,7 +505,11 @@ html.dark-vercel .shiki {
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 }
-.dark-bubblegum [data-preview] * {
+.dark-bubblegum [data-preview] *,
+.dark-vercel [data-switch="bubblegum"],
+.dark-perpetuity [data-switch="bubblegum"],
+.dark-bubblegum [data-switch="bubblegum"],
+.dark [data-switch="bubblegum"] {
   --background: oklch(0.2497 0.0305 234.1628);
   --foreground: oklch(0.9306 0.0197 349.0785);
   --card: oklch(0.2902 0.0299 233.5352);

@@ -10,24 +10,18 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const themesPresets: { id: string; label: string; className: string }[] = [
+const themesPresets: { id: string; label: string; className?: string }[] = [
   {
     id: "vercel",
     label: "Vercel",
-    className:
-      " from-[oklch(0.208_0.042_265.755)] via-[oklch(0.968_0.007_247.896)] to-[oklch(1_0_0)] dark:from-[oklch(0.929_0.013_255.508)] dark:via-[oklch(0.279_0.041_260.031)] dark:to-[oklch(0.129_0.042_264.695)]",
   },
   {
     id: "perpetuity",
     label: "Perpetuity",
-    className:
-      "from-[oklch(0.5016_0.1887_27.4816)] via-[oklch(0.4955_0.0896_126.1858)] to-[oklch(0.8452_0_0)] dark:from-[oklch(0.6083_0.209_27.0276)] dark:via-[oklch(0.6423_0.1467_133.0145)] dark:to-[oklch(0.2178_0_0)]",
   },
   {
     id: "bubblegum",
     label: "Bubblegum",
-    className:
-      "from-[oklch(0.6209_0.1801_348.1385)] via-[oklch(0.8095_0.0694_198.1863)] to-[oklch(0.9399_0.0203_345.6985)] dark:from-[oklch(0.9195_0.0801_87.667)] dark:via-[oklch(0.7794_0.0803_4.133)] dark:to-[oklch(0.2497_0.0305_234.1628)]",
   },
 ];
 export function ThemePresetSwitcher() {
@@ -86,8 +80,9 @@ function ThemePreset({
     <Tooltip>
       <TooltipTrigger asChild>
         <button
+          data-switch={id}
           className={cn(
-            "border-background ring-ring ring-offset-background size-10 rounded-full border-2 bg-gradient-to-r hover:z-50 focus-visible:z-50 focus-visible:ring-2 focus-visible:outline-none sm:size-11",
+            "from-primary via-secondary to-card ring-primary size-10 rounded-full bg-gradient-to-r hover:z-50 focus-visible:z-50 focus-visible:ring-2 focus-visible:outline-none sm:size-11",
             theme?.includes(id) && "ring-primary z-40 ring-2",
             className,
           )}
