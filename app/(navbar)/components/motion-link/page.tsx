@@ -55,6 +55,10 @@ export default function MotionLink() {
       <ComponentPage.Usage {...USAGE} />
       <ComponentPage.Installation>
         <ComponentPage.SubTitle>Installation</ComponentPage.SubTitle>
+        {/* <ComponentPage.Note
+          className="text-muted-foreground mb-8 flex"
+          note="theme-installation-support"
+        ></ComponentPage.Note> */}
         <PackageManagerProvider>
           <div className="mb-10">
             <ComponentPage.SubSubTitle>

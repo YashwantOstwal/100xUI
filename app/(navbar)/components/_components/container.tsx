@@ -151,6 +151,41 @@ const NOTES = {
       </div>
     </>
   ),
+  "theme-installation-support": (
+    <>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+        fill="none"
+        aria-hidden="true"
+        className="text-destructive size-5 h-[1lh]"
+        width="20"
+        height="20"
+      >
+        <circle
+          cx="10"
+          cy="10"
+          r="7.25"
+          fill="currentColor"
+          fill-opacity="0.15"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5px"
+        ></circle>
+        <path
+          fill="currentColor"
+          fill-rule="evenodd"
+          d="M10 12a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm0-2a1 1 0 0 1-1-1V7a1 1 0 0 1 2 0v2a1 1 0 0 1-1 1Z"
+          clip-rule="evenodd"
+        ></path>
+      </svg>
+      Dedicated theme installation support is under development. For now, you
+      can style your application with{" "}
+      <span className="font-medium">chosen</span> theme by referencing the
+      official documentation [link].
+    </>
+  ),
 } as const;
 ComponentPage.Note = function ComponentPageNote({
   className,
