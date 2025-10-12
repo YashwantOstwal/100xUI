@@ -6,7 +6,7 @@ import React from "react";
 export default function NavbarLayout({
   children,
 }: {
-  children: Readonly<{ children: React.ReactNode }>;
+  children: React.ReactNode;
 }) {
   const pathname = usePathname();
   return (

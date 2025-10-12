@@ -6,13 +6,14 @@ import ParallaxCardsShowcase from "@/public/og/parallax-cards.png";
 import InPageNavbarShowcase from "@/public/og/in-page-navbar.png";
 import MotionDockShowcase from "@/public/og/motion-dock.png";
 import TextSwitcherShowcase from "@/public/og/text-switcher.png";
+import Default from "@/public/og/default.png";
 const components = [
   {
-    name: "Motion link",
-    href: "/components/motion-link",
+    name: "Morph modal",
+    href: "/components/morph-modal",
     imgProps: {
-      src: MotionLinkShowcase,
-      alt: "motion-link",
+      src: Default,
+      alt: "morph-modal",
     },
   },
   {
@@ -23,6 +24,15 @@ const components = [
       alt: "spinning-testimonials",
     },
   },
+  {
+    name: "Motion link",
+    href: "/components/motion-link",
+    imgProps: {
+      src: MotionLinkShowcase,
+      alt: "motion-link",
+    },
+  },
+
   {
     name: "Parallax cards",
     href: "/components/parallax-cards",

@@ -125,6 +125,23 @@
         }
       ],
       "dependencies": ["motion", "clsx", "tailwind-merge"]
+    },
+    {
+      "name": "morph-modal",
+      "type": "registry:block",
+      "title": "Morph modal",
+      "description": "A reusable modal component that smoothly 'morphs' from the dimensions and position of its trigger element",
+      "files": [
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "components/morph-modal.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": ["motion", "clsx", "tailwind-merge"]
     }
   ]
 }

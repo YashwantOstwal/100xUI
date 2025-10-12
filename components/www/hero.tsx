@@ -46,7 +46,7 @@ export function Hero() {
         </div>
         <LastlyAdded
           href="/components/motion-link"
-          lastAddedDate={new Date("2025-10-10T02:30+05:30")}
+          lastAddedDate={new Date("2025-10-13T03:00+05:30")}
         />
       </div>
     </div>

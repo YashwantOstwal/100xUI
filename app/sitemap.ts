@@ -44,5 +44,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.3,
     },
+    {
+      url: `https://100xui.com/components/morph-modal`,
+      lastModified: "2025-10-13",
+      changeFrequency: "monthly",
+      priority: 0.3,
+    },
   ];
 }
