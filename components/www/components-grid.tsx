@@ -6,13 +6,13 @@ import ParallaxCardsShowcase from "@/public/og/parallax-cards.png";
 import InPageNavbarShowcase from "@/public/og/in-page-navbar.png";
 import MotionDockShowcase from "@/public/og/motion-dock.png";
 import TextSwitcherShowcase from "@/public/og/text-switcher.png";
-import Default from "@/public/og/default.png";
+import MorphModal from "@/public/og/morph-modal.png";
 const components = [
   {
     name: "Morph modal",
     href: "/components/morph-modal",
     imgProps: {
-      src: Default,
+      src: MorphModal,
       alt: "morph-modal",
     },
   },
