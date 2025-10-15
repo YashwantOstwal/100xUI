@@ -49,6 +49,9 @@ export function Hero() {
           lastAddedDate={new Date("2025-10-13T03:00+05:30")}
         />
       </div>
+      <span className="text-muted-foreground mt-5 text-sm">
+        Plugs right into the shadcn/ui theming ecosystem.
+      </span>
     </div>
   );
 }
