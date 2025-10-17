@@ -13,7 +13,7 @@ import AnimatedTab from "@/components/www/animated-tab";
 import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
 import React from "react";
 import { ThemePresetSwitcher } from "../../../../components/theme-preset-switcher";
-import { ChatBentoCardDemo } from "@/components/chat-bento-card-demo";
+import { ChatBentoCardDemo } from "@/components/chat-bento-card.demo";
 
 export const metadata: Metadata = {
   title: TITLE,

@@ -50,7 +50,7 @@ export function Hero() {
         />
       </div>
       <span className="text-muted-foreground mt-5 text-center text-sm">
-        Plugs right into the shadcn/ui theming ecosystem.
+        Fully compatible with shadcn/ui theming ecosystem.
       </span>
     </div>
   );
