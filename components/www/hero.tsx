@@ -45,11 +45,11 @@ export function Hero() {
           </SmoothScrollA>
         </div>
         <LastlyAdded
-          href="/components/motion-link"
-          lastAddedDate={new Date("2025-10-13T03:00+05:30")}
+          href="/components/chat-bento-card"
+          lastAddedDate={new Date("2025-10-17T08:30+05:30")}
         />
       </div>
-      <span className="text-muted-foreground mt-5 text-sm">
+      <span className="text-muted-foreground mt-5 text-center text-sm">
         Plugs right into the shadcn/ui theming ecosystem.
       </span>
     </div>

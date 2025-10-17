@@ -50,5 +50,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.3,
     },
+    {
+      url: `https://100xui.com/components/chat-bento-card`,
+      lastModified: "2025-10-17",
+      changeFrequency: "monthly",
+      priority: 0.3,
+    },
   ];
 }

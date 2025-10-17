@@ -142,6 +142,24 @@
         }
       ],
       "dependencies": ["motion", "clsx", "tailwind-merge"]
+    },
+    {
+      "name": "chat-bento-card",
+      "type": "registry:block",
+      "title": "Chat bento card",
+      "description": "A Bento chat interface card that mimics live chat interactions, great for embedding conversational UI demos in a Bento grid.",
+      "files": [
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "components/chat-bento-card.tsx",
+          "type": "registry:component"
+        },
+        { "path": "components/ui/avatar.tsx", "type": "registry:ui" }
+      ],
+      "dependencies": ["motion", "clsx", "tailwind-merge"]
     }
   ]
 }
