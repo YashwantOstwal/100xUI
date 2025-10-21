@@ -45,7 +45,7 @@ export function Hero() {
           </SmoothScrollA>
         </div>
         <LastlyAdded
-          href="/components/chat-bento-card"
+          href="/components/notification"
           lastAddedDate={new Date("2025-10-22T00:44+05:30")}
         />
       </div>
