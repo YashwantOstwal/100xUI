@@ -7,9 +7,17 @@ import InPageNavbarShowcase from "@/public/og/in-page-navbar.png";
 import MotionDockShowcase from "@/public/og/motion-dock.png";
 import TextSwitcherShowcase from "@/public/og/text-switcher.png";
 import MorphModal from "@/public/og/morph-modal.png";
-// import Default from "@/public/og/default.png";
+import Default from "@/public/og/default.png";
 import ChatBentoCard from "@/public/og/chat-bento-card.png";
 const components = [
+  {
+    name: "Notification",
+    href: "/components/notification",
+    imgProps: {
+      src: Default,
+      alt: "notification",
+    },
+  },
   {
     name: "Chat bento card",
     href: "/components/chat-bento-card",

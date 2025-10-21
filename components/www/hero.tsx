@@ -46,7 +46,7 @@ export function Hero() {
         </div>
         <LastlyAdded
           href="/components/chat-bento-card"
-          lastAddedDate={new Date("2025-10-17T08:30+05:30")}
+          lastAddedDate={new Date("2025-10-22T00:44+05:30")}
         />
       </div>
       <span className="text-muted-foreground mt-5 text-center text-sm">
