@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "100xui",
-  "homepage": "http://localhost:3000",
+  "homepage": "https://100xui.com",
   "items": [
     {
       "name": "parallax-cards",
@@ -160,6 +160,19 @@
         { "path": "components/ui/avatar.tsx", "type": "registry:ui" }
       ],
       "dependencies": ["motion", "clsx", "tailwind-merge"]
+    },
+    {
+      "name": "notification",
+      "type": "registry:block",
+      "title": "Notification",
+      "description": "A reusable notification component that displays animated messages with smooth slide and scale transitions, perfect for in-app alerts, toasts, and contextual updates.",
+      "files": [
+        {
+          "path": "components/notification.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": ["motion"]
     }
   ]
 }

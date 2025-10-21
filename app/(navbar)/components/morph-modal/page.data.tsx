@@ -214,7 +214,7 @@ export const PROP_TABLE: PropTableProps = {
       ],
     },
     {
-      title: ["<MorphModalOverlay/>"],
+      title: ["<MorphModalContent/>"],
       tableData: [
         {
           prop: <code>children</code>,

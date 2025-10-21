@@ -56,5 +56,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.3,
     },
+    {
+      url: `https://100xui.com/components/notification`,
+      lastModified: "2025-10-22",
+      changeFrequency: "monthly",
+      priority: 0.3,
+    },
   ];
 }

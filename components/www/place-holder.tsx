@@ -11,8 +11,8 @@ export default function PlaceHolder({
   ...rest
 }: {
   className?: string;
-  msg1: React.ReactNode;
-  msg2: React.ReactNode;
+  msg1?: React.ReactNode;
+  msg2?: React.ReactNode;
   style?: CSSProperties;
   index?: number;
   center?: React.ReactNode;
