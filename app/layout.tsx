@@ -3,9 +3,18 @@ import { Geist_Mono, Poppins } from "next/font/google";
 
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/www/theme-provider";
+import { SolanaClientProvider } from "@/providers/solana-client";
+import {
+  PrivyAsSolanaWalletProvider,
+  PrivyConfigProvider,
+} from "@/providers/privy-as-solana-wallet";
 import { Footer } from "@/components/www/footer";
 
-import "./globals.css";
+import "@/app/styles/globals.css";
+import { IsAdminViewProvider } from "@/providers/is-admin-view";
+import { ProgramAccountsProvider } from "./(navbar)/vote-component/providers/program-accounts";
+import { TimeProvider } from "./(navbar)/vote-component/providers/time";
+import { HxuiLiteTokenProvider } from "./(navbar)/vote-component/providers/hxui-lite-token";
 
 // Fonts
 const poppins = Poppins({
@@ -63,32 +72,46 @@ export default function RootLayout({
         className={cn(
           geistMono.variable,
           poppins.className, // default font
-          "bg-layout antialiased",
+          "bg-layout antialiased"
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-          themes={[
-            "light-perpetuity",
-            "dark-perpetuity",
-            "light",
-            "dark",
-            "light-vercel",
-            "dark-vercel",
-            "light-bubblegum",
-            "dark-bubblegum",
-          ]}
-        >
-          <div className="mx-auto max-w-screen-2xl px-3 lg:px-4">
-            <div className="bg-background text-foreground min-h-screen border-x border-dashed px-3 pt-26 pb-16 lg:px-4">
-              {children}
-              <Footer />
-            </div>
-          </div>
-        </ThemeProvider>
+        <SolanaClientProvider>
+          <PrivyConfigProvider appId="cmjuf6ftn021ml50cszzykcsu">
+            <PrivyAsSolanaWalletProvider>
+              <TimeProvider>
+                <ProgramAccountsProvider>
+                  <HxuiLiteTokenProvider>
+                    <IsAdminViewProvider>
+                      <ThemeProvider
+                        attribute="class"
+                        defaultTheme="system"
+                        enableSystem
+                        disableTransitionOnChange
+                        themes={[
+                          "light-perpetuity",
+                          "dark-perpetuity",
+                          "light",
+                          "dark",
+                          "light-vercel",
+                          "dark-vercel",
+                          "light-bubblegum",
+                          "dark-bubblegum",
+                        ]}
+                      >
+                        <div className="mx-auto max-w-screen-2xl px-3 lg:px-4">
+                          <div className="bg-background text-foreground min-h-screen border-x border-dashed px-3 pt-26 pb-16 lg:px-4">
+                            {children}
+                            <Footer />
+                          </div>
+                        </div>
+                      </ThemeProvider>
+                    </IsAdminViewProvider>
+                  </HxuiLiteTokenProvider>
+                </ProgramAccountsProvider>
+              </TimeProvider>
+            </PrivyAsSolanaWalletProvider>
+          </PrivyConfigProvider>
+        </SolanaClientProvider>
       </body>
     </html>
   );

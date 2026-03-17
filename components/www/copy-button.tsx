@@ -23,7 +23,7 @@ export const CopyButton = ({ codeString, onClick }: CopyButtonProps) => {
 
   return (
     <Button
-      className="relative h-8 w-20 p-0"
+      className="relative h-8 w-20 gap-0 p-0"
       // h-8
       onClick={(e) => {
         handleCopy(codeString);

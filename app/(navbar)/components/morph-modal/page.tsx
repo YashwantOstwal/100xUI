@@ -14,7 +14,7 @@ import AnimatedTab from "@/components/www/animated-tab";
 import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
 import React from "react";
 import { ThemePresetSwitcher } from "@/components/theme-preset-switcher";
-import { MorphModalDemo } from "@/components/morph-modal.demo";
+import { MorphModalDemo } from "@/registry/100xui/blocks/morph-modal/components/morph-modal.demo";
 
 export const metadata: Metadata = {
   title: TITLE,

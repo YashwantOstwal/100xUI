@@ -1,0 +1,12 @@
+{
+  "name": "100xUI Lite",
+  "symbol": "HXUILITE",
+  "description": "100xUI Lite tokens",
+  "image": "http://localhost:3000/metadata/hxui-lite/image.png",
+  "attributes": [
+    {
+      "trait_type": "Item",
+      "value": "100xUI Lite Icon"
+    }
+  ]
+}

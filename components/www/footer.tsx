@@ -1,5 +1,5 @@
 import LogoIcon from "@/icons/logo.icon";
-import { MotionLinkUnderline } from "../motion-link";
+import { MotionLinkUnderline } from "../../registry/100xui/blocks/motion-link/components/motion-link";
 import { XIcon } from "@/icons/x.icon";
 export function Footer() {
   return (

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { InPageNavbarDemo } from "@/components/in-page-navbar.demo";
+import { InPageNavbarDemo } from "@/registry/100xui/blocks/in-page-navbar/components/in-page-navbar.demo";
 import { ModeToggle } from "@/components/www/mode-toggle";
 import { ComponentPage } from "../_components/container";
 

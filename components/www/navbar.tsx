@@ -3,9 +3,11 @@ import Link from "next/link";
 import { ModeToggle } from "./mode-toggle";
 import { ViewX } from "./view-x";
 import { ViewGithub } from "./view-github";
+import { ConnectButton } from "@/components/connect-button";
+import { IsAdminViewToggle } from "./file-explorer/is-admin-view-toggle";
 export default function Navbar() {
   return (
-    <div className="fixed inset-x-0 top-0 z-[100] flex justify-center lg:pointer-events-none">
+    <div className="fixed inset-x-0 top-0 z-100 flex justify-center lg:pointer-events-none">
       <div className="w-full max-w-screen-2xl px-0 lg:px-4.25">
         <div className="max-lg:bg-background/40 flex items-center justify-between py-0 max-lg:backdrop-blur-[2px]">
           <Link
@@ -14,10 +16,12 @@ export default function Navbar() {
           >
             <LogoIcon />
           </Link>
-          <div className="flex gap-1 lg:pointer-events-auto">
+          <div className="flex items-center gap-1 lg:pointer-events-auto">
+            <IsAdminViewToggle />
             <ViewX />
             <ViewGithub />
             <ModeToggle className="ml-1.5" />
+            <ConnectButton />
           </div>
         </div>
       </div>

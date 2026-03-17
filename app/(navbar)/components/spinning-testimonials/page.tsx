@@ -8,7 +8,7 @@ import {
   ADDITIONAL_INFORMATION,
   USAGE,
 } from "./page.data";
-import { SpinningTestimonialsDemo } from "@/components/spinning-testimonials.demo";
+import { SpinningTestimonialsDemo } from "@/registry/100xui/blocks/spinning-testimonials/components/spinning-testimonials.demo";
 import { Metadata } from "next";
 import { PackageManagerProvider } from "@/components/www/package-manager-providers";
 import AnimatedTab from "@/components/www/animated-tab";

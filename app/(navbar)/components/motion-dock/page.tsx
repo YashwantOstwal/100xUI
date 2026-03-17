@@ -12,7 +12,7 @@ import { Metadata } from "next";
 import { PackageManagerProvider } from "@/components/www/package-manager-providers";
 import AnimatedTab from "@/components/www/animated-tab";
 import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
-import { MotionDockDemo } from "@/components/motion-dock.demo";
+import { MotionDockDemo } from "@/registry/100xui/blocks/motion-dock/components/motion-dock.demo";
 import Link from "next/link";
 import React from "react";
 import { ThemePresetSwitcher } from "../../../../components/theme-preset-switcher";

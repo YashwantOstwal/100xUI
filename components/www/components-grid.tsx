@@ -1,4 +1,7 @@
-import Card from "./card";
+import {
+  ComponentGridItem,
+  type ComponentGridItemProps,
+} from "./component-grid-item";
 import SpinningTestimonialsShowcase from "@/public/og/spinning-testimonials.png";
 import MotionLinkShowcase from "@/public/og/motion-link.png";
 
@@ -9,7 +12,8 @@ import TextSwitcherShowcase from "@/public/og/text-switcher.png";
 import MorphModal from "@/public/og/morph-modal.png";
 import Default from "@/public/og/default.png";
 import ChatBentoCard from "@/public/og/chat-bento-card.png";
-const components = [
+
+const components: ComponentGridItemProps[] = [
   {
     name: "Notification",
     href: "/components/notification",
@@ -92,7 +96,7 @@ export function ComponentsGrid() {
       className="mx-auto mt-8 grid max-w-3xl grid-cols-1 gap-x-3 gap-y-2.5 pt-8 sm:grid-cols-2"
     >
       {components.map((props) => (
-        <Card key={props.href} {...props} />
+        <ComponentGridItem key={props.href} {...props} />
       ))}
     </section>
   );

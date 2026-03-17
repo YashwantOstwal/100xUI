@@ -1,6 +1,6 @@
 "use client";
 
-import { MotionLinkUnderline } from "../motion-link";
+import { MotionLinkUnderline } from "../../registry/100xui/blocks/motion-link/components/motion-link";
 import { ArrowLeftIcon } from "lucide-react";
 export function HomeLink() {
   return (

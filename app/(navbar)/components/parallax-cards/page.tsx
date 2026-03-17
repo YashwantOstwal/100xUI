@@ -8,7 +8,7 @@ import {
   ADDITIONAL_INFORMATION,
   USAGE,
 } from "./page.data";
-import { ParallaxCardsDemo } from "@/components/parallax-cards.demo";
+import { ParallaxCardsDemo } from "@/registry/100xui/blocks/parallax-cards/components/parallax-cards.demo";
 import { Metadata } from "next";
 import { PackageManagerProvider } from "@/components/www/package-manager-providers";
 import AnimatedTab from "@/components/www/animated-tab";

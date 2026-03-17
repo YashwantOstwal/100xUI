@@ -10,15 +10,11 @@
       "description": "A reusable and responsive component that gives each of its children a smooth parallax effect, adding a modern, interactive touch to your website. Perfect for showcasing lists of content blocks, feature cards, or image galleries.",
       "files": [
         {
-          "path": "components/parallax-cards.tsx",
+          "path": "registry/100xui/blocks/parallax-cards/components/parallax-cards.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "lib/utils.ts",
-          "type": "registry:lib"
         }
       ],
-      "dependencies": ["clsx", "tailwind-merge", "motion"]
+      "dependencies": ["motion"]
     },
     {
       "name": "text-switcher",
@@ -27,15 +23,11 @@
       "description": "A reusable component that creates an engaging animation effect by smoothly transitioning between a list of phrases. The animation, driven by a moving dot, makes it ideal for dynamically completing a sentence or tagline.",
       "files": [
         {
-          "path": "components/text-switcher.tsx",
+          "path": "registry/100xui/blocks/text-switcher/components/text-switcher.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "lib/utils.ts",
-          "type": "registry:lib"
         }
       ],
-      "dependencies": ["motion", "clsx", "tailwind-merge"]
+      "dependencies": ["motion"]
     },
     {
       "name": "in-page-navbar",
@@ -44,19 +36,15 @@
       "description": "A smart, fully responsive, and accessible navigation bar that tracks section progress as you scroll, providing a clear visual indicator of your journey through the page. Best suited for single-page layouts where all content lives on a single page.",
       "files": [
         {
-          "path": "components/in-page-navbar.tsx",
+          "path": "registry/100xui/blocks/in-page-navbar/components/in-page-navbar.tsx",
           "type": "registry:component"
         },
         {
-          "path": "lib/utils.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "hooks/use-is-server.ts",
+          "path": "registry/100xui/shared/hooks/use-is-server.ts",
           "type": "registry:hook"
         }
       ],
-      "dependencies": ["motion", "clsx", "tailwind-merge", "lucide-react"]
+      "dependencies": ["motion"]
     },
     {
       "name": "motion-dock",
@@ -65,23 +53,19 @@
       "description": "A reusable component where tooltips slide smoothly between dock items, making the motion dock feel natural and easy to use.",
       "files": [
         {
-          "path": "components/motion-dock.tsx",
+          "path": "registry/100xui/blocks/motion-dock/components/motion-dock.tsx",
           "type": "registry:component"
         },
         {
-          "path": "lib/utils.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "hooks/use-debounced-state.ts",
+          "path": "registry/100xui/shared/hooks/use-debounced-state.ts",
           "type": "registry:hook"
         },
         {
-          "path": "hooks/use-previous.ts",
+          "path": "registry/100xui/shared/hooks/use-previous.ts",
           "type": "registry:hook"
         }
       ],
-      "dependencies": ["motion", "clsx", "tailwind-merge"]
+      "dependencies": ["motion"]
     },
     {
       "name": "spinning-testimonials",
@@ -91,24 +75,21 @@
       "registryDependencies": ["avatar"],
       "files": [
         {
-          "path": "components/spinning-carousel.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "lib/utils.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "hooks/use-in-view-interval.ts",
+          "path": "registry/100xui/shared/hooks/use-in-view-interval.ts",
           "type": "registry:hook"
         },
         {
-          "path": "components/ui/testimonial.tsx",
+          "path": "registry/100xui/blocks/spinning-testimonials/components/ui/testimonial.tsx",
           "type": "registry:ui"
+        },
+        {
+          "path": "registry/100xui/blocks/spinning-testimonials/components/spinning-carousel.tsx",
+          "type": "registry:component"
         }
       ],
-      "dependencies": ["motion", "clsx", "tailwind-merge"]
+      "dependencies": ["motion"]
     },
+
     {
       "name": "motion-link",
       "type": "registry:block",
@@ -116,15 +97,11 @@
       "description": "Exclusive to Next.js. A reusable component that extends the <Link/> component from \"next/link\" to power interactive animations using motion.dev. It includes three predefined variants: <MotionLinkUnderline/>, <MotionLinkSlideText/>, and <MotionLinkWithIcon/>, while the base <MotionLink/> provides full flexibility to define custom animations with MotionProps like whileFocus, whileHover, and whileInView.",
       "files": [
         {
-          "path": "lib/utils.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "components/motion-link.tsx",
+          "path": "registry/100xui/blocks/motion-link/components/motion-link.tsx",
           "type": "registry:component"
         }
       ],
-      "dependencies": ["motion", "clsx", "tailwind-merge"]
+      "dependencies": ["motion"]
     },
     {
       "name": "morph-modal",
@@ -133,33 +110,25 @@
       "description": "A reusable modal component that smoothly 'morphs' from the dimensions and position of its trigger element",
       "files": [
         {
-          "path": "lib/utils.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "components/morph-modal.tsx",
+          "path": "registry/100xui/blocks/morph-modal/components/morph-modal.tsx",
           "type": "registry:component"
         }
       ],
-      "dependencies": ["motion", "clsx", "tailwind-merge"]
+      "dependencies": ["motion"]
     },
     {
       "name": "chat-bento-card",
       "type": "registry:block",
       "title": "Chat bento card",
       "description": "A Bento chat interface card that mimics live chat interactions, great for embedding conversational UI demos in a Bento grid.",
+      "registryDependencies": ["avatar"],
       "files": [
         {
-          "path": "lib/utils.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "components/chat-bento-card.tsx",
+          "path": "registry/100xui/blocks/chat-bento-card/components/chat-bento-card.tsx",
           "type": "registry:component"
-        },
-        { "path": "components/ui/avatar.tsx", "type": "registry:ui" }
+        }
       ],
-      "dependencies": ["motion", "clsx", "tailwind-merge"]
+      "dependencies": ["motion"]
     },
     {
       "name": "notification",
@@ -168,11 +137,72 @@
       "description": "A reusable notification component that displays animated messages with smooth slide and scale transitions, perfect for in-app alerts, toasts, and contextual updates.",
       "files": [
         {
-          "path": "components/notification.tsx",
+          "path": "registry/100xui/blocks/notification/components/notification.tsx",
           "type": "registry:component"
         }
       ],
       "dependencies": ["motion"]
+    },
+
+    {
+      "name": "internals",
+      "type": "registry:block",
+      "files": [
+        {
+          "path": "lib/utils.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "app/styles/neutral.css",
+          "type": "registry:style"
+        },
+        {
+          "path": "registry/100xui/shared/components/ui/avatar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "demos",
+      "type": "registry:block",
+      "files": [
+        {
+          "path": "registry/100xui/blocks/parallax-cards/components/parallax-cards.demo.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/100xui/blocks/spinning-testimonials/components/spinning-testimonials.demo.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/100xui/blocks/motion-dock/components/motion-dock.demo.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/100xui/blocks/motion-link/components/motion-link.demo.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/100xui/blocks/in-page-navbar/components/in-page-navbar.demo.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/100xui/blocks/morph-modal/components/morph-modal.demo.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/100xui/blocks/text-switcher/components/text-switcher.demo.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/100xui/blocks/notification/components/notification.demo.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/100xui/blocks/chat-bento-card/components/chat-bento-card.demo.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }

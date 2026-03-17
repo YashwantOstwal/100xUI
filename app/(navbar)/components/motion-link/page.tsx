@@ -9,7 +9,7 @@ import {
   USAGE,
 } from "./page.data";
 import { ThemePresetSwitcher } from "@/components/theme-preset-switcher";
-import { MotionLinkDemo } from "@/components/motion-link.demo";
+import { MotionLinkDemo } from "@/registry/100xui/blocks/motion-link/components/motion-link.demo";
 import { Metadata } from "next";
 import { PackageManagerProvider } from "@/components/www/package-manager-providers";
 import AnimatedTab from "@/components/www/animated-tab";

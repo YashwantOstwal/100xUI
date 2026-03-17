@@ -17,7 +17,7 @@ export function ModeToggle({ className }: { className?: string }) {
     <div
       className={cn(
         "bg-background/75 border-border/50 mr-1 flex h-fit items-center justify-between gap-x-1 rounded-full border p-0.5 backdrop-blur-[2px] lg:pointer-events-auto",
-        className,
+        className
       )}
     >
       <motion.button
@@ -43,7 +43,7 @@ export function ModeToggle({ className }: { className?: string }) {
             mounted &&
               (theme?.startsWith("light") ||
                 (theme === "system" && systemTheme === "light")) &&
-              "bg-primary text-primary-foreground",
+              "bg-primary text-primary-foreground"
           )}
         >
           <SunIcon />
@@ -54,7 +54,7 @@ export function ModeToggle({ className }: { className?: string }) {
             mounted &&
               (theme?.startsWith("dark") ||
                 (theme === "system" && systemTheme === "dark")) &&
-              "bg-primary text-primary-foreground",
+              "bg-primary text-primary-foreground"
           )}
         >
           <MoonIcon />
@@ -62,7 +62,7 @@ export function ModeToggle({ className }: { className?: string }) {
       </motion.button>
       <button
         className={cn(
-          "bg-secondary text-secondary-foreground border-border/60 focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:bg-accent/85 focus-visible:text-accent-foreground/85 hover:bg-accent/85 hover:text-accent-foreground/85 rounded-full border p-0.5 hover:brightness-[97%] focus-visible:ring focus-visible:ring-offset-2 focus-visible:!outline-0 focus-visible:brightness-[97%] dark:hover:brightness-90 dark:focus-visible:brightness-90",
+          "bg-secondary text-secondary-foreground border-border/60 focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:bg-accent/85 focus-visible:text-accent-foreground/85 hover:bg-accent/85 hover:text-accent-foreground/85 rounded-full border p-0.5 hover:brightness-[97%] focus-visible:ring focus-visible:ring-offset-2 focus-visible:!outline-0 focus-visible:brightness-[97%] dark:hover:brightness-90 dark:focus-visible:brightness-90"
         )}
         onClick={() => {
           setTheme((currTheme) => {
@@ -79,7 +79,7 @@ export function ModeToggle({ className }: { className?: string }) {
             "block rounded-full",
             mounted &&
               (theme === "system" || isSystem) &&
-              "bg-primary text-primary-foreground",
+              "bg-primary text-primary-foreground"
           )}
         >
           <MonitorIcon className="size-6 p-1" />

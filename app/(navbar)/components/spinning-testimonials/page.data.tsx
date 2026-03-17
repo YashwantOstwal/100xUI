@@ -4,380 +4,43 @@ import type {
   DirectoryItem,
 } from "@/components/www/file-explorer/file-explorer.types";
 import type { PropTableProps } from "../_components/prop-table";
-import { USE_IS_IN_VIEW_INTERVAL } from "@/hooks/code-strings";
-import { GLOBALS_CSS } from "@/app/code-strings";
-import { UTILS_TS } from "@/lib/code-strings";
 import { ListContainerProps } from "@/components/www/list-container";
+import registryItem from "@/public/c/spinning-testimonials.json";
+import internals from "@/public/c/internals.json";
+import demos from "@/public/c/demos.json";
 
-const SPINNING_CAROUSEL_TSX = `"use client";
-
-import React from "react";
-import {
-  cubicBezier,
-  motion,
-  MotionConfig,
-  type HTMLMotionProps,
-} from "motion/react";
-
-import { cn } from "@/lib/utils";
-import { useInViewInterval } from "@/hooks/use-in-view-interval";
-
-const CAROUSEL_CARD_POSITIONS = [
-  { opacity: 0.5, zIndex: 2, x: "-100%" },
-  { opacity: 1, zIndex: 3, x: "0%" },
-  { opacity: 0.5, zIndex: 2, x: "100%" },
-  { opacity: 0, zIndex: 1, x: "0%" },
-];
-
-const TOTAL_CARDS = 4;
-
-export interface SpinningCarouselProps
-  extends React.ComponentPropsWithoutRef<"div"> {
-  children: React.ReactElement[];
-  readTimeInSec?: number;
-  animationDurationInSec?: number;
-}
-
-export function SpinningCarousel({
-  children,
-  readTimeInSec = 4,
-  animationDurationInSec = 1,
-  className,
-  ...rest
-}: SpinningCarouselProps) {
-  const totalChildren = children.length;
-
-  const [carouselState, setCarouselState] = React.useState<{
-    index: number;
-    visibleCardIndices: number[];
-  }>({
-    index: 0,
-    visibleCardIndices: Array.from(
-      { length: TOTAL_CARDS },
-      (_, i) => i % totalChildren,
-    ),
-  });
-
-  const containerRef = React.useRef<HTMLDivElement>(null);
-
-  const handleInterval = React.useCallback(() => {
-    setCarouselState(({ index, visibleCardIndices }) => {
-      const nextIndex = index + 1;
-
-      const updatedVisibleIndices = visibleCardIndices.map((cardIndex, i) =>
-        (i - (nextIndex % TOTAL_CARDS) + TOTAL_CARDS) % TOTAL_CARDS === 2
-          ? (index + TOTAL_CARDS - 1) % totalChildren
-          : cardIndex,
-      );
-
-      return {
-        index: nextIndex,
-        visibleCardIndices: updatedVisibleIndices,
-      };
-    });
-  }, [totalChildren]);
-
-  useInViewInterval(
-    containerRef,
-    handleInterval,
-    (readTimeInSec + animationDurationInSec) * 1000,
-  );
-
-  return (
-    <div
-      ref={containerRef}
-      className={cn(
-        "w-full",
-        className,
-        "!grid !grid-cols-7 !overflow-hidden lg:!grid-cols-4 lg:py-3",
-      )}
-      {...rest}
-    >
-      <MotionConfig
-        transition={{
-          duration: animationDurationInSec,
-          ease: cubicBezier(0.08, 0.82, 0.17, 1),
-        }}
-      >
-        {carouselState.visibleCardIndices.map((cardIndex, i) => {
-          const positionIndex =
-            (i - (carouselState.index % TOTAL_CARDS) + TOTAL_CARDS) %
-            TOTAL_CARDS;
-
-          return (
-            <SpinningCarouselCard
-              key={\`spinningCarouselCard[\${i}]\`}
-              initial={CAROUSEL_CARD_POSITIONS[i]}
-              animate={CAROUSEL_CARD_POSITIONS[positionIndex]}
-            >
-              {children[cardIndex]}
-            </SpinningCarouselCard>
-          );
-        })}
-      </MotionConfig>
-    </div>
-  );
-}
-
-function SpinningCarouselCard(props: HTMLMotionProps<"div">) {
-  return (
-    <motion.div
-      {...props}
-      className="col-span-5 col-start-2 row-start-1 grid px-2 lg:col-span-2 lg:col-start-2 lg:px-3"
-    />
-  );
-}
-`;
-const SPINNING_TESTIMONIALS_DEMO_TSX = `import { SpinningCarousel } from "@/components/spinning-carousel";
-import {
-  TestimonialCard,
-  TestimonialContent,
-  TestimonialAvatar,
-  TestimonialAvatarFallback,
-  TestimonialAvatarImage,
-  TestimonialName,
-  TestimonialPosition,
-  TestimonialAuthor,
-} from "@/components/ui/testimonial";
-
-export function SpinningTestimonialsDemo() {
-  return (
-    <SpinningCarousel className="h-[calc(500px_-_30vw)] min-h-60 lg:h-[calc(400px_-_7vw)]">
-
-      {TESTIMONIALS.map(({ name, testimonial, position, src, fallback }) => (
-        <TestimonialCard key={name}>
-
-          <TestimonialContent className="-indent-1.5 lg:-indent-2">
-            &quot;{testimonial}&quot;
-          </TestimonialContent>
-          
-          <TestimonialAuthor>
-            <TestimonialAvatar className="size-10">
-              <TestimonialAvatarImage src={src} />
-              <TestimonialAvatarFallback>{fallback}</TestimonialAvatarFallback>
-            </TestimonialAvatar>
-            <TestimonialName>{name}</TestimonialName>
-            <TestimonialPosition>{position}</TestimonialPosition>
-          </TestimonialAuthor>
-
-        </TestimonialCard>
-      ))}
-        
-    </SpinningCarousel>
-  );
-}
-
-const TESTIMONIALS = [
-  {
-    testimonial:
-      "This SaaS cut our onboarding time from days to hours, all without messy spreadsheets.",
-    name: "Guillermo Rauch",
-    position: "CEO / Vercel",
-    src: "https://github.com/rauchg.png",
-    fallback: "GR",
-  },
-  {
-    testimonial:
-      "The dashboard delivers real-time insights, helping us make faster, smarter decisions.",
-    name: "Theo Browne",
-    position: "CEO / Ping Labs",
-    src: "https://github.com/t3dotgg.png",
-    fallback: "TB",
-  },
-  {
-    testimonial:
-      "We replaced three tools with this one. It’s clean, intuitive, and a joy to use.We replaced three tools with this one. It’s clean, intuitive, and a joy to use.",
-    name: "Kent C. Dodds",
-    position: "Frontend Educator",
-    src: "https://github.com/kentcdodds.png",
-    fallback: "KCD",
-  },
-  {
-    testimonial:
-      "Support is fast, friendly, and the product keeps getting better with each update.",
-    name: "shadcn",
-    position: "Creator of shadcn/ui",
-    src: "https://github.com/shadcn.png",
-    fallback: "CN",
-  },
-  {
-    name: "Paul Copperstone",
-    position: "CEO / Supabase",
-    testimonial:
-      "Setup took less than a day, and productivity improved immediately across teams.",
-    src: "https://github.com/kiwicopple.png",
-    fallback: "PC",
-  },
-];
-`;
-const TESTIMONIALS_TSX = `import { cn } from "@/lib/utils";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-
-const TestimonialCard = ({
-  className,
-  ...rest
-}: React.ComponentProps<"div">) => (
-  <div
-    className={cn(
-      "bg-card text-card-foreground border-border/50 flex flex-col justify-between gap-10 rounded-4xl border px-5 py-4 shadow-md lg:px-7 lg:py-6",
-      className,
-    )}
-    {...rest}
-  />
-);
-
-const TestimonialContent = ({
-  className,
-  ...rest
-}: React.ComponentProps<"div">) => (
-  <div className={cn("text-lg font-medium lg:text-2xl", className)} {...rest} />
-);
-
-const TestimonialAuthor = ({
-  className,
-  ...rest
-}: React.ComponentProps<"div">) => (
-  <div
-    className={cn(
-      "grid grid-cols-[auto_1fr] grid-rows-[auto_auto] gap-x-3 lg:gap-x-4",
-      className,
-    )}
-    {...rest}
-  />
-);
-
-const TestimonialAvatar = ({
-  className,
-  ...rest
-}: React.ComponentProps<typeof Avatar>) => (
-  <Avatar
-    className={cn("col-start-1 row-span-2 row-start-1 my-auto", className)}
-    {...rest}
-  />
-);
-
-const TestimonialAvatarImage = (
-  props: React.ComponentProps<typeof AvatarImage>,
-) => <AvatarImage {...props} />;
-
-const TestimonialAvatarFallback = (
-  props: React.ComponentProps<typeof AvatarFallback>,
-) => <AvatarFallback {...props} />;
-
-const TestimonialName = ({
-  className,
-  ...rest
-}: React.ComponentProps<"div">) => (
-  <div
-    className={cn(
-      "col-start-2 row-start-1 text-sm font-medium lg:text-base",
-      className,
-    )}
-    {...rest}
-  />
-);
-
-const TestimonialPosition = ({
-  className,
-  ...rest
-}: React.ComponentProps<"div">) => (
-  <div
-    className={cn(
-      "text-muted-foreground col-start-2 row-start-2 text-xs lg:text-sm",
-      className,
-    )}
-    {...rest}
-  />
-);
-
-export {
-  TestimonialCard,
-  TestimonialContent,
-  TestimonialAuthor,
-  TestimonialAvatar,
-  TestimonialName,
-  TestimonialPosition,
-  TestimonialAvatarFallback,
-  TestimonialAvatarImage,
-};`;
-
-const AVATAR_TSX = `"use client"
-
-import * as React from "react"
-import * as AvatarPrimitive from "@radix-ui/react-avatar"
-
-import { cn } from "@/lib/utils"
-
-function Avatar({
-  className,
-  ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Root>) {
-  return (
-    <AvatarPrimitive.Root
-      data-slot="avatar"
-      className={cn(
-        "relative flex size-8 shrink-0 overflow-hidden rounded-full",
-        className
-      )}
-      {...props}
-    />
-  )
-}
-
-function AvatarImage({
-  className,
-  ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Image>) {
-  return (
-    <AvatarPrimitive.Image
-      data-slot="avatar-image"
-      className={cn("aspect-square size-full", className)}
-      {...props}
-    />
-  )
-}
-
-function AvatarFallback({
-  className,
-  ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
-  return (
-    <AvatarPrimitive.Fallback
-      data-slot="avatar-fallback"
-      className={cn(
-        "bg-muted flex size-full items-center justify-center rounded-full",
-        className
-      )}
-      {...props}
-    />
-  )
-}
-
-export { Avatar, AvatarImage, AvatarFallback }`;
 const ROOT_DIRECTORY: DirectoryItem[] = [
   {
     name: "components",
     type: "directory",
     items: [
-      {
-        name: "spinning-carousel.tsx",
-        type: "file",
-        code: SPINNING_CAROUSEL_TSX,
-      },
+      ...registryItem.files
+        .filter((file) => file.type === "registry:component")
+        .map((file) => {
+          const name = file.path.split("/").pop();
+          return { name, type: "file", code: file.content } as DirectoryItem;
+        }),
       {
         name: "ui",
         type: "directory",
         items: [
           {
-            name: "testimonial.tsx",
-            type: "file",
-            code: TESTIMONIALS_TSX,
-          },
-          {
             name: "avatar.tsx",
             type: "file",
-            code: AVATAR_TSX,
+            code: internals.files.find((file) =>
+              file.path.endsWith("avatar.tsx")
+            )!.content,
           },
+          ...registryItem.files
+            .filter((file) => file.type === "registry:ui")
+            .map((file) => {
+              const name = file.path.split("/").pop();
+              return {
+                name,
+                type: "file",
+                code: file.content,
+              } as DirectoryItem;
+            }),
         ],
       },
     ],
@@ -389,31 +52,40 @@ const ROOT_DIRECTORY: DirectoryItem[] = [
       {
         name: "utils.ts",
         type: "file",
-        code: UTILS_TS,
+        code: internals.files.find((file) => file.path.endsWith("utils.ts"))!
+          .content,
       },
     ],
+  },
+  {
+    name: "globals.css",
+    type: "file",
+    absolutePath: "globals.css",
+    code: internals.files.find((file) => file.path.endsWith("neutral.css"))!
+      .content,
   },
   {
     name: "hooks",
     type: "directory",
     items: [
-      {
-        name: "use-in-view-interval.ts",
-        type: "file",
-        code: USE_IS_IN_VIEW_INTERVAL,
-      },
+      ...registryItem.files
+        .filter(({ type }) => type === "registry:hook")
+        .map((hook) => {
+          const name = hook.path.split("/").pop();
+          return {
+            name,
+            type: "file",
+            code: hook.content,
+          } as DirectoryItem;
+        }),
     ],
-  },
-  {
-    name: "globals.css | index.css",
-    type: "file",
-    absolutePath: "globals.css | index.css",
-    code: GLOBALS_CSS,
   },
 ];
 const DEFAULT_ACTIVE_FILE: ActiveFile = {
   absolutePath: "components/spinning-carousel.tsx",
-  code: SPINNING_CAROUSEL_TSX,
+  code: registryItem.files.find((file) =>
+    file.path.endsWith("spinning-carousel.tsx")
+  )!.content,
 };
 
 const PROP_TABLE: PropTableProps = {
@@ -503,13 +175,14 @@ const PROP_TABLE: PropTableProps = {
     },
   ],
 };
-const TITLE = "Spinning Testimonials";
+const TITLE = registryItem.title;
 const USAGE = {
-  title: TITLE,
-  code: SPINNING_TESTIMONIALS_DEMO_TSX,
+  title: registryItem.title,
+  code: demos.files.find((file) =>
+    file.path.endsWith("spinning-testimonials.demo.tsx")
+  )!.content,
 };
-const DESCRIPTION =
-  "A sleek, reusable testimonial carousel that smoothly spins through any number of testimonials. Designed to be fully responsive, it automatically converts its direct children into carousel slides, making it perfect for highlighting customer feedback in a compact, eye-catching way.";
+const DESCRIPTION = registryItem.description;
 
 const ADDITIONAL_INFORMATION: ListContainerProps[] = [
   {

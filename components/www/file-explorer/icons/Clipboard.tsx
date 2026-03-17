@@ -1,6 +1,12 @@
 export default function Clipboard() {
   return (
-    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" className="">
+    <svg
+      width="24"
+      height="24"
+      fill="none"
+      viewBox="0 0 24 24"
+      className="size-5"
+    >
       <path
         strokeLinecap="round"
         strokeLinejoin="round"

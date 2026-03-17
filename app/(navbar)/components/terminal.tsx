@@ -8,6 +8,8 @@ import { SquareTerminalIcon } from "lucide-react";
 import { CodeCard } from "@/components/www/code-card";
 import SyntaxHighlighterClient from "@/components/www/syntax-highlighter/client";
 import { usePackageManager } from "@/components/www/package-manager-providers";
+import { usePrivyAsSolanaWallet } from "@/providers/privy-as-solana-wallet";
+import { useHxuiLiteTokenContext } from "../vote-component/providers/hxui-lite-token";
 
 type packageManagers = "pnpm" | "npm" | "bun" | "yarn";
 export function Terminal({
@@ -17,6 +19,8 @@ export function Terminal({
 }) {
   const { packageManager: currentPackageManager, handleClick } =
     usePackageManager();
+  const { selectedWallet } = usePrivyAsSolanaWallet();
+  const hxuiLiteToken = useHxuiLiteTokenContext();
   return (
     <CodeCard>
       <CardHeader>
@@ -29,7 +33,7 @@ export function Terminal({
                 "focus-visible:ring-ring rounded-md px-1.5 py-1 focus-visible:opacity-75 focus-visible:ring-1 focus-visible:outline-0 focus-visible:ring-inset",
                 currentPackageManager === tab
                   ? "decoration-foreground underline decoration-2 underline-offset-3"
-                  : "hover:opacity-75",
+                  : "hover:opacity-75"
               )}
               onClick={() => handleClick(tab as packageManagers)}
             >
@@ -38,12 +42,28 @@ export function Terminal({
           ))}
         </CardHeader.FlexOneFlex>
         <CopyButton
-          codeString={packageManagerCommands[currentPackageManager]}
+          codeString={
+            selectedWallet &&
+            !hxuiLiteToken.isLoading &&
+            hxuiLiteToken.maybeHxuiLiteTokenAccount.exists &&
+            hxuiLiteToken.maybeRegistrationAccount.exists
+              ? packageManagerCommands[currentPackageManager] +
+                `?pubkey=${selectedWallet.address}`
+              : packageManagerCommands[currentPackageManager]
+          }
         />
       </CardHeader>
       <CodeCanvas className="!h-fit overflow-auto rounded-lg">
         <SyntaxHighlighterClient
-          codeString={packageManagerCommands[currentPackageManager]}
+          codeString={
+            selectedWallet &&
+            !hxuiLiteToken.isLoading &&
+            hxuiLiteToken.maybeHxuiLiteTokenAccount.exists &&
+            hxuiLiteToken.maybeRegistrationAccount.exists
+              ? packageManagerCommands[currentPackageManager] +
+                `?pubkey=${selectedWallet.address}`
+              : packageManagerCommands[currentPackageManager]
+          }
           Loader={
             <pre>
               <code>{packageManagerCommands[currentPackageManager]}</code>

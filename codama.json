@@ -1,0 +1,11 @@
+{
+  "idl": "./idl/hxui.json",
+  "scripts": {
+    "js": [
+      {
+        "from": "@codama/renderers-js",
+        "args": ["./clients/generated/hxui"]
+      }
+    ]
+  }
+}

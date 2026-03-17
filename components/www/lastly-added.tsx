@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { ArrowRightIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { MotionLinkUnderline } from "../motion-link";
+import { MotionLinkUnderline } from "../../registry/100xui/blocks/motion-link/components/motion-link";
 
 function LastlyAdded({
   lastAddedDate,
@@ -20,12 +20,12 @@ function LastlyAdded({
     const hours = Math.floor(diffMs / (1000 * 60 * 60));
     if (hours >= 1) {
       setTextContent(
-        `Lastly added ${hours} ${hours === 1 ? "hour" : "hours"} ago`,
+        `Lastly added ${hours} ${hours === 1 ? "hour" : "hours"} ago`
       );
     } else {
       const minutes = Math.floor(diffMs / (1000 * 60));
       setTextContent(
-        `Lastly added ${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`,
+        `Lastly added ${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`
       );
     }
     setIsMounted(true);
@@ -36,14 +36,8 @@ function LastlyAdded({
       href={href}
       className={cn(
         "group my-auto flex items-center gap-x-2 text-sm transition-opacity",
-        isMounted ? "opacity-100" : "opacity-0",
+        isMounted ? "opacity-100" : "opacity-0"
       )}
-      // variants={{
-      //   initial: { opacity: 0, gap: "4px" },
-      //   // animate: { opacity: isMounted ? 1 : 0 },
-      //   whileHover: { gap: "6px" },
-      //   whileFocus: { gap: "6px" },
-      // }}
     >
       {textContent}
       <ArrowRightIcon className="size-4 -translate-x-0.5 transition-transform ease-out group-hover:translate-x-0 group-focus-visible:translate-x-0" />
@@ -51,4 +45,4 @@ function LastlyAdded({
   );
 }
 
-export default LastlyAdded;
+export { LastlyAdded };

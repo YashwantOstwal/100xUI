@@ -13,7 +13,7 @@ import { PackageManagerProvider } from "@/components/www/package-manager-provide
 import AnimatedTab from "@/components/www/animated-tab";
 import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
 import { ThemePresetSwitcher } from "../../../../components/theme-preset-switcher";
-import { NotificationDemo } from "@/components/notification.demo";
+import { NotificationDemo } from "@/registry/100xui/blocks/notification/components/notification.demo";
 import React from "react";
 import PlaceHolder from "@/components/www/place-holder";
 

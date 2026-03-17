@@ -12,7 +12,7 @@ import { Metadata } from "next";
 import { PackageManagerProvider } from "@/components/www/package-manager-providers";
 import AnimatedTab from "@/components/www/animated-tab";
 import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
-import { TextSwitcherDemo } from "@/components/text-switcher.demo";
+import { TextSwitcherDemo } from "@/registry/100xui/blocks/text-switcher/components/text-switcher.demo";
 import React from "react";
 import { ThemePresetSwitcher } from "../../../../components/theme-preset-switcher";
 

@@ -4,101 +4,21 @@ import {
   type DirectoryItem,
 } from "@/components/www/file-explorer/file-explorer.types";
 import type { PropTableProps } from "../_components/prop-table";
-import { GLOBALS_CSS } from "@/app/code-strings";
-import registryItem from "@/public/components/chat-bento-card.json";
+import registryItem from "@/public/c/chat-bento-card.json";
+import internals from "@/public/c/internals.json";
+import demos from "@/public/c/demos.json";
 
-const CHAT_BENTO_CARD_TSX = registryItem?.files?.find(({ path }) =>
-  path.endsWith("chat-bento-card.tsx"),
-)?.content as string;
-const UTILS_TS = registryItem?.files?.find(({ path }) =>
-  path.endsWith("utils.ts"),
-)?.content as string;
-const AVATAR_TSX = registryItem?.files?.find(({ path }) =>
-  path.endsWith("avatar.tsx"),
-)?.content as string;
-const CHAT_BENTO_CARD_DEMO_TSX = `import {
-  ChatBentoCard,
-  type ChatMessageType,
-} from "@/components/chat-bento-card";
-
-export function ChatBentoCardDemo() {
-  return (
-    <div className="border-border bg-card box-content w-full max-w-96 rounded-md border px-1 pt-0">
-      <ChatBentoCard
-        className="aspect-square"
-        viewOptions={{ threshold: 0.75 }}
-        messages={messages}
-      />
-      <div className="p-3">
-        <div className="text-card-foreground mb-2 font-medium">
-          Chat bento card
-        </div>
-        <p className="text-muted-foreground text-sm">
-          A Bento chat interface card that mimics live chat interactions, great
-          for embedding conversational UI demos in a Bento grid.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-const messages: ChatMessageType[] = [
-  {
-    type: "outgoing",
-    content: (
-      <>
-        Have you seen <span className="font-medium">100xUI</span>? The motion
-        components are truly impressive.
-      </>
-    ),
-  },
-  {
-    type: "incoming",
-    from: "Founder",
-    avatarProps: {
-      src: "/bento-card-avatar.png",
-      fallback: "FO",
-    },
-    content: (
-      <p>
-        Agreed. That level of craftsmanship is exactly what we need. We should
-        hire its creator for our team.
-      </p>
-    ),
-  },
-  {
-    type: "outgoing",
-
-    content: <>My thoughts exactly. Let's make an offer.</>,
-  },
-  {
-    type: "incoming",
-    from: "Founder",
-    avatarProps: {
-      src: "/bento-card-avatar.png",
-      fallback: "FO",
-    },
-    content: <p>Definitely. Get the process started.</p>,
-  },
-];
-`;
-
-export const ROOT_DIRECTORY: DirectoryItem[] = [
-  {
-    name: "globals.css | index.css",
-    type: "file",
-    absolutePath: "globals.css | index.css",
-    code: GLOBALS_CSS,
-  },
+const ROOT_DIRECTORY: DirectoryItem[] = [
   {
     name: "components",
     type: "directory",
     items: [
-      {
-        name: "chat-bento-card.tsx",
-        type: "file",
-        code: CHAT_BENTO_CARD_TSX,
-      },
+      ...registryItem.files
+        .filter((file) => file.type === "registry:component")
+        .map((file) => {
+          const name = file.path.split("/").pop();
+          return { name, type: "file", code: file.content } as DirectoryItem;
+        }),
       {
         name: "ui",
         type: "directory",
@@ -106,11 +26,30 @@ export const ROOT_DIRECTORY: DirectoryItem[] = [
           {
             name: "avatar.tsx",
             type: "file",
-            code: AVATAR_TSX,
+            code: internals.files.find((file) =>
+              file.path.endsWith("avatar.tsx")
+            )!.content,
           },
+          ...registryItem.files
+            .filter((file) => file.type === "registry:ui")
+            .map((file) => {
+              const name = file.path.split("/").pop();
+              return {
+                name,
+                type: "file",
+                code: file.content,
+              } as DirectoryItem;
+            }),
         ],
       },
     ],
+  },
+  {
+    name: "globals.css",
+    type: "file",
+    absolutePath: "globals.css",
+    code: internals.files.find((file) => file.path.endsWith("neutral.css"))!
+      .content,
   },
   {
     name: "lib",
@@ -119,17 +58,28 @@ export const ROOT_DIRECTORY: DirectoryItem[] = [
       {
         name: "utils.ts",
         type: "file",
-        code: UTILS_TS,
+        code: internals.files.find((file) => file.path.endsWith("utils.ts"))!
+          .content,
       },
     ],
   },
 ];
-export const DEFAULT_ACTIVE_FILE: ActiveFile = {
+const DEFAULT_ACTIVE_FILE: ActiveFile = {
   absolutePath: "components/chat-bento-card.tsx",
-  code: CHAT_BENTO_CARD_TSX,
+  code: registryItem.files.find((file) =>
+    file.path.endsWith("chat-bento-card.tsx")
+  )!.content,
 };
 
-export const PROP_TABLE: PropTableProps = {
+const TITLE = registryItem.title;
+const USAGE = {
+  title: registryItem.title,
+  code: demos.files.find((file) =>
+    file.path.endsWith("chat-bento-card.demo.tsx")
+  )!.content,
+};
+const DESCRIPTION = registryItem.description;
+const PROP_TABLE: PropTableProps = {
   data: [
     {
       title: ["<ChatBentoCard/>"],
@@ -250,10 +200,11 @@ export const PROP_TABLE: PropTableProps = {
   ],
 };
 
-export const TITLE = "Chat bento card";
-export const DESCRIPTION =
-  "A Bento chat interface card that mimics live chat interactions, great for embedding conversational UI demos in a Bento grid.";
-export const USAGE = {
-  code: CHAT_BENTO_CARD_DEMO_TSX,
-  title: TITLE,
+export {
+  USAGE,
+  TITLE,
+  DESCRIPTION,
+  ROOT_DIRECTORY,
+  DEFAULT_ACTIVE_FILE,
+  PROP_TABLE,
 };
