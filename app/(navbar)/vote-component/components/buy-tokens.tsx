@@ -1,37 +1,27 @@
 "use client";
 
 import { useSolanaClient } from "@/providers/solana-client";
-import Button, {
+import {
   HxuiButton,
   HxuiButtonGroup,
 } from "@/components/www/file-explorer/button";
 import { usePrivyAsSolanaWallet } from "@/providers/privy-as-solana-wallet";
-import bs58 from "bs58";
 import {
-  Address,
   address,
   appendTransactionMessageInstructions,
-  Base58EncodedBytes,
   compileTransaction,
   createNoopSigner,
   createTransactionMessage,
-  getProgramDerivedAddress,
+  getBase58Decoder,
   getTransactionEncoder,
   Instruction,
-  isSolanaError,
-  lamports,
   pipe,
   setTransactionMessageFeePayerSigner,
   setTransactionMessageLifetimeUsingBlockhash,
-  SOLANA_ERROR__ACCOUNTS__ACCOUNT_NOT_FOUND,
-  StringifiedNumber,
 } from "@solana/kit";
 
-import {
-  fetchMaybeToken,
-  getCreateAssociatedTokenInstructionAsync,
-} from "@solana-program/token";
-import { getBuyPaidTokensInstructionAsync } from "@/clients/generated/hxui";
+import { getCreateAssociatedTokenInstructionAsync } from "@solana-program/token";
+import { getBuyTokensInstructionAsync } from "@/clients/generated/hxui";
 import {
   Popover,
   PopoverContent,
@@ -58,6 +48,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { run } from "@/utils";
+import { toast } from "sonner";
+import { SolanaExplorerFull } from "@/icons/solana-explorer.icon";
 export function BuyTokens() {
   const client = useSolanaClient();
   const { selectedWallet, signAndSendTransaction } = usePrivyAsSolanaWallet();
@@ -105,13 +97,11 @@ export function BuyTokens() {
           });
         ixs.push(createAssociatedTokenAccountIx);
       } else {
-        return console.error(
-          "Did not approve he creation of HXUI token account."
-        );
+        return console.error("Approve the creation of HxUI token account.");
       }
     }
 
-    const buyTokensIx = await getBuyPaidTokensInstructionAsync({
+    const buyTokensIx = await getBuyTokensInstructionAsync({
       owner: selectedWalletSigner,
       amount: BigInt(buyAmount),
     });
@@ -121,7 +111,7 @@ export function BuyTokens() {
     const { value: latestBlockhash } = await client.rpc
       .getLatestBlockhash()
       .send();
-    const encodedTransactionMessage = pipe(
+    const compiledAndEncodedTx = pipe(
       createTransactionMessage({ version: 0 }),
       (tx) => setTransactionMessageFeePayerSigner(selectedWalletSigner, tx),
       (tx) => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, tx),
@@ -130,17 +120,37 @@ export function BuyTokens() {
       (tx) => new Uint8Array(getTransactionEncoder().encode(tx))
     );
 
-    try {
-      const { signature } = await signAndSendTransaction({
-        transaction: encodedTransactionMessage,
+    toast.promise(
+      signAndSendTransaction({
+        transaction: compiledAndEncodedTx,
         wallet: selectedWallet,
         options: { commitment: "confirmed" },
-      });
-      console.log(bs58.encode(signature));
-      // Render a toast with transaction signature.
-    } catch (err) {
-      console.error(err);
-    }
+      }),
+      {
+        loading: "Pending...",
+        success: ({ signature }) => {
+          return (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className=""
+              href={`https://explorer.solana.com/tx/${getBase58Decoder().decode(signature)}?cluster=devnet`}
+            >
+              <div className="flex items-center gap-1 text-nowrap">
+                Transaction confirmed. View on
+                <SolanaExplorerFull className="w-30" />
+              </div>
+            </a>
+          );
+        },
+        error: (err) => {
+          console.error(err);
+          if (err?.message?.includes("rejected"))
+            return "Transaction rejected.";
+          return "Transaction failed to execute. Check the logs.";
+        },
+      }
+    );
   }
 
   useEffect(() => {
@@ -153,20 +163,25 @@ export function BuyTokens() {
     !selectedWallet || programAccounts.isLoading || hxuiToken.isLoading;
   return (
     <Popover>
-      <HxuiButtonGroup>
+      <HxuiButtonGroup className="">
         <Tooltip>
           <TooltipTrigger asChild>
             <span>
               <PopoverTrigger asChild disabled={disabled}>
                 <HxuiButton>
-                  {hxuiToken.isLoading || programAccounts.isLoading ? (
-                    <Spinner className="size-4" />
-                  ) : hxuiToken.maybeHxuiTokenAccount.exists ? (
-                    hxuiToken.maybeHxuiTokenAccount.data.amount
-                  ) : (
-                    0
-                  )}{" "}
-                  HXUI tokens
+                  {run(() => {
+                    if (!selectedWallet) {
+                      return 0;
+                    }
+                    if (hxuiToken.isLoading || programAccounts.isLoading) {
+                      return <Spinner className="size-4" />;
+                    }
+                    if (hxuiToken.maybeHxuiTokenAccount.exists) {
+                      return hxuiToken.maybeHxuiTokenAccount.data.amount;
+                    }
+                    return 0;
+                  })}
+                  &nbsp;HxUI tokens
                   <PlusCircleIcon className="fill-primary stroke-secondary size-5.5 rounded-full"></PlusCircleIcon>
                 </HxuiButton>
               </PopoverTrigger>
@@ -175,8 +190,8 @@ export function BuyTokens() {
           {run(() => {
             if (!selectedWallet) {
               return (
-                <TooltipContent>
-                  Please connect to a solana wallet
+                <TooltipContent className="">
+                  Please connect to a Solana wallet
                 </TooltipContent>
               );
             }
@@ -189,17 +204,18 @@ export function BuyTokens() {
               <InfoIcon />
             </HxuiButton>
           </TooltipTrigger>
-          <TooltipContent>
-            Hxui paid tokens which can be used to vote candidate components.
+          <TooltipContent className="">
+            HxUI tokens purchased with SOL to vote on active candidate
+            components.
           </TooltipContent>
         </Tooltip>
       </HxuiButtonGroup>
       {!disabled && (
         <PopoverContent className="w-80">
           <Field>
-            <FieldLabel htmlFor="buy-tokens">Buy HXUI tokens</FieldLabel>
+            <FieldLabel htmlFor="buy-tokens">Buy HxUI tokens</FieldLabel>
             <FieldDescription className="-mt-3">
-              1 HXUI token ={" "}
+              1 HxUI token ={" "}
               {Number(programAccounts.hxuiConfig.data.pricePerToken) /
                 LAMPORTS_PER_SOL}{" "}
               SOL
@@ -241,7 +257,7 @@ export function BuyTokens() {
               </HxuiButton>
             </ButtonGroup>
             <FieldDescription>
-              These tokens can be used to vote candidates |{" "}
+              These tokens can be used to cast votes to candidates |{" "}
               {programAccounts.hxuiConfig.data.tokensPerVote} tokens per vote.
             </FieldDescription>
 
@@ -262,7 +278,7 @@ export function BuyTokens() {
                   hxuiToken.maybeHxuiTokenAccount.exists && "line-through"
                 )}
               >
-                Create HXUI token account
+                Create HxUI token account
               </FieldLabel>
             </Field>
             <HxuiButton

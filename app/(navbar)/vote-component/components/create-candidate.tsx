@@ -20,71 +20,57 @@ import {
   InputGroupTextarea,
 } from "@/components/ui/input-group";
 import { useSolanaClient } from "@/providers/solana-client";
-import Button, {
+import {
   HxuiButton,
   HxuiButtonGroup,
-} from "../../../../components/www/file-explorer/button";
+} from "@/components/www/file-explorer/button";
 import { usePrivyAsSolanaWallet } from "@/providers/privy-as-solana-wallet";
 import {
-  Address,
   address,
   appendTransactionMessageInstruction,
-  appendTransactionMessageInstructions,
-  Base58EncodedBytes,
   compileTransaction,
   createNoopSigner,
   createTransactionMessage,
-  getProgramDerivedAddress,
   getTransactionEncoder,
-  Instruction,
-  isSolanaError,
-  lamports,
   pipe,
   setTransactionMessageFeePayerSigner,
   setTransactionMessageLifetimeUsingBlockhash,
-  SOLANA_ERROR__ACCOUNTS__ACCOUNT_NOT_FOUND,
   getBase58Decoder,
-  StringifiedNumber,
-  signTransaction,
-  getSignatureFromTransaction,
-  sendAndConfirmTransactionFactory,
 } from "@solana/kit";
-import { getCandidateAddress, getHxuiConfigAddress } from "@/clients/pdas";
+import { getCandidateAddress } from "@/clients/pdas";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  fetchMaybeToken,
-  getCreateAssociatedTokenInstructionAsync,
-} from "@solana-program/token";
 import { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import {
-  fetchCandidate,
-  fetchConfig,
+  fetchHxuiCandidate,
+  // fetchMaybeHxuiCandidate,
   getCreateCandidateInstructionAsync,
 } from "@/clients/generated/hxui";
-import { pre } from "motion/react-client";
 import { useProgramAccounts } from "../providers/program-accounts";
 import { useCandidatesContext } from "../providers/candidates";
 import { run } from "@/utils";
+import { toast } from "sonner";
+import { SolanaExplorerFull } from "@/icons/solana-explorer.icon";
+import { Input } from "@/components/ui/input";
 
 const DEFAULT_CANDIDATE_META = {
   name: "",
   description: "",
-  claimableIfWinner: false,
+  enableClaimBackOffer: false,
 };
 function CreateCandidate() {
   const client = useSolanaClient();
   const { selectedWallet, signAndSendTransaction } = usePrivyAsSolanaWallet();
   const candidatesContext = useCandidatesContext();
 
-  const [newCandidateMeta, setNewCandidateMeta] = useState(
-    DEFAULT_CANDIDATE_META
-  );
+  const [newCandidateMeta, setNewCandidateMeta] = useState<
+    typeof DEFAULT_CANDIDATE_META
+  >(DEFAULT_CANDIDATE_META);
   const programAccounts = useProgramAccounts();
   async function createCandidate() {
     if (!selectedWallet)
@@ -98,7 +84,7 @@ function CreateCandidate() {
       );
     const selectedWalletAddress = address(selectedWallet.address);
     if (programAccounts.hxuiConfig.data.admin !== selectedWalletAddress)
-      return console.error("only admin can create candidate");
+      return console.error("only admin can invoke this instruction.");
 
     if (
       newCandidateMeta.name.length === 0 ||
@@ -115,7 +101,7 @@ function CreateCandidate() {
     const { value: latestBlockhash } = await client.rpc
       .getLatestBlockhash()
       .send();
-    const encodedTransactionMessage = pipe(
+    const compiledAndEncodedTx = pipe(
       createTransactionMessage({ version: 0 }),
       (tx) => setTransactionMessageFeePayerSigner(adminSigner, tx),
       (tx) => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, tx),
@@ -124,31 +110,60 @@ function CreateCandidate() {
       (tx) => new Uint8Array(getTransactionEncoder().encode(tx))
     );
 
-    const { signature } = await signAndSendTransaction({
-      transaction: encodedTransactionMessage,
-      wallet: selectedWallet,
-      options: { commitment: "confirmed" },
-    });
+    toast.promise(
+      signAndSendTransaction({
+        transaction: compiledAndEncodedTx,
+        wallet: selectedWallet,
+        options: { commitment: "confirmed" },
+      }),
+      {
+        loading: "Pending...",
+        success: async ({ signature }) => {
+          setNewCandidateMeta(DEFAULT_CANDIDATE_META);
+          if (candidatesContext.isLoading) return;
+          const newCandidateAddress = await getCandidateAddress({
+            candidateName: newCandidateMeta.name,
+          });
 
-    console.log(getBase58Decoder().decode(signature));
-
-    if (candidatesContext.isLoading) return;
-
-    setNewCandidateMeta(DEFAULT_CANDIDATE_META);
-
-    const newCandidateAddress = await getCandidateAddress({
-      candidateName: newCandidateMeta.name,
-    });
-
-    setTimeout(async () => {
-      const newCandidate = await fetchCandidate(
-        client.rpc,
-        newCandidateAddress
-      );
-      candidatesContext.setCandidates((prev) => {
-        return [...prev, newCandidate].sort((a, b) => b.data.id - a.data.id);
-      });
-    }, 500);
+          // TODO: poll every 500 with fetchMaybeHxuiCandidate.
+          setTimeout(async () => {
+            // try {
+            const newCandidate = await fetchHxuiCandidate(
+              client.rpc,
+              newCandidateAddress
+            );
+            candidatesContext.setCandidates((prev) => {
+              return [...prev, newCandidate].sort(
+                (a, b) => b.data.id - a.data.id
+              );
+            });
+            // } catch (err) {
+            // console.error(err);
+            // }
+          }, 1200);
+          return (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className=""
+              href={`https://explorer.solana.com/tx/${getBase58Decoder().decode(signature)}?cluster=devnet`}
+            >
+              <div className="flex items-center gap-1 text-nowrap">
+                Transaction confirmed. View on
+                <SolanaExplorerFull className="w-30" />
+              </div>
+            </a>
+          );
+        },
+        error: (err) => {
+          console.error(err);
+          if (err?.message?.includes("rejected"))
+            return "Transaction rejected.";
+          return "Transaction failed to execute. Check the logs.";
+        },
+        // finally: async () => {},
+      }
+    );
   }
 
   const disabled =
@@ -163,7 +178,7 @@ function CreateCandidate() {
             <span>
               <PopoverTrigger asChild disabled={disabled}>
                 <HxuiButton>
-                  Create candidate.
+                  Create a candidate
                   {programAccounts.isLoading ? (
                     <Spinner className="size-4" />
                   ) : (
@@ -177,7 +192,7 @@ function CreateCandidate() {
             if (!selectedWallet) {
               return (
                 <TooltipContent>
-                  Please connect to a solana wallet
+                  Please connect to a Solana wallet
                 </TooltipContent>
               );
             }
@@ -190,7 +205,7 @@ function CreateCandidate() {
             ) {
               return (
                 <TooltipContent>
-                  Only admin can perform this action.
+                  Only admin can invoke this instruction.
                 </TooltipContent>
               );
             }
@@ -204,8 +219,8 @@ function CreateCandidate() {
             </HxuiButton>
           </TooltipTrigger>
           <TooltipContent>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. At,
-            dignissimos.
+            Create a new candidate with component metadata for users to vote
+            using HxUI or HxUI Lite tokens.
           </TooltipContent>
         </Tooltip>
       </HxuiButtonGroup>
@@ -235,6 +250,20 @@ function CreateCandidate() {
             </InputGroup>
             <FieldDescription>
               Name of the candidate component.
+            </FieldDescription>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="new-candidate-media">Media</FieldLabel>
+            <Input
+              value={newCandidateMeta.name
+                .toLocaleLowerCase()
+                .replaceAll(" ", "-")}
+              disabled
+              placeholder="new-component"
+              id="new-candidate-media"
+            />
+            <FieldDescription>
+              Ensure the media in the public directory.
             </FieldDescription>
           </Field>
           <Field>
@@ -269,23 +298,22 @@ function CreateCandidate() {
           <Field orientation="horizontal">
             <Switch
               id="is-new-candidate-claimable"
-              checked={newCandidateMeta.claimableIfWinner}
+              checked={newCandidateMeta.enableClaimBackOffer}
               onClick={() =>
                 setNewCandidateMeta((prev) => ({
                   ...prev,
-                  claimableIfWinner: !prev.claimableIfWinner,
+                  enableClaimBackOffer: !prev.enableClaimBackOffer,
                 }))
               }
             />
             <FieldContent>
               <FieldLabel htmlFor="is-new-candidate-claimable">
-                Avail claimable offer.
+                Enable claim-back offer.
               </FieldLabel>
               <FieldDescription>
-                If enabled, voters can claim 50% of tokens spent on voting this
-                candidate if this candidate wins. This can be used to create
-                voting pressure for this component. This offer can be availed
-                later as well by the admin.
+                Enable users to reclaim 50% of HxUI tokens spent if the
+                candidate is later selected as a winner. This offer can be
+                enabled later as well.
               </FieldDescription>
             </FieldContent>
           </Field>

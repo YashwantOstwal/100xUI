@@ -1,23 +1,15 @@
 "use client";
 
-import Button, {
+import {
   HxuiButton,
   HxuiButtonGroup,
 } from "@/components/www/file-explorer/button";
-import type { Candidate } from "@/clients/generated/hxui";
-import {
-  Field,
-  FieldDescription,
-  FieldLabel,
-  FieldGroup,
-} from "@/components/ui/field";
+import type { HxuiCandidate } from "@/clients/generated/hxui";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
-  InputGroupButton,
   InputGroupInput,
-  InputGroupText,
-  InputGroupTextarea,
 } from "@/components/ui/input-group";
 import {
   Popover,
@@ -31,57 +23,39 @@ import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSolanaClient } from "@/providers/solana-client";
 import { usePrivyAsSolanaWallet } from "@/providers/privy-as-solana-wallet";
-import bs58 from "bs58";
 import {
-  Account,
-  Address,
+  RegisterButton,
+  CreateHxuiTokenAccountButton,
+  UnregisterButton,
+  CancelUnregisterButton,
+  ClaimBackDepositButton,
+  UnregisterAndClaimbackDepositButton,
+} from "./register-for-free-tokens";
+import {
   address,
   appendTransactionMessageInstruction,
   appendTransactionMessageInstructions,
-  Base58EncodedBytes,
   compileTransaction,
   createNoopSigner,
   createTransactionMessage,
   getBase58Decoder,
-  getProgramDerivedAddress,
   getTransactionEncoder,
   Instruction,
-  isSolanaError,
-  lamports,
-  MaybeAccount,
   pipe,
   setTransactionMessageFeePayerSigner,
   setTransactionMessageLifetimeUsingBlockhash,
-  SOLANA_ERROR__ACCOUNTS__ACCOUNT_NOT_FOUND,
-  SOLANA_ERROR__TRANSACTION_ERROR__WOULD_EXCEED_MAX_VOTE_COST_LIMIT,
-  StringifiedNumber,
 } from "@solana/kit";
 
-import {
-  fetchMaybeToken,
-  fetchToken,
-  getCreateAssociatedTokenInstructionAsync,
-  Token,
-} from "@solana-program/token";
+import { getCreateAssociatedTokenInstructionAsync } from "@solana-program/token";
 import {
   CandidateStatus,
-  getBuyPaidTokensInstructionAsync,
-  getVoteCandidateInstructionAsync,
-  getVoteCandidateWithHxuiLiteInstructionAsync,
-  HXUI_ERROR__ONLY_ACTIVE_CANDIDATE_CAN_BE_VOTED,
-  HXUI_ERROR__VOTES_MUST_BE_GREATER_THAN0,
+  getBuyTokensInstructionAsync,
+  getVoteWithHxuiInstructionAsync,
+  getVoteWithHxuiLiteInstructionAsync,
 } from "@/clients/generated/hxui";
-import { Input } from "@/components/ui/input";
-import {
-  ButtonGroup,
-  ButtonGroupSeparator,
-  ButtonGroupText,
-} from "@/components/ui/button-group";
-import { Button as ShadcnButton } from "@/components/ui/button";
 import { run } from "@/utils";
 import { TOKEN_2022_PROGRAM_ADDRESS } from "@/clients/constants";
 import { getHxuiMintAddress, getHxuiTokenAddress } from "@/clients/pdas";
-import { isHxuiTokenAccountFound } from "@/clients/helpers";
 import { Checkbox } from "../../../../components/ui/checkbox";
 import { useHxuiTokenContext } from "../providers/hxui-token";
 import { cn } from "@/lib/utils";
@@ -95,7 +69,10 @@ import {
 } from "@/components/ui/tooltip";
 import { Spinner } from "@/components/ui/spinner";
 import { ChevronDownIcon, InfoIcon } from "lucide-react";
-export function VoteCandidate({ candidate }: { candidate: Candidate }) {
+import { toast } from "sonner";
+import { SolanaExplorerFull } from "@/icons/solana-explorer.icon";
+
+export function VoteCandidate({ candidate }: { candidate: HxuiCandidate }) {
   const { selectedWallet } = usePrivyAsSolanaWallet();
   const programAccounts = useProgramAccounts();
   const { isLoading: isHxuiTokenLoading } = useHxuiTokenContext();
@@ -106,7 +83,7 @@ export function VoteCandidate({ candidate }: { candidate: Candidate }) {
   const disabled =
     !selectedWallet ||
     accountsLoading ||
-    candidate.candidateStatus != CandidateStatus.Active;
+    candidate.status != CandidateStatus.Active;
   return (
     <Popover>
       <HxuiButtonGroup className="border-none">
@@ -114,13 +91,17 @@ export function VoteCandidate({ candidate }: { candidate: Candidate }) {
           <TooltipTrigger asChild>
             <span>
               <PopoverTrigger disabled={disabled} asChild>
-                <HxuiButton className="">
-                  Vote Candidate
-                  {accountsLoading ? (
-                    <Spinner className="size-4" />
-                  ) : (
-                    <ChevronDownIcon className="size-4" />
-                  )}
+                <HxuiButton>
+                  Vote candidate&nbsp;
+                  {run(() => {
+                    if (!selectedWallet) {
+                      return null;
+                    }
+                    if (accountsLoading) {
+                      return <Spinner className="size-4" />;
+                    }
+                    return <ChevronDownIcon className="size-4" />;
+                  })}
                 </HxuiButton>
               </PopoverTrigger>
             </span>
@@ -129,15 +110,16 @@ export function VoteCandidate({ candidate }: { candidate: Candidate }) {
             if (!selectedWallet) {
               return (
                 <TooltipContent>
-                  Please connect to a solana wallet
+                  Please connect to a Solana wallet.
                 </TooltipContent>
               );
             }
 
-            if (candidate.candidateStatus != CandidateStatus.Active) {
+            if (candidate.status !== CandidateStatus.Active) {
               return (
                 <TooltipContent>
-                  Only candidates with active status can be voted
+                  Only active candidate components are eligible to receive
+                  votes.
                 </TooltipContent>
               );
             }
@@ -149,9 +131,9 @@ export function VoteCandidate({ candidate }: { candidate: Candidate }) {
               <InfoIcon />
             </HxuiButton>
           </TooltipTrigger>
-          <TooltipContent>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim,
-            facere.
+          <TooltipContent className="max-w-100">
+            Cast your votes using HxUI tokens or HxUI Lite tokens. You may
+            allocate votes across any number of active candidates.
           </TooltipContent>
         </Tooltip>
       </HxuiButtonGroup>
@@ -163,25 +145,25 @@ export function VoteCandidate({ candidate }: { candidate: Candidate }) {
               <span className="font-medium capitalize">{candidate.name}</span>
             </PopoverTitle>
             <PopoverDescription>
-              Each vote requires {programAccounts.hxuiConfig.data.tokensPerVote}{" "}
-              tokens.
+              Each vote case requires{" "}
+              {programAccounts.hxuiConfig.data.tokensPerVote} tokens.
             </PopoverDescription>
           </PopoverHeader>
           <PopoverDescription></PopoverDescription>
           <Tabs defaultValue="100xui" className="space-y-2">
             <TabsList className="w-full" variant="line">
-              <TabsTrigger value="100xui">HXUI</TabsTrigger>
-              <TabsTrigger value="100xui-lite">HXUILite</TabsTrigger>
+              <TabsTrigger value="100xui">HxUI</TabsTrigger>
+              <TabsTrigger value="100xui-lite">HxUI Lite</TabsTrigger>
             </TabsList>
             <TabsContent value="100xui">
               {!programAccounts.isLoading && (
-                <Field className="flex h-40 flex-col justify-between gap-0">
+                <Field className="flex h-35 flex-col justify-between gap-0">
                   <VoteWithHxui candidate={candidate} />
                 </Field>
               )}
             </TabsContent>
             <TabsContent value="100xui-lite" className="">
-              <Field className="flex h-40 flex-col justify-between gap-0">
+              <Field className="flex flex-col justify-between gap-2">
                 <VoteWithHxuiLite candidate={candidate} />
               </Field>
             </TabsContent>
@@ -192,7 +174,7 @@ export function VoteCandidate({ candidate }: { candidate: Candidate }) {
   );
 }
 
-function VoteWithHxui({ candidate }: { candidate: Candidate }) {
+function VoteWithHxui({ candidate }: { candidate: HxuiCandidate }) {
   const programAccounts = useProgramAccounts();
   const client = useSolanaClient();
   const { selectedWallet, signAndSendTransaction } = usePrivyAsSolanaWallet();
@@ -217,13 +199,15 @@ function VoteWithHxui({ candidate }: { candidate: Candidate }) {
         "user accounts are loading. please wait and try again"
       );
 
-    if (candidate.candidateStatus != CandidateStatus.Active)
-      return console.error("Only active candidate can be voted");
-
-    if (voteAmount <= BigInt(0)) {
-      return console.error("Votes must be greater than 0");
+    if (candidate.status !== CandidateStatus.Active) {
+      return console.error(
+        "Only active candidate components are eligible to receive votes"
+      );
     }
 
+    if (voteAmount <= BigInt(0)) {
+      return console.error("You must cast one or more votes for the candidate");
+    }
     const selectedWalletAddress = address(selectedWallet.address);
     const selectedWalletSigner = createNoopSigner(selectedWalletAddress);
 
@@ -242,7 +226,7 @@ function VoteWithHxui({ candidate }: { candidate: Candidate }) {
           tokenProgram: TOKEN_2022_PROGRAM_ADDRESS,
         });
 
-      const buyTokensIx = await getBuyPaidTokensInstructionAsync({
+      const buyTokensIx = await getBuyTokensInstructionAsync({
         owner: selectedWalletSigner,
         amount: BigInt(
           voteAmount * programAccounts.hxuiConfig.data.tokensPerVote
@@ -254,7 +238,7 @@ function VoteWithHxui({ candidate }: { candidate: Candidate }) {
       hxuiToken.maybeHxuiTokenAccount.data.amount /
         programAccounts.hxuiConfig.data.tokensPerVote
     ) {
-      const buyTokensIx = await getBuyPaidTokensInstructionAsync({
+      const buyTokensIx = await getBuyTokensInstructionAsync({
         owner: selectedWalletSigner,
         amount: BigInt(
           voteAmount * programAccounts.hxuiConfig.data.tokensPerVote -
@@ -263,7 +247,7 @@ function VoteWithHxui({ candidate }: { candidate: Candidate }) {
       });
       ixs.push(buyTokensIx);
     }
-    const voteCandidateIx = await getVoteCandidateInstructionAsync({
+    const voteCandidateIx = await getVoteWithHxuiInstructionAsync({
       name: candidate.name,
       votes: voteAmount,
       owner: selectedWalletSigner,
@@ -285,18 +269,39 @@ function VoteWithHxui({ candidate }: { candidate: Candidate }) {
       (tx) => new Uint8Array(getTransactionEncoder().encode(tx))
     );
 
-    try {
-      const { signature } = await signAndSendTransaction({
+    toast.promise(
+      signAndSendTransaction({
         transaction: compiledAndEncodedTx,
         wallet: selectedWallet,
         options: { commitment: "confirmed" },
-      });
-      console.log(getBase58Decoder().decode(signature));
-      setIsMaxVotes(false);
-      setVoteAmount(BigInt(1));
-    } catch (err) {
-      console.error(err);
-    }
+      }),
+      {
+        loading: "Pending...",
+        success: ({ signature }) => {
+          setIsMaxVotes(false);
+          setVoteAmount(BigInt(1));
+          return (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className=""
+              href={`https://explorer.solana.com/tx/${getBase58Decoder().decode(signature)}?cluster=devnet`}
+            >
+              <div className="flex items-center gap-1 text-nowrap">
+                Transaction confirmed. View on
+                <SolanaExplorerFull className="w-30" />
+              </div>
+            </a>
+          );
+        },
+        error: (err) => {
+          console.error(err);
+          if (err?.message?.includes("rejected"))
+            return "Transaction rejected.";
+          return "Transaction failed to execute. Check the logs.";
+        },
+      }
+    );
   }
 
   useEffect(() => {
@@ -366,7 +371,7 @@ function VoteWithHxui({ candidate }: { candidate: Candidate }) {
             ) && "line-through"
           )}
         >
-          Create HXUI token account
+          Create HxUI token account
         </FieldLabel>
       </Field>
       <Field
@@ -421,10 +426,10 @@ function VoteWithHxui({ candidate }: { candidate: Candidate }) {
         <HxuiButton
           disabled={voteAmount == BigInt(0)}
           onClick={voteCandidate}
-          className="w-full disabled:opacity-50"
+          className="w-full"
         >
           {run(() => {
-            let actions: string[] = [];
+            const actions: string[] = [];
             if (
               voteAmount > BigInt(0) &&
               !hxuiToken.maybeHxuiTokenAccount.exists
@@ -450,7 +455,7 @@ function VoteWithHxui({ candidate }: { candidate: Candidate }) {
   );
 }
 
-function VoteWithHxuiLite({ candidate }: { candidate: Candidate }) {
+function VoteWithHxuiLite({ candidate }: { candidate: HxuiCandidate }) {
   const client = useSolanaClient();
   const { selectedWallet, signAndSendTransaction } = usePrivyAsSolanaWallet();
   const hxuiLiteToken = useHxuiLiteTokenContext();
@@ -464,7 +469,7 @@ function VoteWithHxuiLite({ candidate }: { candidate: Candidate }) {
       setVoteAmount(BigInt(0));
     };
   }, [selectedWallet?.address]);
-  async function voteCandidateWithHxuiLite() {
+  async function voteWithHxuiLite() {
     if (!selectedWallet)
       return console.error(
         "wallet not connected. please connect with your admin wallet to create a candidate"
@@ -482,11 +487,11 @@ function VoteWithHxuiLite({ candidate }: { candidate: Candidate }) {
 
     if (
       !hxuiLiteToken.maybeHxuiLiteTokenAccount.exists ||
-      !hxuiLiteToken.maybeRegistrationAccount.exists
+      !hxuiLiteToken.maybeFreeMintTrackerAccount.exists
     ) {
       return console.error("One of the required accounts does not exist");
     }
-    if (candidate.candidateStatus != CandidateStatus.Active)
+    if (candidate.status != CandidateStatus.Active)
       return console.error("Only active candidate can be voted");
 
     if (voteAmount <= BigInt(0)) {
@@ -497,13 +502,15 @@ function VoteWithHxuiLite({ candidate }: { candidate: Candidate }) {
       hxuiLiteToken.maybeHxuiLiteTokenAccount.data.amount /
         programAccounts.hxuiConfig.data.tokensPerVote
     ) {
-      return;
+      return console.error(
+        `Not enough HxUI Lite tokens to cast ${voteAmount} votes`
+      );
     }
 
     const selectedWalletAddress = address(selectedWallet.address);
     const selectedWalletSigner = createNoopSigner(selectedWalletAddress);
     const voteCandidateWithHxuiLiteIx =
-      await getVoteCandidateWithHxuiLiteInstructionAsync({
+      await getVoteWithHxuiLiteInstructionAsync({
         name: candidate.name,
         votes: voteAmount,
         owner: selectedWalletSigner,
@@ -525,26 +532,48 @@ function VoteWithHxuiLite({ candidate }: { candidate: Candidate }) {
       (tx) => new Uint8Array(getTransactionEncoder().encode(tx))
     );
 
-    try {
-      const { signature } = await signAndSendTransaction({
+    toast.promise(
+      signAndSendTransaction({
         transaction: compiledAndEncodedTx,
         wallet: selectedWallet,
         options: { commitment: "confirmed" },
-      });
-      console.log(getBase58Decoder().decode(signature));
-      setIsMaxVotes(false);
-      setVoteAmount(BigInt(0));
-    } catch (err) {
-      console.error(err);
-    }
+      }),
+      {
+        loading: "Pending...",
+        success: ({ signature }) => {
+          setIsMaxVotes(false);
+          setVoteAmount(BigInt(0));
+          return (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className=""
+              href={`https://explorer.solana.com/tx/${getBase58Decoder().decode(signature)}?cluster=devnet`}
+            >
+              <div className="flex items-center gap-1 text-nowrap">
+                Transaction confirmed. View on
+                <SolanaExplorerFull className="w-30" />
+              </div>
+            </a>
+          );
+        },
+        error: (err) => {
+          console.error(err);
+          if (err?.message?.includes("rejected"))
+            return "Transaction rejected.";
+          return "Transaction failed to execute. Check the logs.";
+        },
+      }
+    );
   }
+
   if (hxuiLiteToken.isLoading || programAccounts.isLoading) {
     return null;
   }
-
   if (
     hxuiLiteToken.maybeHxuiLiteTokenAccount.exists &&
-    hxuiLiteToken.maybeRegistrationAccount.exists
+    hxuiLiteToken.maybeFreeMintTrackerAccount.exists &&
+    !hxuiLiteToken.maybeFreeMintTrackerAccount.data.unregistered
   ) {
     return (
       <>
@@ -567,12 +596,6 @@ function VoteWithHxuiLite({ candidate }: { candidate: Candidate }) {
                 <Switch
                   id="max-votes"
                   checked={isMaxVotes}
-                  // disabled={
-                  //   hxuiLiteToken.maybeHxuiLiteTokenAccount.exists &&
-                  //   hxuiLiteToken.maybeHxuiLiteTokenAccount.data.amount /
-                  //                           programAccounts.hxuiConfig.data.tokensPerVote
-                  //     1
-                  // }
                   onClick={() => {
                     setIsMaxVotes((prev) => !prev);
                     if (hxuiLiteToken.maybeHxuiLiteTokenAccount.exists) {
@@ -587,14 +610,14 @@ function VoteWithHxuiLite({ candidate }: { candidate: Candidate }) {
             </InputGroupAddon>
           </InputGroup>
           <FieldDescription>
-            Add 100xUI components using shadcn CLI to earn Hxui lite tokens.
+            Add 100xUI components using shadcn CLI to earn HxUI Lite tokens.
           </FieldDescription>
         </Field>
         <Field>
           <HxuiButton
             className="w-full"
             disabled={voteAmount == BigInt(0)}
-            onClick={voteCandidateWithHxuiLite}
+            onClick={voteWithHxuiLite}
           >
             Vote: {voteAmount}
           </HxuiButton>
@@ -602,13 +625,74 @@ function VoteWithHxuiLite({ candidate }: { candidate: Candidate }) {
       </>
     );
   }
+  if (!hxuiLiteToken.maybeFreeMintTrackerAccount.exists) {
+    return (
+      <>
+        <PopoverDescription className="text-sm">
+          Complete registration to start minting free HxUI Lite tokens by adding
+          100xUI components to your project via the shadcn CLI.
+        </PopoverDescription>
+        <Field>
+          <Field
+            orientation="horizontal"
+            // data-disabled
+          >
+            <Checkbox
+              id="free-mint-tracker-account"
+              name="free-mint-tracker-account"
+              checked={!hxuiLiteToken.maybeFreeMintTrackerAccount.exists}
+            />
+            <FieldLabel htmlFor="free-mint-tracker-account ">
+              Registration deposit of 0.00101616 SOL (redeemable)
+            </FieldLabel>
+          </Field>
+          <Field
+            orientation="horizontal"
+            // data-disabled
+          >
+            <Checkbox
+              id="hxui-lite-token-account"
+              name="hxui-lite-token-account"
+              disabled={hxuiLiteToken.maybeHxuiLiteTokenAccount.exists}
+              checked={!hxuiLiteToken.maybeHxuiLiteTokenAccount.exists}
+            />
+            <FieldLabel
+              htmlFor="hxui-lite-token-account"
+              className={cn(
+                "whitespace-nowrap",
+                hxuiLiteToken.maybeHxuiLiteTokenAccount.exists && "line-through"
+              )}
+            >
+              Create HxUI Lite token account
+            </FieldLabel>
+          </Field>
+          <Field>
+            <RegisterButton />
+          </Field>
+        </Field>
+      </>
+    );
+  }
+  // control reaches here when free mint tracker account exists.
+  if (
+    hxuiLiteToken.maybeFreeMintTrackerAccount.exists &&
+    hxuiLiteToken.maybeFreeMintTrackerAccount.data.unregistered
+  ) {
+    return (
+      <>
+        <CancelUnregisterButton />
+        <ClaimBackDepositButton />
+      </>
+    );
+  }
 
   return (
-    <div className="h-40">
-      <PopoverDescription className="text-sm">
-        Please complete the regisration process and earn tokens by adding 100xUI
-        components to your project using shadcn CLI.
-      </PopoverDescription>
-    </div>
+    <>
+      {!hxuiLiteToken.maybeHxuiLiteTokenAccount.exists && (
+        <CreateHxuiTokenAccountButton />
+      )}
+      <UnregisterButton />
+      <UnregisterAndClaimbackDepositButton />
+    </>
   );
 }

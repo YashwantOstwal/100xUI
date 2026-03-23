@@ -2,7 +2,6 @@
 
 import { InfoIcon, RefreshCcwIcon } from "lucide-react";
 import { useSolanaClient } from "@/providers/solana-client";
-import Button from "../../../../components/www/file-explorer/button";
 import { usePrivyAsSolanaWallet } from "@/providers/privy-as-solana-wallet";
 import {
   Tooltip,
@@ -10,26 +9,19 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
-  Address,
   address,
-  appendTransactionMessageInstructions,
-  Base58EncodedBytes,
   compileTransaction,
   createNoopSigner,
   createTransactionMessage,
-  getProgramDerivedAddress,
   getTransactionEncoder,
   pipe,
   setTransactionMessageFeePayerSigner,
   setTransactionMessageLifetimeUsingBlockhash,
-  SOLANA_ERROR__ACCOUNTS__ACCOUNT_NOT_FOUND,
   getBase58Decoder,
-  StringifiedNumber,
-  getBase64Encoder,
   appendTransactionMessageInstruction,
 } from "@solana/kit";
 import {
-  Candidate,
+  HxuiCandidate,
   CandidateStatus,
   getCloseCandidateInstructionAsync,
 } from "@/clients/generated/hxui";
@@ -40,31 +32,64 @@ import {
 } from "@/components/www/file-explorer/button";
 import { useProgramAccounts } from "../providers/program-accounts";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
+import { SolanaExplorerFull } from "@/icons/solana-explorer.icon";
+import { useTimeContext } from "../providers/time";
 
-export function CloseCandidate({ candidate }: { candidate: Candidate }) {
+export function CloseCandidate({ candidate }: { candidate: HxuiCandidate }) {
   const client = useSolanaClient();
   const { selectedWallet, signAndSendTransaction } = usePrivyAsSolanaWallet();
+  const { timeNow, reload } = useTimeContext();
   const programAccounts = useProgramAccounts();
   async function closeCandidate() {
-    if (!selectedWallet)
+    if (!selectedWallet) {
       return console.error(
-        "wallet not connected. please connect with your admin wallet to create a candidate"
+        "Wallet not connected. Please connect with the admin wallet to close this candidate component."
       );
-
-    if (programAccounts.isLoading)
-      return console.error(
-        "program accounts are loading. please wait and try again"
-      );
-    const selectedWalletAddress = address(selectedWallet.address);
-    if (programAccounts.hxuiConfig.data.admin !== selectedWalletAddress)
-      return console.error("only admin can create candidate");
-
-    if (candidate.candidateStatus === CandidateStatus.Active) {
-      return console.error("Only non active candidates can be closed.");
     }
 
-    if (candidate.totalReceipts !== BigInt(0)) {
-      return console.error("");
+    if (programAccounts.isLoading) {
+      return console.error(
+        "Program accounts are loading. Please wait and try again."
+      );
+    }
+
+    const selectedWalletAddress = address(selectedWallet.address);
+    if (programAccounts.hxuiConfig.data.admin !== selectedWalletAddress) {
+      return console.error(
+        "Unauthorized: Only the delegated admin can permanently close a candidate component."
+      );
+    }
+
+    if (candidate.status === CandidateStatus.Active) {
+      return console.error(
+        "Invalid Status: Only non-active candidate components can be permanently closed."
+      );
+    }
+
+    // Comprehensive checks for why receipts might still exist
+    if (candidate.receiptCount !== BigInt(0)) {
+      if (candidate.claimDeadline > timeNow) {
+        return console.error(
+          `Cannot close: The claim-back window is currently active. Please wait until ${
+            new Date(Number(candidate.claimDeadline) * 1000).toLocaleString
+          } to clear the remaining vote receipt accounts.`
+        );
+      }
+
+      if (
+        candidate.claimDeadline === BigInt(0) &&
+        (candidate.status === CandidateStatus.Withdrawn ||
+          candidate.claimBackOffer)
+      ) {
+        return console.error(
+          "Cannot close: A claim-back window must be opened first to allow users to reclaim their tokens."
+        );
+      }
+
+      return console.error(
+        `Cannot close: There are ${candidate.receiptCount.toLocaleString} associated vote receipt accounts remaining. Please clear them using the close_vote_receipt instruction first.`
+      );
     }
 
     const adminSigner = createNoopSigner(selectedWalletAddress);
@@ -88,26 +113,45 @@ export function CloseCandidate({ candidate }: { candidate: Candidate }) {
       (tx) => new Uint8Array(getTransactionEncoder().encode(tx))
     );
 
-    try {
-      const { signature } = await signAndSendTransaction({
+    toast.promise(
+      signAndSendTransaction({
         transaction: compiledAndEncodedTx,
         wallet: selectedWallet,
         options: { commitment: "confirmed" },
-      });
-      console.log(getBase58Decoder().decode(signature));
-    } catch (err) {
-      if (err instanceof Error) {
-        console.log(err.message);
+      }),
+      {
+        loading: "Pending...",
+        success: ({ signature }) => {
+          return (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className=""
+              href={`https://explorer.solana.com/tx/${getBase58Decoder().decode(signature)}?cluster=devnet`}
+            >
+              <div className="flex items-center gap-1 text-nowrap">
+                Transaction confirmed. View on
+                <SolanaExplorerFull className="w-30" />
+              </div>
+            </a>
+          );
+        },
+        error: (err) => {
+          console.error(err);
+          if (err?.message?.includes("rejected"))
+            return "Transaction rejected.";
+          return "Transaction failed to execute. Check the logs.";
+        },
       }
-    }
+    );
   }
 
   const disabled =
     !selectedWallet ||
     programAccounts.isLoading ||
     selectedWallet.address !== programAccounts.hxuiConfig.data.admin ||
-    candidate.candidateStatus == CandidateStatus.Active ||
-    candidate.totalReceipts !== BigInt(0);
+    candidate.status == CandidateStatus.Active ||
+    candidate.receiptCount !== BigInt(0);
 
   return (
     <HxuiButtonGroup className="border-none">
@@ -115,7 +159,7 @@ export function CloseCandidate({ candidate }: { candidate: Candidate }) {
         <TooltipTrigger asChild>
           <span>
             <HxuiButton onClick={closeCandidate} disabled={disabled}>
-              Close candidate.
+              Close candidate
               {programAccounts.isLoading ? (
                 <Spinner className="size-4" />
               ) : null}
@@ -125,7 +169,9 @@ export function CloseCandidate({ candidate }: { candidate: Candidate }) {
         {run(() => {
           if (!selectedWallet) {
             return (
-              <TooltipContent>Please connect to admin wallet.</TooltipContent>
+              <TooltipContent>
+                Please connect to the admin wallet.
+              </TooltipContent>
             );
           }
 
@@ -133,37 +179,79 @@ export function CloseCandidate({ candidate }: { candidate: Candidate }) {
             return null;
           }
 
-          if (selectedWallet.address != programAccounts.hxuiConfig.data.admin) {
+          if (
+            selectedWallet.address !== programAccounts.hxuiConfig.data.admin
+          ) {
             return (
               <TooltipContent>
-                Only admin can perform this action.
+                Only the delegated admin can perform this instruction. Request
+                admin access to continue.
               </TooltipContent>
             );
           }
 
-          if (candidate.candidateStatus == CandidateStatus.Active) {
+          if (candidate.status === CandidateStatus.Active) {
             return (
               <TooltipContent>
-                Only non active candidates can be closed.
+                Only non-active candidate components can be permanently closed.
               </TooltipContent>
             );
           }
-          if (candidate.totalReceipts !== BigInt(0)) {
+
+          if (candidate.receiptCount !== BigInt(0)) {
+            if (candidate.claimDeadline >= timeNow) {
+              return (
+                <TooltipContent className="max-w-80">
+                  The claim-back window is currently active. Please wait until
+                  it closes on{" "}
+                  {new Date(
+                    Number(candidate.claimDeadline) * 1000
+                  ).toLocaleString()}{" "}
+                  to close the remaining vote receipt accounts.
+                </TooltipContent>
+              );
+            }
+
+            if (
+              candidate.claimDeadline === BigInt(0) &&
+              (candidate.status === CandidateStatus.Withdrawn ||
+                candidate.status === CandidateStatus.ClaimableWinner)
+            ) {
+              return (
+                <TooltipContent>
+                  A claim-back window must be opened first to allow users to
+                  reclaim their HxUI tokens.
+                </TooltipContent>
+              );
+            }
+
+            const isSingular = candidate.receiptCount === BigInt(1);
             return (
-              <TooltipContent>
-                This candidate has non zero receipts.
+              <TooltipContent className="max-w-80">
+                Cannot close: There{" "}
+                {isSingular
+                  ? "is 1"
+                  : `are ${candidate.receiptCount.toString()}`}{" "}
+                associated vote receipt account{isSingular ? "" : "s"}{" "}
+                remaining. Please clear {isSingular ? "it" : "them"} first.
               </TooltipContent>
             );
           }
         })}
       </Tooltip>
+      <HxuiButton onClick={reload}>
+        <RefreshCcwIcon />
+      </HxuiButton>
       <Tooltip delayDuration={250}>
         <TooltipTrigger asChild>
           <HxuiButton>
             <InfoIcon />
           </HxuiButton>
         </TooltipTrigger>
-        <TooltipContent>Close candidate.</TooltipContent>
+        <TooltipContent>
+          Permanently closes a non-active candidate component, clearing its
+          state and reclaiming the rent-exempt balance back to the HxUI vault..
+        </TooltipContent>
       </Tooltip>
     </HxuiButtonGroup>
   );

@@ -1,5 +1,5 @@
 {
-  "address": "6jVyroPEKqPgGv7uaHZpQ3Enqriyy1MXG7pcdLTud3mP",
+  "address": "FrcnG1KDPhPqcVaAeLu6DiB5FvZBvvqqxNn5KR8wMBct",
   "metadata": {
     "name": "hxui",
     "version": "0.1.0",
@@ -8,16 +8,16 @@
   },
   "instructions": [
     {
-      "name": "buy_paid_tokens",
+      "name": "buy_tokens",
       "discriminator": [
-        197,
-        157,
-        64,
+        189,
+        21,
+        230,
+        133,
         247,
-        113,
-        135,
-        56,
-        203
+        2,
+        110,
+        42
       ],
       "accounts": [
         {
@@ -171,16 +171,16 @@
       ]
     },
     {
-      "name": "cancel_unregister_for_free_tokens",
+      "name": "cancel_deregister_from_free_mint",
       "discriminator": [
+        170,
+        73,
+        45,
+        237,
         9,
-        14,
-        125,
-        102,
-        173,
-        87,
-        156,
-        148
+        224,
+        226,
+        125
       ],
       "accounts": [
         {
@@ -188,29 +188,30 @@
           "signer": true
         },
         {
-          "name": "hxui_lite_minted_timestamp",
+          "name": "free_mint_tracker",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
+                  102,
+                  114,
+                  101,
+                  101,
+                  95,
                   109,
                   105,
                   110,
                   116,
-                  101,
-                  100,
                   95,
                   116,
-                  105,
-                  109,
-                  101,
-                  115,
-                  116,
+                  114,
                   97,
-                  109,
-                  112
+                  99,
+                  107,
+                  101,
+                  114
                 ]
               },
               {
@@ -224,70 +225,16 @@
       "args": []
     },
     {
-      "name": "claim_registration_fees",
+      "name": "claim_back_tokens",
       "discriminator": [
-        62,
-        63,
-        142,
-        236,
+        245,
+        214,
+        168,
+        117,
+        124,
         59,
-        79,
-        44,
-        192
-      ],
-      "accounts": [
-        {
-          "name": "owner",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "hxui_lite_minted_timestamp",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  105,
-                  110,
-                  116,
-                  101,
-                  100,
-                  95,
-                  116,
-                  105,
-                  109,
-                  101,
-                  115,
-                  116,
-                  97,
-                  109,
-                  112
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "owner"
-              }
-            ]
-          }
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "claim_tokens",
-      "discriminator": [
-        108,
-        216,
-        210,
-        231,
-        0,
-        212,
-        42,
-        64
+        50,
+        18
       ],
       "accounts": [
         {
@@ -477,16 +424,150 @@
       ]
     },
     {
-      "name": "clear_receipt",
+      "name": "claim_registration_deposit",
       "discriminator": [
-        112,
+        204,
+        150,
+        17,
+        4,
+        148,
+        160,
+        151,
+        176
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "free_mint_tracker",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  114,
+                  101,
+                  101,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116,
+                  95,
+                  116,
+                  114,
+                  97,
+                  99,
+                  107,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "close_candidate",
+      "discriminator": [
+        241,
+        131,
+        80,
+        29,
+        254,
+        200,
+        56,
+        131
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true
+        },
+        {
+          "name": "hxui_candidate",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  120,
+                  117,
+                  105,
+                  95,
+                  99,
+                  97,
+                  110,
+                  100,
+                  105,
+                  100,
+                  97,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "name"
+              }
+            ]
+          }
+        },
+        {
+          "name": "hxui_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  120,
+                  117,
+                  105,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "_name",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "close_vote_receipt",
+      "discriminator": [
         245,
-        82,
-        68,
-        157,
-        72,
-        8,
-        16
+        52,
+        25,
+        255,
+        206,
+        109,
+        60,
+        162
       ],
       "accounts": [
         {
@@ -586,85 +667,6 @@
       ]
     },
     {
-      "name": "close_candidate",
-      "discriminator": [
-        241,
-        131,
-        80,
-        29,
-        254,
-        200,
-        56,
-        131
-      ],
-      "accounts": [
-        {
-          "name": "admin",
-          "signer": true
-        },
-        {
-          "name": "hxui_candidate",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  104,
-                  120,
-                  117,
-                  105,
-                  95,
-                  99,
-                  97,
-                  110,
-                  100,
-                  105,
-                  100,
-                  97,
-                  116,
-                  101
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "name"
-              }
-            ]
-          }
-        },
-        {
-          "name": "hxui_vault",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  104,
-                  120,
-                  117,
-                  105,
-                  95,
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
-              }
-            ]
-          }
-        }
-      ],
-      "args": [
-        {
-          "name": "_name",
-          "type": "string"
-        }
-      ]
-    },
-    {
       "name": "create_candidate",
       "discriminator": [
         60,
@@ -740,7 +742,7 @@
           }
         },
         {
-          "name": "hxui_poll",
+          "name": "hxui_drop_time",
           "writable": true,
           "pda": {
             "seeds": [
@@ -752,10 +754,15 @@
                   117,
                   105,
                   95,
-                  112,
+                  100,
+                  114,
                   111,
-                  108,
-                  108
+                  112,
+                  95,
+                  116,
+                  105,
+                  109,
+                  101
                 ]
               }
             ]
@@ -780,88 +787,64 @@
           "type": "string"
         },
         {
-          "name": "claimable_if_winner",
+          "name": "enable_claim_back_offer",
           "type": "bool"
         }
       ]
     },
     {
-      "name": "create_poll",
+      "name": "deregister_from_free_mint",
       "discriminator": [
-        182,
-        171,
-        112,
-        238,
-        6,
-        219,
-        14,
-        110
+        202,
+        48,
+        173,
+        150,
+        229,
+        215,
+        24,
+        63
       ],
       "accounts": [
         {
-          "name": "admin",
-          "writable": true,
-          "signer": true,
-          "relations": [
-            "hxui_config"
-          ]
+          "name": "owner",
+          "signer": true
         },
         {
-          "name": "hxui_config",
+          "name": "free_mint_tracker",
+          "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  104,
-                  120,
-                  117,
-                  105,
-                  95,
-                  99,
-                  111,
-                  110,
                   102,
-                  105,
-                  103
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "hxui_poll",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  104,
-                  120,
-                  117,
-                  105,
+                  114,
+                  101,
+                  101,
                   95,
-                  112,
-                  111,
-                  108,
-                  108
+                  109,
+                  105,
+                  110,
+                  116,
+                  95,
+                  116,
+                  114,
+                  97,
+                  99,
+                  107,
+                  101,
+                  114
                 ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
               }
             ]
           }
-        },
-        {
-          "name": "system_program",
-          "address": "11111111111111111111111111111111"
         }
       ],
-      "args": [
-        {
-          "name": "poll_deadline",
-          "type": "i64"
-        }
-      ]
+      "args": []
     },
     {
       "name": "draw_winner",
@@ -900,7 +883,7 @@
           }
         },
         {
-          "name": "hxui_poll",
+          "name": "hxui_drop_time",
           "writable": true,
           "pda": {
             "seeds": [
@@ -912,10 +895,15 @@
                   117,
                   105,
                   95,
-                  112,
+                  100,
+                  114,
                   111,
-                  108,
-                  108
+                  112,
+                  95,
+                  116,
+                  105,
+                  109,
+                  101
                 ]
               }
             ]
@@ -923,6 +911,88 @@
         }
       ],
       "args": []
+    },
+    {
+      "name": "enable_claim_back_offer",
+      "discriminator": [
+        86,
+        28,
+        24,
+        50,
+        186,
+        236,
+        60,
+        181
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "hxui_config"
+          ]
+        },
+        {
+          "name": "hxui_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  120,
+                  117,
+                  105,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "hxui_candidate",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  120,
+                  117,
+                  105,
+                  95,
+                  99,
+                  97,
+                  110,
+                  100,
+                  105,
+                  100,
+                  97,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "name"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "_name",
+          "type": "string"
+        }
+      ]
     },
     {
       "name": "get_admin_access_for_testing",
@@ -969,16 +1039,16 @@
       "args": []
     },
     {
-      "name": "initialise_dapp",
+      "name": "init_dui",
       "discriminator": [
-        231,
-        147,
-        28,
-        144,
-        88,
-        3,
-        139,
-        81
+        238,
+        245,
+        228,
+        90,
+        54,
+        106,
+        213,
+        97
       ],
       "accounts": [
         {
@@ -1087,7 +1157,7 @@
           }
         },
         {
-          "name": "free_tokens_counter",
+          "name": "hxui_free_mint_counter",
           "writable": true,
           "pda": {
             "seeds": [
@@ -1104,12 +1174,10 @@
                   101,
                   101,
                   95,
-                  116,
-                  111,
-                  107,
-                  101,
+                  109,
+                  105,
                   110,
-                  115,
+                  116,
                   95,
                   99,
                   111,
@@ -1118,6 +1186,33 @@
                   116,
                   101,
                   114
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "hxui_drop_time",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  120,
+                  117,
+                  105,
+                  95,
+                  100,
+                  114,
+                  111,
+                  112,
+                  95,
+                  116,
+                  105,
+                  109,
+                  101
                 ]
               }
             ]
@@ -1140,6 +1235,18 @@
         {
           "name": "tokens_per_vote",
           "type": "u64"
+        },
+        {
+          "name": "free_tokens_per_mint",
+          "type": "u64"
+        },
+        {
+          "name": "free_mints_per_epoch",
+          "type": "u64"
+        },
+        {
+          "name": "free_mint_cool_down",
+          "type": "i64"
         }
       ]
     },
@@ -1162,6 +1269,29 @@
         {
           "name": "lite_authority",
           "signer": true
+        },
+        {
+          "name": "hxui_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  120,
+                  117,
+                  105,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
         },
         {
           "name": "hxui_lite_token_account",
@@ -1248,29 +1378,30 @@
           }
         },
         {
-          "name": "hxui_lite_minted_timestamp",
+          "name": "free_mint_tracker",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
+                  102,
+                  114,
+                  101,
+                  101,
+                  95,
                   109,
                   105,
                   110,
                   116,
-                  101,
-                  100,
                   95,
                   116,
-                  105,
-                  109,
-                  101,
-                  115,
-                  116,
+                  114,
                   97,
-                  109,
-                  112
+                  99,
+                  107,
+                  101,
+                  114
                 ]
               },
               {
@@ -1281,7 +1412,7 @@
           }
         },
         {
-          "name": "free_tokens_counter",
+          "name": "hxui_free_mint_counter",
           "writable": true,
           "pda": {
             "seeds": [
@@ -1298,12 +1429,10 @@
                   101,
                   101,
                   95,
-                  116,
-                  111,
-                  107,
-                  101,
+                  109,
+                  105,
                   110,
-                  115,
+                  116,
                   95,
                   99,
                   111,
@@ -1329,16 +1458,16 @@
       "args": []
     },
     {
-      "name": "open_claimable_window",
+      "name": "open_claim_back_window",
       "discriminator": [
-        110,
-        179,
-        50,
-        50,
-        30,
-        33,
-        4,
-        16
+        245,
+        12,
+        40,
+        222,
+        228,
+        206,
+        176,
+        145
       ],
       "accounts": [
         {
@@ -1433,29 +1562,30 @@
           "signer": true
         },
         {
-          "name": "hxui_lite_minted_timestamp",
+          "name": "free_mint_tracker",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
+                  102,
+                  114,
+                  101,
+                  101,
+                  95,
                   109,
                   105,
                   110,
                   116,
-                  101,
-                  100,
                   95,
                   116,
-                  105,
-                  109,
-                  101,
-                  115,
-                  116,
+                  114,
                   97,
-                  109,
-                  112
+                  99,
+                  107,
+                  101,
+                  114
                 ]
               },
               {
@@ -1473,16 +1603,16 @@
       "args": []
     },
     {
-      "name": "safe_withdraw_from_vault",
+      "name": "set_drop_time",
       "discriminator": [
-        242,
-        96,
-        201,
-        99,
-        5,
-        87,
-        227,
-        150
+        151,
+        152,
+        190,
+        17,
+        230,
+        185,
+        138,
+        158
       ],
       "accounts": [
         {
@@ -1517,7 +1647,7 @@
           }
         },
         {
-          "name": "hxui_vault",
+          "name": "hxui_drop_time",
           "writable": true,
           "pda": {
             "seeds": [
@@ -1529,189 +1659,31 @@
                   117,
                   105,
                   95,
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "hxui_mint",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  104,
-                  120,
-                  117,
-                  105,
-                  95,
-                  109,
-                  105,
-                  110,
-                  116
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "system_program",
-          "address": "11111111111111111111111111111111"
-        },
-        {
-          "name": "token_program",
-          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
-        }
-      ],
-      "args": [
-        {
-          "name": "amount",
-          "type": {
-            "option": "u64"
-          }
-        }
-      ]
-    },
-    {
-      "name": "set_claim_back_offer",
-      "discriminator": [
-        60,
-        7,
-        53,
-        248,
-        86,
-        150,
-        79,
-        64
-      ],
-      "accounts": [
-        {
-          "name": "admin",
-          "signer": true,
-          "relations": [
-            "hxui_config"
-          ]
-        },
-        {
-          "name": "hxui_config",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  104,
-                  120,
-                  117,
-                  105,
-                  95,
-                  99,
+                  100,
+                  114,
                   111,
-                  110,
-                  102,
-                  105,
-                  103
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "hxui_candidate",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  104,
-                  120,
-                  117,
-                  105,
+                  112,
                   95,
-                  99,
-                  97,
-                  110,
-                  100,
-                  105,
-                  100,
-                  97,
                   116,
+                  105,
+                  109,
                   101
                 ]
-              },
-              {
-                "kind": "arg",
-                "path": "name"
               }
             ]
           }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
-          "name": "_name",
-          "type": "string"
+          "name": "new_drop_time",
+          "type": "i64"
         }
       ]
-    },
-    {
-      "name": "unregister_for_free_tokens",
-      "discriminator": [
-        198,
-        146,
-        186,
-        121,
-        212,
-        153,
-        170,
-        55
-      ],
-      "accounts": [
-        {
-          "name": "owner",
-          "signer": true
-        },
-        {
-          "name": "hxui_lite_minted_timestamp",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  105,
-                  110,
-                  116,
-                  101,
-                  100,
-                  95,
-                  116,
-                  105,
-                  109,
-                  101,
-                  115,
-                  116,
-                  97,
-                  109,
-                  112
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "owner"
-              }
-            ]
-          }
-        }
-      ],
-      "args": []
     },
     {
       "name": "update_config",
@@ -1779,16 +1751,16 @@
       ]
     },
     {
-      "name": "vote_candidate",
+      "name": "vote_with_hxui",
       "discriminator": [
-        66,
-        238,
-        61,
-        153,
-        143,
-        252,
-        82,
-        173
+        34,
+        91,
+        124,
+        240,
+        175,
+        164,
+        150,
+        83
       ],
       "accounts": [
         {
@@ -2009,16 +1981,16 @@
       ]
     },
     {
-      "name": "vote_candidate_with_hxui_lite",
+      "name": "vote_with_hxui_lite",
       "discriminator": [
-        176,
-        241,
-        219,
-        38,
-        16,
-        110,
-        25,
-        102
+        140,
+        236,
+        196,
+        225,
+        31,
+        21,
+        63,
+        96
       ],
       "accounts": [
         {
@@ -2236,7 +2208,7 @@
           }
         },
         {
-          "name": "hxui_poll",
+          "name": "hxui_drop_time",
           "writable": true,
           "pda": {
             "seeds": [
@@ -2248,10 +2220,15 @@
                   117,
                   105,
                   95,
-                  112,
+                  100,
+                  114,
                   111,
-                  108,
-                  108
+                  112,
+                  95,
+                  116,
+                  105,
+                  109,
+                  101
                 ]
               }
             ]
@@ -2264,72 +2241,178 @@
           "type": "string"
         }
       ]
+    },
+    {
+      "name": "withdraw_vault_funds",
+      "discriminator": [
+        230,
+        233,
+        148,
+        2,
+        238,
+        220,
+        211,
+        165
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "hxui_config"
+          ]
+        },
+        {
+          "name": "hxui_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  120,
+                  117,
+                  105,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "hxui_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  120,
+                  117,
+                  105,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "hxui_mint",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  120,
+                  117,
+                  105,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": {
+            "option": "u64"
+          }
+        }
+      ]
     }
   ],
   "accounts": [
     {
-      "name": "Candidate",
+      "name": "FreeMintTracker",
       "discriminator": [
-        86,
-        69,
-        250,
-        96,
-        193,
-        10,
-        222,
-        123
+        154,
+        39,
+        247,
+        152,
+        107,
+        25,
+        205,
+        31
       ]
     },
     {
-      "name": "Config",
+      "name": "HxuiCandidate",
       "discriminator": [
-        155,
-        12,
-        170,
-        224,
-        30,
-        250,
-        204,
-        130
+        152,
+        175,
+        197,
+        23,
+        189,
+        196,
+        68,
+        107
       ]
     },
     {
-      "name": "FreeTokenTimestamp",
+      "name": "HxuiConfig",
       "discriminator": [
-        158,
-        55,
-        207,
-        123,
-        137,
-        72,
-        226,
-        252
-      ]
-    },
-    {
-      "name": "FreeTokensCounter",
-      "discriminator": [
-        9,
-        155,
-        140,
+        161,
+        48,
+        138,
         29,
-        174,
-        105,
-        224,
-        202
+        9,
+        219,
+        43,
+        141
       ]
     },
     {
-      "name": "Poll",
+      "name": "HxuiDropTime",
       "discriminator": [
-        110,
-        234,
-        167,
-        188,
-        231,
-        136,
-        153,
-        111
+        181,
+        242,
+        79,
+        221,
+        51,
+        189,
+        224,
+        62
+      ]
+    },
+    {
+      "name": "HxuiFreeMintCounter",
+      "discriminator": [
+        157,
+        233,
+        119,
+        116,
+        10,
+        148,
+        165,
+        239
       ]
     },
     {
@@ -2349,33 +2432,33 @@
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidDeadline",
-      "msg": "The deadline must be in future"
+      "name": "InvalidDropTime",
+      "msg": "The drop time must be set in the future."
     },
     {
       "code": 6001,
-      "name": "PollIsLive",
-      "msg": "Cannot pick winner before the poll is ended"
+      "name": "DrawTimeNotReached",
+      "msg": "A winner can only be drawn after the scheduled draw time has passed."
     },
     {
       "code": 6002,
-      "name": "WinnerNotDrawn",
-      "msg": "Winner is not drawn for the current poll"
+      "name": "PendingWinnerDraw",
+      "msg": "Draw winner for current cycle before setting a new drop time."
     },
     {
       "code": 6003,
-      "name": "RateLimitExceeded",
-      "msg": "Only one token can be minted per 12 hours."
+      "name": "MintCooldownActive",
+      "msg": "Maximum tokens have already been minted. Please try again after the free mint cooldown."
     },
     {
       "code": 6004,
       "name": "NameTooLong",
-      "msg": "Name must not be greater than 32 characters"
+      "msg": "Candidate name should be less than or equal to 32 characters"
     },
     {
       "code": 6005,
       "name": "DescriptionTooLong",
-      "msg": "Description must not be greater than 280 characters"
+      "msg": "Candidate description should be less than or equal to 32 characters"
     },
     {
       "code": 6006,
@@ -2395,22 +2478,22 @@
     {
       "code": 6009,
       "name": "CandidateAlreadyAWinner",
-      "msg": "The candidate is already a winner."
+      "msg": "This candidate is already a winner."
     },
     {
       "code": 6010,
       "name": "CandidateIsNoLongerVotable",
-      "msg": "Candidate is already withdrawn or is a winner."
+      "msg": "Only active candidates can be voted."
     },
     {
       "code": 6011,
       "name": "UnclaimableYet",
-      "msg": "The registration fees can be claimed only after 12 hours of unregistration."
+      "msg": "The registration fees can only be claimed free mint cooldown."
     },
     {
       "code": 6012,
       "name": "AlreadyUnregistered",
-      "msg": "Already unregistered."
+      "msg": "User have already unregistered."
     },
     {
       "code": 6013,
@@ -2420,32 +2503,32 @@
     {
       "code": 6014,
       "name": "WinnerForCurrentPollAlreadyDrawn",
-      "msg": "Winner for current poll is already drawn."
+      "msg": "Only one winner can be drawn in each cycle. set a new drop time and draw a winer after the drop time."
     },
     {
       "code": 6015,
       "name": "UnregisterFirst",
-      "msg": "Please Unregister first before attempting to claim"
+      "msg": "Not unregistered"
     },
     {
       "code": 6016,
       "name": "AllFreeTokensForTheDayMinted",
-      "msg": "All 100 free tokens minted for the day."
+      "msg": "Rate limit exceeded for maximum free mints per epoch"
     },
     {
       "code": 6017,
       "name": "InvalidCandidate",
-      "msg": "Atleast one of the candidate is not a candidate."
+      "msg": "Received an invalid candidate."
     },
     {
       "code": 6018,
       "name": "MissingCandidate",
-      "msg": "Not all candidates have been passed."
+      "msg": "One or more active candidates are missing."
     },
     {
       "code": 6019,
       "name": "PassAllActiveCandidates",
-      "msg": "Pass all the active candidates mentioned in the poll account."
+      "msg": "Pass all the active candidates mentioned in the drop time account."
     },
     {
       "code": 6020,
@@ -2460,12 +2543,12 @@
     {
       "code": 6022,
       "name": "ActiveCandidateCannotBeClosed",
-      "msg": "Cannot close active componenet or their receipts. Withdraw or wait until it becomes a winner"
+      "msg": "Cannot close Non active candidate."
     },
     {
       "code": 6023,
       "name": "OpenWithdrawWindowFirst",
-      "msg": "The component is either claimable or withdrawn"
+      "msg": "The component is either claimable or withdrawn. Considering opening withdraw window first"
     },
     {
       "code": 6024,
@@ -2480,7 +2563,7 @@
     {
       "code": 6026,
       "name": "TokensCannotBeClaimed",
-      "msg": "Tokens cannot be claimed while the candidate is active or is unclaimable winner."
+      "msg": "Tokens cannot be claimed while the candidate is active or is a winner without claim back offer.."
     },
     {
       "code": 6027,
@@ -2535,58 +2618,10 @@
     {
       "code": 6037,
       "name": "NotEnoughVotesForWinner",
-      "msg": "Candidate must have atleast 10 votes to be a winner."
+      "msg": "HxuiCandidate must have atleast 10 votes to be a winner."
     }
   ],
   "types": [
-    {
-      "name": "Candidate",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "id",
-            "type": "u32"
-          },
-          {
-            "name": "candidate_status",
-            "type": {
-              "defined": {
-                "name": "CandidateStatus"
-              }
-            }
-          },
-          {
-            "name": "number_of_votes",
-            "type": "u64"
-          },
-          {
-            "name": "claimable_if_winner",
-            "type": "bool"
-          },
-          {
-            "name": "claim_window",
-            "type": "i64"
-          },
-          {
-            "name": "bump",
-            "type": "u8"
-          },
-          {
-            "name": "total_receipts",
-            "type": "u64"
-          },
-          {
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "name": "description",
-            "type": "string"
-          }
-        ]
-      }
-    },
     {
       "name": "CandidateStatus",
       "type": {
@@ -2608,7 +2643,75 @@
       }
     },
     {
-      "name": "Config",
+      "name": "FreeMintTracker",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "next_mint_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "unregistered",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "HxuiCandidate",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "u32"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "CandidateStatus"
+              }
+            }
+          },
+          {
+            "name": "vote_count",
+            "type": "u64"
+          },
+          {
+            "name": "claim_back_offer",
+            "type": "bool"
+          },
+          {
+            "name": "claim_deadline",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "receipt_count",
+            "type": "u64"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "HxuiConfig",
       "type": {
         "kind": "struct",
         "fields": [
@@ -2625,6 +2728,18 @@
             "type": "u64"
           },
           {
+            "name": "free_tokens_per_mint",
+            "type": "u64"
+          },
+          {
+            "name": "free_mints_per_epoch",
+            "type": "u64"
+          },
+          {
+            "name": "free_mint_cool_down",
+            "type": "i64"
+          },
+          {
             "name": "bump",
             "type": "u8"
           }
@@ -2632,27 +2747,37 @@
       }
     },
     {
-      "name": "FreeTokenTimestamp",
+      "name": "HxuiDropTime",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "next_mintable_timestamp",
+            "name": "drop_timestamp",
             "type": "i64"
           },
           {
-            "name": "closable_timestamp",
-            "type": "i64"
+            "name": "is_winner_drawn",
+            "type": "bool"
           },
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "active_candidate_ids",
+            "type": {
+              "vec": "u32"
+            }
+          },
+          {
+            "name": "total_candidate_count",
+            "type": "u32"
           }
         ]
       }
     },
     {
-      "name": "FreeTokensCounter",
+      "name": "HxuiFreeMintCounter",
       "type": {
         "kind": "struct",
         "fields": [
@@ -2661,42 +2786,12 @@
             "type": "u64"
           },
           {
-            "name": "remaining_free_tokens",
+            "name": "remaining_free_mints",
             "type": "u64"
           },
           {
             "name": "bump",
             "type": "u8"
-          }
-        ]
-      }
-    },
-    {
-      "name": "Poll",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "current_poll_deadline",
-            "type": "i64"
-          },
-          {
-            "name": "current_poll_winner_drawn",
-            "type": "bool"
-          },
-          {
-            "name": "bump",
-            "type": "u8"
-          },
-          {
-            "name": "current_poll_candidates",
-            "type": {
-              "vec": "u32"
-            }
-          },
-          {
-            "name": "total_candidates",
-            "type": "u32"
           }
         ]
       }

@@ -6,17 +6,17 @@ import { getBase64Encoder, Account, BaseAccount } from "@solana/kit";
 import { createContext, useContext, useEffect, useState } from "react";
 
 import {
-  Config,
-  fetchPoll,
-  fetchConfig,
-  getConfigCodec,
-  Poll,
-  getPollCodec,
+  HxuiConfig,
+  fetchHxuiDropTime,
+  fetchHxuiConfig,
+  getHxuiConfigCodec,
+  HxuiDropTime,
+  getHxuiDropTimeCodec,
 } from "@/clients/generated/hxui";
 import {
   getHxuiMintAddress,
   getHxuiConfigAddress,
-  getHxuiPollAddress,
+  getHxuiDropTimeAddress,
   getHxuiVaultAddress,
 } from "@/clients/pdas";
 import { useSolanaClient } from "@/providers/solana-client";
@@ -29,8 +29,8 @@ type ProgramAccounts =
   | {
       isLoading: false;
       hxuiMint: Account<Mint, string>;
-      hxuiPoll: Account<Poll, string>;
-      hxuiConfig: Account<Config, string>;
+      hxuiDropTime: Account<HxuiDropTime, string>;
+      hxuiConfig: Account<HxuiConfig, string>;
       hxuiVault: BaseAccount;
     };
 const ProgramAccountsContext = createContext<ProgramAccounts | null>(null);
@@ -48,21 +48,24 @@ export function ProgramAccountsProvider({
     run(async () => {
       const hxuiConfigAddress = await getHxuiConfigAddress();
       const hxuiMintAddress = await getHxuiMintAddress();
-      const hxuiPollAddress = await getHxuiPollAddress();
+      const hxiDropTimeAddress = await getHxuiDropTimeAddress();
       const hxuiVaultAddress = await getHxuiVaultAddress();
 
-      const hxuiConfig = await fetchConfig(client.rpc, hxuiConfigAddress);
+      const hxuiConfig = await fetchHxuiConfig(client.rpc, hxuiConfigAddress);
       const hxuiMint = await fetchMint(client.rpc, hxuiMintAddress);
-      const hxuiPoll = await fetchPoll(client.rpc, hxuiPollAddress);
+      const hxuiDropTime = await fetchHxuiDropTime(
+        client.rpc,
+        hxiDropTimeAddress
+      );
       const { value } = await client.rpc
         .getAccountInfo(hxuiVaultAddress)
-        .send()!;
+        .send();
 
       setProgramAccounts({
         isLoading: false,
         hxuiConfig,
         hxuiMint,
-        hxuiPoll,
+        hxuiDropTime,
         hxuiVault: {
           lamports: value!.lamports,
           executable: value!.executable,
@@ -74,13 +77,13 @@ export function ProgramAccountsProvider({
 
     const hxuiConfigAbortController = new AbortController();
     const hxuiMintAbortController = new AbortController();
-    const hxuiPollAbortController = new AbortController();
+    const hxuiDropTimeAbortController = new AbortController();
     const hxuiVaultAbortController = new AbortController();
 
     run(async () => {
       const hxuiConfigAddress = await getHxuiConfigAddress();
       const hxuiMintAddress = await getHxuiMintAddress();
-      const hxuiPollAddress = await getHxuiPollAddress();
+      const hxiDropTimeAddress = await getHxuiDropTimeAddress();
       const hxuiVaultAddress = await getHxuiVaultAddress();
 
       const hxuiConfigNotifications = await client.rpcSubscriptions
@@ -95,12 +98,12 @@ export function ProgramAccountsProvider({
           commitment: "confirmed",
         })
         .subscribe({ abortSignal: hxuiMintAbortController.signal });
-      const hxuiPollNotifications = await client.rpcSubscriptions
-        .accountNotifications(hxuiPollAddress, {
+      const hxuiDropTimeNotifications = await client.rpcSubscriptions
+        .accountNotifications(hxiDropTimeAddress, {
           encoding: "base64",
           commitment: "confirmed",
         })
-        .subscribe({ abortSignal: hxuiPollAbortController.signal });
+        .subscribe({ abortSignal: hxuiDropTimeAbortController.signal });
       const hxuiVaultNotifications = await client.rpcSubscriptions
         .accountNotifications(hxuiVaultAddress, {
           encoding: "base64",
@@ -111,7 +114,6 @@ export function ProgramAccountsProvider({
       run(async () => {
         for await (const accountInfo of hxuiVaultNotifications) {
           const lamports = accountInfo.value.lamports;
-
           setProgramAccounts((prev) => {
             if (!prev.isLoading) {
               return {
@@ -127,7 +129,7 @@ export function ProgramAccountsProvider({
           const base64Data = accountInfo.value.data[0];
           const dataBytes = getBase64Encoder().encode(base64Data);
 
-          const decodedData = getConfigCodec().decode(dataBytes);
+          const decodedData = getHxuiConfigCodec().decode(dataBytes);
           setProgramAccounts((prev) => {
             if (!prev.isLoading) {
               return {
@@ -157,16 +159,16 @@ export function ProgramAccountsProvider({
       });
 
       run(async () => {
-        for await (const accountInfo of hxuiPollNotifications) {
+        for await (const accountInfo of hxuiDropTimeNotifications) {
           const base64Data = accountInfo.value.data[0];
           const dataBytes = getBase64Encoder().encode(base64Data);
 
-          const decodedData = getPollCodec().decode(dataBytes);
+          const decodedData = getHxuiDropTimeCodec().decode(dataBytes);
           setProgramAccounts((prev) => {
             if (!prev.isLoading) {
               return {
                 ...prev,
-                hxuiPoll: { ...prev.hxuiPoll, data: decodedData },
+                hxuiDropTime: { ...prev.hxuiDropTime, data: decodedData },
               };
             } else return prev;
           });
@@ -175,11 +177,11 @@ export function ProgramAccountsProvider({
     });
     return () => {
       hxuiConfigAbortController.abort();
-      hxuiPollAbortController.abort();
+      hxuiDropTimeAbortController.abort();
       hxuiMintAbortController.abort();
       hxuiVaultAbortController.abort();
     };
-  }, []);
+  }, [client.rpc, client.rpcSubscriptions]);
 
   return (
     <ProgramAccountsContext.Provider value={programAccounts}>

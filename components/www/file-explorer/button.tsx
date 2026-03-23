@@ -10,14 +10,11 @@ export type ButtonProps<T extends React.ElementType> = {
 } & React.ComponentPropsWithoutRef<T>;
 
 export default function Button<T extends React.ElementType = "button">({
-  as,
   className,
   buttonWrapperClassName,
   children,
   ...rest
 }: ButtonProps<T>) {
-  const Comp = as || "button";
-
   return (
     <div
       className={cn(

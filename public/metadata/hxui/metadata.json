@@ -2,7 +2,7 @@
   "name": "100xUI",
   "symbol": "HXUI",
   "description": "100xUI tokens",
-  "image": "http://localhost:3000/metadata/hxui/image.png",
+  "image": "https://raw.githubusercontent.com/solana-developers/opos-asset/main/assets/DeveloperPortal/image.png",
   "attributes": [
     {
       "trait_type": "Item",

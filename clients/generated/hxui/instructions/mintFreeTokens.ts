@@ -53,10 +53,11 @@ export type MintFreeTokensInstruction<
   TProgram extends string = typeof HXUI_PROGRAM_ADDRESS,
   TAccountOwner extends string | AccountMeta<string> = string,
   TAccountLiteAuthority extends string | AccountMeta<string> = string,
+  TAccountHxuiConfig extends string | AccountMeta<string> = string,
   TAccountHxuiLiteTokenAccount extends string | AccountMeta<string> = string,
   TAccountHxuiLiteMint extends string | AccountMeta<string> = string,
-  TAccountHxuiLiteMintedTimestamp extends string | AccountMeta<string> = string,
-  TAccountFreeTokensCounter extends string | AccountMeta<string> = string,
+  TAccountFreeMintTracker extends string | AccountMeta<string> = string,
+  TAccountHxuiFreeMintCounter extends string | AccountMeta<string> = string,
   TAccountAssociatedTokenProgram extends string | AccountMeta<string> =
     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
   TAccountTokenProgram extends string | AccountMeta<string> =
@@ -73,18 +74,21 @@ export type MintFreeTokensInstruction<
         ? ReadonlySignerAccount<TAccountLiteAuthority> &
             AccountSignerMeta<TAccountLiteAuthority>
         : TAccountLiteAuthority,
+      TAccountHxuiConfig extends string
+        ? ReadonlyAccount<TAccountHxuiConfig>
+        : TAccountHxuiConfig,
       TAccountHxuiLiteTokenAccount extends string
         ? WritableAccount<TAccountHxuiLiteTokenAccount>
         : TAccountHxuiLiteTokenAccount,
       TAccountHxuiLiteMint extends string
         ? WritableAccount<TAccountHxuiLiteMint>
         : TAccountHxuiLiteMint,
-      TAccountHxuiLiteMintedTimestamp extends string
-        ? WritableAccount<TAccountHxuiLiteMintedTimestamp>
-        : TAccountHxuiLiteMintedTimestamp,
-      TAccountFreeTokensCounter extends string
-        ? WritableAccount<TAccountFreeTokensCounter>
-        : TAccountFreeTokensCounter,
+      TAccountFreeMintTracker extends string
+        ? WritableAccount<TAccountFreeMintTracker>
+        : TAccountFreeMintTracker,
+      TAccountHxuiFreeMintCounter extends string
+        ? WritableAccount<TAccountHxuiFreeMintCounter>
+        : TAccountHxuiFreeMintCounter,
       TAccountAssociatedTokenProgram extends string
         ? ReadonlyAccount<TAccountAssociatedTokenProgram>
         : TAccountAssociatedTokenProgram,
@@ -127,19 +131,21 @@ export function getMintFreeTokensInstructionDataCodec(): FixedSizeCodec<
 export type MintFreeTokensAsyncInput<
   TAccountOwner extends string = string,
   TAccountLiteAuthority extends string = string,
+  TAccountHxuiConfig extends string = string,
   TAccountHxuiLiteTokenAccount extends string = string,
   TAccountHxuiLiteMint extends string = string,
-  TAccountHxuiLiteMintedTimestamp extends string = string,
-  TAccountFreeTokensCounter extends string = string,
+  TAccountFreeMintTracker extends string = string,
+  TAccountHxuiFreeMintCounter extends string = string,
   TAccountAssociatedTokenProgram extends string = string,
   TAccountTokenProgram extends string = string,
 > = {
   owner: Address<TAccountOwner>;
   liteAuthority: TransactionSigner<TAccountLiteAuthority>;
+  hxuiConfig?: Address<TAccountHxuiConfig>;
   hxuiLiteTokenAccount?: Address<TAccountHxuiLiteTokenAccount>;
   hxuiLiteMint?: Address<TAccountHxuiLiteMint>;
-  hxuiLiteMintedTimestamp?: Address<TAccountHxuiLiteMintedTimestamp>;
-  freeTokensCounter?: Address<TAccountFreeTokensCounter>;
+  freeMintTracker?: Address<TAccountFreeMintTracker>;
+  hxuiFreeMintCounter?: Address<TAccountHxuiFreeMintCounter>;
   associatedTokenProgram?: Address<TAccountAssociatedTokenProgram>;
   tokenProgram?: Address<TAccountTokenProgram>;
 };
@@ -147,10 +153,11 @@ export type MintFreeTokensAsyncInput<
 export async function getMintFreeTokensInstructionAsync<
   TAccountOwner extends string,
   TAccountLiteAuthority extends string,
+  TAccountHxuiConfig extends string,
   TAccountHxuiLiteTokenAccount extends string,
   TAccountHxuiLiteMint extends string,
-  TAccountHxuiLiteMintedTimestamp extends string,
-  TAccountFreeTokensCounter extends string,
+  TAccountFreeMintTracker extends string,
+  TAccountHxuiFreeMintCounter extends string,
   TAccountAssociatedTokenProgram extends string,
   TAccountTokenProgram extends string,
   TProgramAddress extends Address = typeof HXUI_PROGRAM_ADDRESS,
@@ -158,10 +165,11 @@ export async function getMintFreeTokensInstructionAsync<
   input: MintFreeTokensAsyncInput<
     TAccountOwner,
     TAccountLiteAuthority,
+    TAccountHxuiConfig,
     TAccountHxuiLiteTokenAccount,
     TAccountHxuiLiteMint,
-    TAccountHxuiLiteMintedTimestamp,
-    TAccountFreeTokensCounter,
+    TAccountFreeMintTracker,
+    TAccountHxuiFreeMintCounter,
     TAccountAssociatedTokenProgram,
     TAccountTokenProgram
   >,
@@ -171,10 +179,11 @@ export async function getMintFreeTokensInstructionAsync<
     TProgramAddress,
     TAccountOwner,
     TAccountLiteAuthority,
+    TAccountHxuiConfig,
     TAccountHxuiLiteTokenAccount,
     TAccountHxuiLiteMint,
-    TAccountHxuiLiteMintedTimestamp,
-    TAccountFreeTokensCounter,
+    TAccountFreeMintTracker,
+    TAccountHxuiFreeMintCounter,
     TAccountAssociatedTokenProgram,
     TAccountTokenProgram
   >
@@ -186,17 +195,15 @@ export async function getMintFreeTokensInstructionAsync<
   const originalAccounts = {
     owner: { value: input.owner ?? null, isWritable: false },
     liteAuthority: { value: input.liteAuthority ?? null, isWritable: false },
+    hxuiConfig: { value: input.hxuiConfig ?? null, isWritable: false },
     hxuiLiteTokenAccount: {
       value: input.hxuiLiteTokenAccount ?? null,
       isWritable: true,
     },
     hxuiLiteMint: { value: input.hxuiLiteMint ?? null, isWritable: true },
-    hxuiLiteMintedTimestamp: {
-      value: input.hxuiLiteMintedTimestamp ?? null,
-      isWritable: true,
-    },
-    freeTokensCounter: {
-      value: input.freeTokensCounter ?? null,
+    freeMintTracker: { value: input.freeMintTracker ?? null, isWritable: true },
+    hxuiFreeMintCounter: {
+      value: input.hxuiFreeMintCounter ?? null,
       isWritable: true,
     },
     associatedTokenProgram: {
@@ -211,6 +218,16 @@ export async function getMintFreeTokensInstructionAsync<
   >;
 
   // Resolve default values.
+  if (!accounts.hxuiConfig.value) {
+    accounts.hxuiConfig.value = await getProgramDerivedAddress({
+      programAddress,
+      seeds: [
+        getBytesEncoder().encode(
+          new Uint8Array([104, 120, 117, 105, 95, 99, 111, 110, 102, 105, 103]),
+        ),
+      ],
+    });
+  }
   if (!accounts.tokenProgram.value) {
     accounts.tokenProgram.value =
       "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb" as Address<"TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb">;
@@ -238,28 +255,28 @@ export async function getMintFreeTokensInstructionAsync<
       ],
     });
   }
-  if (!accounts.hxuiLiteMintedTimestamp.value) {
-    accounts.hxuiLiteMintedTimestamp.value = await getProgramDerivedAddress({
+  if (!accounts.freeMintTracker.value) {
+    accounts.freeMintTracker.value = await getProgramDerivedAddress({
       programAddress,
       seeds: [
         getBytesEncoder().encode(
           new Uint8Array([
-            109, 105, 110, 116, 101, 100, 95, 116, 105, 109, 101, 115, 116, 97,
-            109, 112,
+            102, 114, 101, 101, 95, 109, 105, 110, 116, 95, 116, 114, 97, 99,
+            107, 101, 114,
           ]),
         ),
         getAddressEncoder().encode(expectAddress(accounts.owner.value)),
       ],
     });
   }
-  if (!accounts.freeTokensCounter.value) {
-    accounts.freeTokensCounter.value = await getProgramDerivedAddress({
+  if (!accounts.hxuiFreeMintCounter.value) {
+    accounts.hxuiFreeMintCounter.value = await getProgramDerivedAddress({
       programAddress,
       seeds: [
         getBytesEncoder().encode(
           new Uint8Array([
-            104, 120, 117, 105, 95, 102, 114, 101, 101, 95, 116, 111, 107, 101,
-            110, 115, 95, 99, 111, 117, 110, 116, 101, 114,
+            104, 120, 117, 105, 95, 102, 114, 101, 101, 95, 109, 105, 110, 116,
+            95, 99, 111, 117, 110, 116, 101, 114,
           ]),
         ),
       ],
@@ -275,10 +292,11 @@ export async function getMintFreeTokensInstructionAsync<
     accounts: [
       getAccountMeta(accounts.owner),
       getAccountMeta(accounts.liteAuthority),
+      getAccountMeta(accounts.hxuiConfig),
       getAccountMeta(accounts.hxuiLiteTokenAccount),
       getAccountMeta(accounts.hxuiLiteMint),
-      getAccountMeta(accounts.hxuiLiteMintedTimestamp),
-      getAccountMeta(accounts.freeTokensCounter),
+      getAccountMeta(accounts.freeMintTracker),
+      getAccountMeta(accounts.hxuiFreeMintCounter),
       getAccountMeta(accounts.associatedTokenProgram),
       getAccountMeta(accounts.tokenProgram),
     ],
@@ -288,10 +306,11 @@ export async function getMintFreeTokensInstructionAsync<
     TProgramAddress,
     TAccountOwner,
     TAccountLiteAuthority,
+    TAccountHxuiConfig,
     TAccountHxuiLiteTokenAccount,
     TAccountHxuiLiteMint,
-    TAccountHxuiLiteMintedTimestamp,
-    TAccountFreeTokensCounter,
+    TAccountFreeMintTracker,
+    TAccountHxuiFreeMintCounter,
     TAccountAssociatedTokenProgram,
     TAccountTokenProgram
   >);
@@ -300,19 +319,21 @@ export async function getMintFreeTokensInstructionAsync<
 export type MintFreeTokensInput<
   TAccountOwner extends string = string,
   TAccountLiteAuthority extends string = string,
+  TAccountHxuiConfig extends string = string,
   TAccountHxuiLiteTokenAccount extends string = string,
   TAccountHxuiLiteMint extends string = string,
-  TAccountHxuiLiteMintedTimestamp extends string = string,
-  TAccountFreeTokensCounter extends string = string,
+  TAccountFreeMintTracker extends string = string,
+  TAccountHxuiFreeMintCounter extends string = string,
   TAccountAssociatedTokenProgram extends string = string,
   TAccountTokenProgram extends string = string,
 > = {
   owner: Address<TAccountOwner>;
   liteAuthority: TransactionSigner<TAccountLiteAuthority>;
+  hxuiConfig: Address<TAccountHxuiConfig>;
   hxuiLiteTokenAccount: Address<TAccountHxuiLiteTokenAccount>;
   hxuiLiteMint: Address<TAccountHxuiLiteMint>;
-  hxuiLiteMintedTimestamp: Address<TAccountHxuiLiteMintedTimestamp>;
-  freeTokensCounter: Address<TAccountFreeTokensCounter>;
+  freeMintTracker: Address<TAccountFreeMintTracker>;
+  hxuiFreeMintCounter: Address<TAccountHxuiFreeMintCounter>;
   associatedTokenProgram?: Address<TAccountAssociatedTokenProgram>;
   tokenProgram?: Address<TAccountTokenProgram>;
 };
@@ -320,10 +341,11 @@ export type MintFreeTokensInput<
 export function getMintFreeTokensInstruction<
   TAccountOwner extends string,
   TAccountLiteAuthority extends string,
+  TAccountHxuiConfig extends string,
   TAccountHxuiLiteTokenAccount extends string,
   TAccountHxuiLiteMint extends string,
-  TAccountHxuiLiteMintedTimestamp extends string,
-  TAccountFreeTokensCounter extends string,
+  TAccountFreeMintTracker extends string,
+  TAccountHxuiFreeMintCounter extends string,
   TAccountAssociatedTokenProgram extends string,
   TAccountTokenProgram extends string,
   TProgramAddress extends Address = typeof HXUI_PROGRAM_ADDRESS,
@@ -331,10 +353,11 @@ export function getMintFreeTokensInstruction<
   input: MintFreeTokensInput<
     TAccountOwner,
     TAccountLiteAuthority,
+    TAccountHxuiConfig,
     TAccountHxuiLiteTokenAccount,
     TAccountHxuiLiteMint,
-    TAccountHxuiLiteMintedTimestamp,
-    TAccountFreeTokensCounter,
+    TAccountFreeMintTracker,
+    TAccountHxuiFreeMintCounter,
     TAccountAssociatedTokenProgram,
     TAccountTokenProgram
   >,
@@ -343,10 +366,11 @@ export function getMintFreeTokensInstruction<
   TProgramAddress,
   TAccountOwner,
   TAccountLiteAuthority,
+  TAccountHxuiConfig,
   TAccountHxuiLiteTokenAccount,
   TAccountHxuiLiteMint,
-  TAccountHxuiLiteMintedTimestamp,
-  TAccountFreeTokensCounter,
+  TAccountFreeMintTracker,
+  TAccountHxuiFreeMintCounter,
   TAccountAssociatedTokenProgram,
   TAccountTokenProgram
 > {
@@ -357,17 +381,15 @@ export function getMintFreeTokensInstruction<
   const originalAccounts = {
     owner: { value: input.owner ?? null, isWritable: false },
     liteAuthority: { value: input.liteAuthority ?? null, isWritable: false },
+    hxuiConfig: { value: input.hxuiConfig ?? null, isWritable: false },
     hxuiLiteTokenAccount: {
       value: input.hxuiLiteTokenAccount ?? null,
       isWritable: true,
     },
     hxuiLiteMint: { value: input.hxuiLiteMint ?? null, isWritable: true },
-    hxuiLiteMintedTimestamp: {
-      value: input.hxuiLiteMintedTimestamp ?? null,
-      isWritable: true,
-    },
-    freeTokensCounter: {
-      value: input.freeTokensCounter ?? null,
+    freeMintTracker: { value: input.freeMintTracker ?? null, isWritable: true },
+    hxuiFreeMintCounter: {
+      value: input.hxuiFreeMintCounter ?? null,
       isWritable: true,
     },
     associatedTokenProgram: {
@@ -396,10 +418,11 @@ export function getMintFreeTokensInstruction<
     accounts: [
       getAccountMeta(accounts.owner),
       getAccountMeta(accounts.liteAuthority),
+      getAccountMeta(accounts.hxuiConfig),
       getAccountMeta(accounts.hxuiLiteTokenAccount),
       getAccountMeta(accounts.hxuiLiteMint),
-      getAccountMeta(accounts.hxuiLiteMintedTimestamp),
-      getAccountMeta(accounts.freeTokensCounter),
+      getAccountMeta(accounts.freeMintTracker),
+      getAccountMeta(accounts.hxuiFreeMintCounter),
       getAccountMeta(accounts.associatedTokenProgram),
       getAccountMeta(accounts.tokenProgram),
     ],
@@ -409,10 +432,11 @@ export function getMintFreeTokensInstruction<
     TProgramAddress,
     TAccountOwner,
     TAccountLiteAuthority,
+    TAccountHxuiConfig,
     TAccountHxuiLiteTokenAccount,
     TAccountHxuiLiteMint,
-    TAccountHxuiLiteMintedTimestamp,
-    TAccountFreeTokensCounter,
+    TAccountFreeMintTracker,
+    TAccountHxuiFreeMintCounter,
     TAccountAssociatedTokenProgram,
     TAccountTokenProgram
   >);
@@ -426,12 +450,13 @@ export type ParsedMintFreeTokensInstruction<
   accounts: {
     owner: TAccountMetas[0];
     liteAuthority: TAccountMetas[1];
-    hxuiLiteTokenAccount: TAccountMetas[2];
-    hxuiLiteMint: TAccountMetas[3];
-    hxuiLiteMintedTimestamp: TAccountMetas[4];
-    freeTokensCounter: TAccountMetas[5];
-    associatedTokenProgram: TAccountMetas[6];
-    tokenProgram: TAccountMetas[7];
+    hxuiConfig: TAccountMetas[2];
+    hxuiLiteTokenAccount: TAccountMetas[3];
+    hxuiLiteMint: TAccountMetas[4];
+    freeMintTracker: TAccountMetas[5];
+    hxuiFreeMintCounter: TAccountMetas[6];
+    associatedTokenProgram: TAccountMetas[7];
+    tokenProgram: TAccountMetas[8];
   };
   data: MintFreeTokensInstructionData;
 };
@@ -444,7 +469,7 @@ export function parseMintFreeTokensInstruction<
     InstructionWithAccounts<TAccountMetas> &
     InstructionWithData<ReadonlyUint8Array>,
 ): ParsedMintFreeTokensInstruction<TProgram, TAccountMetas> {
-  if (instruction.accounts.length < 8) {
+  if (instruction.accounts.length < 9) {
     // TODO: Coded error.
     throw new Error("Not enough accounts");
   }
@@ -459,10 +484,11 @@ export function parseMintFreeTokensInstruction<
     accounts: {
       owner: getNextAccount(),
       liteAuthority: getNextAccount(),
+      hxuiConfig: getNextAccount(),
       hxuiLiteTokenAccount: getNextAccount(),
       hxuiLiteMint: getNextAccount(),
-      hxuiLiteMintedTimestamp: getNextAccount(),
-      freeTokensCounter: getNextAccount(),
+      freeMintTracker: getNextAccount(),
+      hxuiFreeMintCounter: getNextAccount(),
       associatedTokenProgram: getNextAccount(),
       tokenProgram: getNextAccount(),
     },

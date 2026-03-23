@@ -28,11 +28,10 @@ import {
   setTransactionMessageLifetimeUsingBlockhash,
 } from "@solana/kit";
 import {
-  getCancelUnregisterForFreeTokensInstructionAsync,
-  getClaimRegistrationFeesInstructionAsync,
-  getMintFreeTokensInstructionAsync,
+  getCancelDeregisterFromFreeMintInstructionAsync,
+  getClaimRegistrationDepositInstructionAsync,
   getRegisterForFreeTokensInstructionAsync,
-  getUnregisterForFreeTokensInstructionAsync,
+  getDeregisterFromFreeMintInstructionAsync,
 } from "@/clients/generated/hxui";
 import { getCreateAssociatedTokenInstructionAsync } from "@solana-program/token";
 import {
@@ -51,6 +50,8 @@ import {
 } from "../../../../components/www/file-explorer/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useTimeContext, getUnixTimestamp } from "../providers/time";
+import { SolanaExplorerFull } from "@/icons/solana-explorer.icon";
+import { toast } from "sonner";
 
 export function RegisterToMintFreeTokens() {
   const { selectedWallet } = usePrivyAsSolanaWallet();
@@ -58,16 +59,18 @@ export function RegisterToMintFreeTokens() {
   const { reload } = useTimeContext();
 
   const accountsLoading = hxuiLiteToken.isLoading;
-  const registrationAccountExists =
-    !hxuiLiteToken.isLoading && hxuiLiteToken.maybeRegistrationAccount.exists;
+  const freeMintTrackerExists =
+    !hxuiLiteToken.isLoading &&
+    hxuiLiteToken.maybeFreeMintTrackerAccount.exists;
   const tokenAccountExists =
     !hxuiLiteToken.isLoading && hxuiLiteToken.maybeHxuiLiteTokenAccount.exists;
   const unregistered =
     !hxuiLiteToken.isLoading &&
-    hxuiLiteToken.maybeRegistrationAccount.exists &&
-    hxuiLiteToken.maybeRegistrationAccount.data.closableTimestamp !== BigInt(0);
+    hxuiLiteToken.maybeFreeMintTrackerAccount.exists &&
+    // hxuiLiteToken.maybeFreeMintTrackerAccount.data.closableTimestamp !== BigInt(0);
+    hxuiLiteToken.maybeFreeMintTrackerAccount.data.unregistered;
 
-  // const registrationAccountExists = true;
+  // const freeMintTrackerExists = true;
   // const tokenAccountExists = false;
   // const unregistered = true;
   return (
@@ -82,10 +85,9 @@ export function RegisterToMintFreeTokens() {
               >
                 <HxuiButton>
                   {run(() => {
-                    if (accountsLoading || !registrationAccountExists) {
-                      return "Register to mint free tokens";
+                    if (accountsLoading || !freeMintTrackerExists) {
+                      return "Register to mint HxUI Lite tokens";
                     }
-                    // control reaches here when atleast if registration account does not exist
 
                     if (unregistered) {
                       return "Claim back the deposit";
@@ -110,7 +112,7 @@ export function RegisterToMintFreeTokens() {
             if (!selectedWallet) {
               return (
                 <TooltipContent>
-                  Please connect to a solana wallet.
+                  Please connect to a Solana wallet.
                 </TooltipContent>
               );
             }
@@ -119,7 +121,7 @@ export function RegisterToMintFreeTokens() {
             }
           })}
         </Tooltip>
-        {registrationAccountExists && (
+        {freeMintTrackerExists && (
           <HxuiButton onClick={reload}>
             <RefreshCcwIcon />
           </HxuiButton>
@@ -130,16 +132,18 @@ export function RegisterToMintFreeTokens() {
               <InfoIcon />
             </HxuiButton>
           </TooltipTrigger>
-          <TooltipContent>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti,
-            expedita!
+          <TooltipContent className="max-w-100">
+            Register your wallet to become eligible to mint free HxUI Lite
+            tokens when adding components via the shadcn CLI. This step is
+            required to enforce personal rate limits and cooldown periods for
+            the free minting system.
           </TooltipContent>
         </Tooltip>
       </HxuiButtonGroup>
       {selectedWallet && !accountsLoading && (
         <PopoverContent className="w-80 space-y-3">
           {run(() => {
-            if (!registrationAccountExists) {
+            if (!freeMintTrackerExists) {
               return (
                 <Field>
                   <Field
@@ -149,10 +153,10 @@ export function RegisterToMintFreeTokens() {
                     <Checkbox
                       id="registration-account"
                       name="registration-account"
-                      checked={!registrationAccountExists}
+                      checked={!freeMintTrackerExists}
                     />
                     <FieldLabel htmlFor="registration-account ">
-                      Registration deposit of 0.001 SOL (redeemable)
+                      Registration deposit of 0.00101616 SOL (redeemable)
                     </FieldLabel>
                   </Field>
                   <Field
@@ -172,7 +176,7 @@ export function RegisterToMintFreeTokens() {
                         tokenAccountExists && "line-through"
                       )}
                     >
-                      Create HXUI Lite token account
+                      Create HxUI Lite token account
                     </FieldLabel>
                   </Field>
                   <Field>
@@ -204,24 +208,24 @@ export function RegisterToMintFreeTokens() {
     </Popover>
   );
 }
-
-function RegisterButton() {
+export function RegisterButton() {
   const hxuiLiteToken = useHxuiLiteTokenContext();
   const client = useSolanaClient();
   const { selectedWallet, signAndSendTransaction } = usePrivyAsSolanaWallet();
+  const { reload } = useTimeContext();
 
   async function register() {
     if (!selectedWallet)
       return console.error(
-        "wallet not connected. please connect with your admin wallet to create a candidate"
+        "wallet not connected. please connect to a solana wallet."
       );
 
     if (hxuiLiteToken.isLoading)
       return console.error(
         "User accounts are loading. please wait and try again"
       );
-    if (hxuiLiteToken.maybeRegistrationAccount.exists)
-      return console.error("Registration account for the user already exists.");
+    if (hxuiLiteToken.maybeFreeMintTrackerAccount.exists)
+      return console.error("Already registered.");
     const selectedWalletAddress = address(selectedWallet.address);
     const selectedWalletSigner = createNoopSigner(selectedWalletAddress);
 
@@ -252,7 +256,7 @@ function RegisterButton() {
     const { value: latestBlockhash } = await client.rpc
       .getLatestBlockhash()
       .send();
-    const encodedTx = pipe(
+    const compiledAndEncodedTx = pipe(
       createTransactionMessage({ version: 0 }),
       (tx) => setTransactionMessageFeePayerSigner(selectedWalletSigner, tx),
       (tx) => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, tx),
@@ -261,25 +265,46 @@ function RegisterButton() {
       (tx) => new Uint8Array(getTransactionEncoder().encode(tx))
     );
 
-    try {
-      const { signature } = await signAndSendTransaction({
-        transaction: encodedTx,
+    toast.promise(
+      signAndSendTransaction({
+        transaction: compiledAndEncodedTx,
         wallet: selectedWallet,
         options: { commitment: "confirmed" },
-      });
+      }),
+      {
+        loading: "Pending...",
+        success: ({ signature }) => {
+          reload();
 
-      console.log(getBase58Decoder().decode(signature));
-      // TODO: render the toast.
-    } catch (err) {
-      console.log(err);
-    }
+          return (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className=""
+              href={`https://explorer.solana.com/tx/${getBase58Decoder().decode(signature)}?cluster=devnet`}
+            >
+              <div className="flex items-center gap-1 text-nowrap">
+                Transaction confirmed. View on
+                <SolanaExplorerFull className="w-30" />
+              </div>
+            </a>
+          );
+        },
+        error: (err) => {
+          console.error(err);
+          if (err?.message?.includes("rejected"))
+            return "Transaction rejected.";
+          return "Transaction failed to execute. Check the logs.";
+        },
+      }
+    );
   }
   return (
     <HxuiButton
       disabled={
         !selectedWallet ||
         hxuiLiteToken.isLoading ||
-        hxuiLiteToken.maybeRegistrationAccount.exists
+        hxuiLiteToken.maybeFreeMintTrackerAccount.exists
       }
       className="w-full"
       onClick={register}
@@ -288,7 +313,7 @@ function RegisterButton() {
     </HxuiButton>
   );
 }
-function CreateHxuiTokenAccountButton() {
+export function CreateHxuiTokenAccountButton() {
   const hxuiLiteToken = useHxuiLiteTokenContext();
   const client = useSolanaClient();
   const { selectedWallet, signAndSendTransaction } = usePrivyAsSolanaWallet();
@@ -296,7 +321,7 @@ function CreateHxuiTokenAccountButton() {
   async function createHxuiTokenAccount() {
     if (!selectedWallet)
       return console.error(
-        "wallet not connected. please connect with your admin wallet to create a candidate"
+        "wallet not connected. please connect with a solana wallet."
       );
 
     if (hxuiLiteToken.isLoading)
@@ -304,7 +329,8 @@ function CreateHxuiTokenAccountButton() {
         "User accounts are loading. please wait and try again"
       );
     if (hxuiLiteToken.maybeHxuiLiteTokenAccount.exists)
-      return console.error("Token account already exists.");
+      return console.error("HxUI Lite token account already exists.");
+
     const selectedWalletAddress = address(selectedWallet.address);
     const selectedWalletSigner = createNoopSigner(selectedWalletAddress);
 
@@ -324,7 +350,7 @@ function CreateHxuiTokenAccountButton() {
     const { value: latestBlockhash } = await client.rpc
       .getLatestBlockhash()
       .send();
-    const encodedTx = pipe(
+    const compiledAndEncodedTx = pipe(
       createTransactionMessage({ version: 0 }),
       (tx) => setTransactionMessageFeePayerSigner(selectedWalletSigner, tx),
       (tx) => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, tx),
@@ -334,18 +360,37 @@ function CreateHxuiTokenAccountButton() {
       (tx) => new Uint8Array(getTransactionEncoder().encode(tx))
     );
 
-    try {
-      const { signature } = await signAndSendTransaction({
-        transaction: encodedTx,
+    toast.promise(
+      signAndSendTransaction({
+        transaction: compiledAndEncodedTx,
         wallet: selectedWallet,
         options: { commitment: "confirmed" },
-      });
-
-      console.log(getBase58Decoder().decode(signature));
-      // TODO: render the toast.
-    } catch (err) {
-      console.log(err);
-    }
+      }),
+      {
+        loading: "Pending...",
+        success: ({ signature }) => {
+          return (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className=""
+              href={`https://explorer.solana.com/tx/${getBase58Decoder().decode(signature)}?cluster=devnet`}
+            >
+              <div className="flex items-center gap-1 text-nowrap">
+                Transaction confirmed. View on
+                <SolanaExplorerFull className="w-30" />
+              </div>
+            </a>
+          );
+        },
+        error: (err) => {
+          console.error(err);
+          if (err?.message?.includes("rejected"))
+            return "Transaction rejected.";
+          return "Transaction failed to execute. Check the logs.";
+        },
+      }
+    );
   }
   return (
     <HxuiButton
@@ -362,43 +407,45 @@ function CreateHxuiTokenAccountButton() {
   );
 }
 
-function UnregisterButton() {
+export function UnregisterButton() {
   const hxuiLiteToken = useHxuiLiteTokenContext();
   const client = useSolanaClient();
   const { selectedWallet, signAndSendTransaction } = usePrivyAsSolanaWallet();
+  const { reload } = useTimeContext();
 
   async function unregister() {
     if (!selectedWallet)
       return console.error(
-        "wallet not connected. please connect with your admin wallet to create a candidate"
+        "wallet not connected. please connect with a solana wallet."
       );
 
     if (hxuiLiteToken.isLoading)
       return console.error(
         "User accounts are loading. please wait and try again"
       );
-    if (!hxuiLiteToken.maybeRegistrationAccount.exists)
+    if (!hxuiLiteToken.maybeFreeMintTrackerAccount.exists)
       return console.error(
         "Registration account does not exist for the selected wallet."
       );
 
     if (
-      hxuiLiteToken.maybeRegistrationAccount.data.closableTimestamp !==
-      BigInt(0)
+      // hxuiLiteToken.maybeFreeMintTrackerAccount.data.closableTimestamp !==
+      // BigInt(0)
+      hxuiLiteToken.maybeFreeMintTrackerAccount.data.unregistered
     )
       return console.error("Already Unregistered.");
     const selectedWalletAddress = address(selectedWallet.address);
     const selectedWalletSigner = createNoopSigner(selectedWalletAddress);
 
     const unregisterFreeTokensIx =
-      await getUnregisterForFreeTokensInstructionAsync({
+      await getDeregisterFromFreeMintInstructionAsync({
         owner: selectedWalletSigner,
       });
 
     const { value: latestBlockhash } = await client.rpc
       .getLatestBlockhash()
       .send();
-    const encodedTx = pipe(
+    const compiledAndEncodedTx = pipe(
       createTransactionMessage({ version: 0 }),
       (tx) => setTransactionMessageFeePayerSigner(selectedWalletSigner, tx),
       (tx) => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, tx),
@@ -408,27 +455,48 @@ function UnregisterButton() {
       (tx) => new Uint8Array(getTransactionEncoder().encode(tx))
     );
 
-    try {
-      const { signature } = await signAndSendTransaction({
-        transaction: encodedTx,
+    toast.promise(
+      signAndSendTransaction({
+        transaction: compiledAndEncodedTx,
         wallet: selectedWallet,
         options: { commitment: "confirmed" },
-      });
-
-      console.log(getBase58Decoder().decode(signature));
-      // TODO: render the toast.
-    } catch (err) {
-      console.log(err);
-    }
+      }),
+      {
+        loading: "Pending...",
+        success: ({ signature }) => {
+          reload();
+          return (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className=""
+              href={`https://explorer.solana.com/tx/${getBase58Decoder().decode(signature)}?cluster=devnet`}
+            >
+              <div className="flex items-center gap-1 text-nowrap">
+                Transaction confirmed. View on
+                <SolanaExplorerFull className="w-30" />
+              </div>
+            </a>
+          );
+        },
+        error: (err) => {
+          console.error(err);
+          if (err?.message?.includes("rejected"))
+            return "Transaction rejected.";
+          return "Transaction failed to execute. Check the logs.";
+        },
+      }
+    );
   }
   return (
     <HxuiButton
       disabled={
         !selectedWallet ||
         hxuiLiteToken.isLoading ||
-        !hxuiLiteToken.maybeRegistrationAccount.exists ||
-        hxuiLiteToken.maybeRegistrationAccount.data.closableTimestamp !==
-          BigInt(0)
+        !hxuiLiteToken.maybeFreeMintTrackerAccount.exists ||
+        // hxuiLiteToken.maybeFreeMintTrackerAccount.data.closableTimestamp !==
+        //   BigInt(0)
+        hxuiLiteToken.maybeFreeMintTrackerAccount.data.unregistered
       }
       className="w-full"
       onClick={unregister}
@@ -438,7 +506,7 @@ function UnregisterButton() {
   );
 }
 
-function CancelUnregisterButton() {
+export function CancelUnregisterButton() {
   const hxuiLiteToken = useHxuiLiteTokenContext();
   const client = useSolanaClient();
   const { selectedWallet, signAndSendTransaction } = usePrivyAsSolanaWallet();
@@ -446,7 +514,7 @@ function CancelUnregisterButton() {
   async function cancelUnregister() {
     if (!selectedWallet)
       return console.error(
-        "wallet not connected. please connect with your admin wallet to create a candidate"
+        "wallet not connected. please connect with a solana wallet."
       );
 
     if (hxuiLiteToken.isLoading) {
@@ -454,17 +522,18 @@ function CancelUnregisterButton() {
         "User accounts are loading. please wait and try again"
       );
     }
-    if (!hxuiLiteToken.maybeRegistrationAccount.exists) {
+    if (!hxuiLiteToken.maybeFreeMintTrackerAccount.exists) {
       return console.error(
-        "Registration account does not exist for the selected wallet."
+        "Free Mint tracker does not exist for the selected wallet."
       );
     }
     if (
-      hxuiLiteToken.maybeRegistrationAccount.data.closableTimestamp ===
-      BigInt(0)
+      // hxuiLiteToken.maybeFreeMintTrackerAccount.data.closableTimestamp ===
+      // BigInt(0)
+      !hxuiLiteToken.maybeFreeMintTrackerAccount.data.unregistered
     ) {
       return console.error(
-        "Registration account is not unregistered to cancel unregistration"
+        "Free mint tracker is not deregistered to cancel deregistration"
       );
     }
 
@@ -472,13 +541,13 @@ function CancelUnregisterButton() {
     const selectedWalletSigner = createNoopSigner(selectedWalletAddress);
 
     const cancelUnregisterIx =
-      await getCancelUnregisterForFreeTokensInstructionAsync({
+      await getCancelDeregisterFromFreeMintInstructionAsync({
         owner: selectedWalletSigner,
       });
     const { value: latestBlockhash } = await client.rpc
       .getLatestBlockhash()
       .send();
-    const encodedTx = pipe(
+    const compiledAndEncodedTx = pipe(
       createTransactionMessage({ version: 0 }),
       (tx) => setTransactionMessageFeePayerSigner(selectedWalletSigner, tx),
       (tx) => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, tx),
@@ -487,27 +556,47 @@ function CancelUnregisterButton() {
       (tx) => new Uint8Array(getTransactionEncoder().encode(tx))
     );
 
-    try {
-      const { signature } = await signAndSendTransaction({
-        transaction: encodedTx,
+    toast.promise(
+      signAndSendTransaction({
+        transaction: compiledAndEncodedTx,
         wallet: selectedWallet,
         options: { commitment: "confirmed" },
-      });
-
-      console.log(getBase58Decoder().decode(signature));
-      // TODO: render the toast.
-    } catch (err) {
-      console.log(err);
-    }
+      }),
+      {
+        loading: "Pending...",
+        success: ({ signature }) => {
+          return (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className=""
+              href={`https://explorer.solana.com/tx/${getBase58Decoder().decode(signature)}?cluster=devnet`}
+            >
+              <div className="flex items-center gap-1 text-nowrap">
+                Transaction confirmed. View on
+                <SolanaExplorerFull className="w-30" />
+              </div>
+            </a>
+          );
+        },
+        error: (err) => {
+          console.error(err);
+          if (err?.message?.includes("rejected"))
+            return "Transaction rejected.";
+          return "Transaction failed to execute. Check the logs.";
+        },
+      }
+    );
   }
   return (
     <HxuiButton
       disabled={
         !selectedWallet ||
         hxuiLiteToken.isLoading ||
-        !hxuiLiteToken.maybeRegistrationAccount.exists ||
-        hxuiLiteToken.maybeRegistrationAccount.data.closableTimestamp ===
-          BigInt(0)
+        !hxuiLiteToken.maybeFreeMintTrackerAccount.exists ||
+        // hxuiLiteToken.maybeFreeMintTrackerAccount.data.closableTimestamp ===
+        //   BigInt(0)
+        !hxuiLiteToken.maybeFreeMintTrackerAccount.data.unregistered
       }
       className="w-full"
       onClick={cancelUnregister}
@@ -517,7 +606,7 @@ function CancelUnregisterButton() {
   );
 }
 
-function ClaimBackDepositButton() {
+export function ClaimBackDepositButton() {
   const hxuiLiteToken = useHxuiLiteTokenContext();
   const client = useSolanaClient();
   const { selectedWallet, signAndSendTransaction } = usePrivyAsSolanaWallet();
@@ -526,7 +615,7 @@ function ClaimBackDepositButton() {
   async function claimBackDeposit() {
     if (!selectedWallet)
       return console.error(
-        "wallet not connected. please connect with your admin wallet to create a candidate"
+        "wallet not connected. please connect with a solana wallet."
       );
 
     if (hxuiLiteToken.isLoading) {
@@ -534,39 +623,48 @@ function ClaimBackDepositButton() {
         "User accounts are loading. please wait and try again"
       );
     }
-    if (!hxuiLiteToken.maybeRegistrationAccount.exists) {
+    if (!hxuiLiteToken.maybeFreeMintTrackerAccount.exists) {
       return console.error(
         "Registration account does not exist for the selected wallet."
       );
     }
     if (
-      hxuiLiteToken.maybeRegistrationAccount.data.closableTimestamp !==
-      BigInt(0)
+      // hxuiLiteToken.maybeFreeMintTrackerAccount.data.closableTimestamp ===
+      // BigInt(0)
+      !hxuiLiteToken.maybeFreeMintTrackerAccount.data.unregistered
     ) {
       return console.error("Unregister first");
     }
 
     if (
-      hxuiLiteToken.maybeRegistrationAccount.data.closableTimestamp <
+      // hxuiLiteToken.maybeFreeMintTrackerAccount.data.closableTimestamp >
+      // getUnixTimestamp()
+      hxuiLiteToken.maybeFreeMintTrackerAccount.data.nextMintTimestamp >
       getUnixTimestamp()
     ) {
       return console.error(
-        `Cannot be closed now wait until ${new Date(
-          Number(hxuiLiteToken.maybeRegistrationAccount.data.closableTimestamp)
-        ).toDateString()}`
+        `Cannot be closed now wait until ${
+          new Date(
+            Number(
+              // hxuiLiteToken.maybeFreeMintTrackerAccount.data.closableTimestamp
+              hxuiLiteToken.maybeFreeMintTrackerAccount.data.nextMintTimestamp
+            ) * 1000
+          ).toLocaleString
+        }`
       );
     }
 
     const selectedWalletAddress = address(selectedWallet.address);
     const selectedWalletSigner = createNoopSigner(selectedWalletAddress);
 
-    const claimbackDepositIx = await getClaimRegistrationFeesInstructionAsync({
-      owner: selectedWalletSigner,
-    });
+    const claimbackDepositIx =
+      await getClaimRegistrationDepositInstructionAsync({
+        owner: selectedWalletSigner,
+      });
     const { value: latestBlockhash } = await client.rpc
       .getLatestBlockhash()
       .send();
-    const encodedTx = pipe(
+    const compiledAndEncodedTx = pipe(
       createTransactionMessage({ version: 0 }),
       (tx) => setTransactionMessageFeePayerSigner(selectedWalletSigner, tx),
       (tx) => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, tx),
@@ -575,19 +673,39 @@ function ClaimBackDepositButton() {
       (tx) => new Uint8Array(getTransactionEncoder().encode(tx))
     );
 
-    try {
-      const { signature } = await signAndSendTransaction({
-        transaction: encodedTx,
+    toast.promise(
+      signAndSendTransaction({
+        transaction: compiledAndEncodedTx,
         wallet: selectedWallet,
         options: { commitment: "confirmed" },
-      });
-
-      console.log(getBase58Decoder().decode(signature));
-      // TODO: render the toast.
-    } catch (err) {
-      console.log(err);
-    }
+      }),
+      {
+        loading: "Pending...",
+        success: ({ signature }) => {
+          return (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className=""
+              href={`https://explorer.solana.com/tx/${getBase58Decoder().decode(signature)}?cluster=devnet`}
+            >
+              <div className="flex items-center gap-1 text-nowrap">
+                Transaction confirmed. View on
+                <SolanaExplorerFull className="w-30" />
+              </div>
+            </a>
+          );
+        },
+        error: (err) => {
+          console.error(err);
+          if (err?.message?.includes("rejected"))
+            return "Transaction rejected.";
+          return "Transaction failed to execute. Check the logs.";
+        },
+      }
+    );
   }
+
   return (
     <>
       <div className="peer">
@@ -595,10 +713,13 @@ function ClaimBackDepositButton() {
           disabled={
             !selectedWallet ||
             hxuiLiteToken.isLoading ||
-            !hxuiLiteToken.maybeRegistrationAccount.exists ||
-            hxuiLiteToken.maybeRegistrationAccount.data.closableTimestamp !==
-              BigInt(0) ||
-            hxuiLiteToken.maybeRegistrationAccount.data.closableTimestamp <
+            !hxuiLiteToken.maybeFreeMintTrackerAccount.exists ||
+            // hxuiLiteToken.maybeFreeMintTrackerAccount.data.closableTimestamp ===
+            //   BigInt(0) ||
+            // hxuiLiteToken.maybeFreeMintTrackerAccount.data.closableTimestamp >
+            //   timeNow
+            !hxuiLiteToken.maybeFreeMintTrackerAccount.data.unregistered ||
+            hxuiLiteToken.maybeFreeMintTrackerAccount.data.nextMintTimestamp >
               timeNow
           }
           className="w-full"
@@ -607,35 +728,40 @@ function ClaimBackDepositButton() {
           Claim back deposit
         </HxuiButton>
       </div>
-      {!(
-        hxuiLiteToken.isLoading ||
-        !hxuiLiteToken.maybeRegistrationAccount.exists ||
-        hxuiLiteToken.maybeRegistrationAccount.data.closableTimestamp !==
-          BigInt(0) ||
-        hxuiLiteToken.maybeRegistrationAccount.data.closableTimestamp < timeNow
-      ) && (
-        <div
-          className={cn(
-            "flex gap-1 text-xs transition-colors",
-            "text-card-foreground peer-hover:text-destructive"
-          )}
-        >
-          <InfoIcon className="size-4" />
-          <div>
-            Your Deposit can only be claimed after
-            {new Date(
-              Number(
-                hxuiLiteToken.maybeRegistrationAccount.data.closableTimestamp
-              )
-            ).toDateString()}
+      {selectedWallet &&
+        !hxuiLiteToken.isLoading &&
+        hxuiLiteToken.maybeFreeMintTrackerAccount.exists &&
+        // hxuiLiteToken.maybeFreeMintTrackerAccount.data.closableTimestamp !==
+        //   BigInt(0) &&
+        // hxuiLiteToken.maybeFreeMintTrackerAccount.data.closableTimestamp >
+        //   timeNow
+        hxuiLiteToken.maybeFreeMintTrackerAccount.data.unregistered &&
+        hxuiLiteToken.maybeFreeMintTrackerAccount.data.nextMintTimestamp >
+          timeNow && (
+          <div
+            className={cn(
+              "flex gap-1 text-xs transition-colors",
+              "text-card-foreground peer-hover:text-destructive"
+            )}
+          >
+            <InfoIcon className="size-4" />
+            <div>
+              Your Deposit can only be claimed after&nbsp;
+              {new Date(
+                Number(
+                  // hxuiLiteToken.maybeFreeMintTrackerAccount.data.closableTimestamp
+                  hxuiLiteToken.maybeFreeMintTrackerAccount.data
+                    .nextMintTimestamp
+                ) * 1000
+              ).toLocaleString()}
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </>
   );
 }
 
-function UnregisterAndClaimbackDepositButton() {
+export function UnregisterAndClaimbackDepositButton() {
   const hxuiLiteToken = useHxuiLiteTokenContext();
   const client = useSolanaClient();
   const { selectedWallet, signAndSendTransaction } = usePrivyAsSolanaWallet();
@@ -644,7 +770,7 @@ function UnregisterAndClaimbackDepositButton() {
   async function UnregisterAndClaimbackDeposit() {
     if (!selectedWallet)
       return console.error(
-        "wallet not connected. please connect with your admin wallet to create a candidate"
+        "wallet not connected. please connect with a solana wallet."
       );
 
     if (hxuiLiteToken.isLoading) {
@@ -652,20 +778,24 @@ function UnregisterAndClaimbackDepositButton() {
         "User accounts are loading. please wait and try again"
       );
     }
-    if (!hxuiLiteToken.maybeRegistrationAccount.exists) {
+    if (!hxuiLiteToken.maybeFreeMintTrackerAccount.exists) {
       return console.error(
         "Registration account does not exist for the selected wallet."
       );
     }
 
     if (
-      hxuiLiteToken.maybeRegistrationAccount.data.nextMintableTimestamp <
+      hxuiLiteToken.maybeFreeMintTrackerAccount.data.nextMintTimestamp >
       getUnixTimestamp()
     ) {
       return console.error(
-        `Cannot be unregistered and claimed the deposit immediately wait until ${new Date(
-          Number(hxuiLiteToken.maybeRegistrationAccount.data.closableTimestamp)
-        ).toDateString()}`
+        `Cannot be unregistered and claimed the deposit immediately wait until ${
+          new Date(
+            Number(
+              hxuiLiteToken.maybeFreeMintTrackerAccount.data.nextMintTimestamp
+            ) * 1000
+          ).toLocaleString
+        }`
       );
     }
 
@@ -673,16 +803,17 @@ function UnregisterAndClaimbackDepositButton() {
     const selectedWalletSigner = createNoopSigner(selectedWalletAddress);
 
     const unregisterFreeTokensIx =
-      await getUnregisterForFreeTokensInstructionAsync({
+      await getDeregisterFromFreeMintInstructionAsync({
         owner: selectedWalletSigner,
       });
-    const claimbackDepositIx = await getClaimRegistrationFeesInstructionAsync({
-      owner: selectedWalletSigner,
-    });
+    const claimbackDepositIx =
+      await getClaimRegistrationDepositInstructionAsync({
+        owner: selectedWalletSigner,
+      });
     const { value: latestBlockhash } = await client.rpc
       .getLatestBlockhash()
       .send();
-    const encodedTx = pipe(
+    const compiledAndEncodedTx = pipe(
       createTransactionMessage({ version: 0 }),
       (tx) => setTransactionMessageFeePayerSigner(selectedWalletSigner, tx),
       (tx) => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, tx),
@@ -695,19 +826,39 @@ function UnregisterAndClaimbackDepositButton() {
       (tx) => new Uint8Array(getTransactionEncoder().encode(tx))
     );
 
-    try {
-      const { signature } = await signAndSendTransaction({
-        transaction: encodedTx,
+    toast.promise(
+      signAndSendTransaction({
+        transaction: compiledAndEncodedTx,
         wallet: selectedWallet,
         options: { commitment: "confirmed" },
-      });
-
-      console.log(getBase58Decoder().decode(signature));
-      // TODO: render the toast.
-    } catch (err) {
-      console.log(err);
-    }
+      }),
+      {
+        loading: "Pending...",
+        success: ({ signature }) => {
+          return (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className=""
+              href={`https://explorer.solana.com/tx/${getBase58Decoder().decode(signature)}?cluster=devnet`}
+            >
+              <div className="flex items-center gap-1 text-nowrap">
+                Transaction confirmed. View on
+                <SolanaExplorerFull className="w-30" />
+              </div>
+            </a>
+          );
+        },
+        error: (err) => {
+          console.error(err);
+          if (err?.message?.includes("rejected"))
+            return "Transaction rejected.";
+          return "Transaction failed to execute. Check the logs.";
+        },
+      }
+    );
   }
+
   return (
     <>
       <div className="peer">
@@ -715,8 +866,8 @@ function UnregisterAndClaimbackDepositButton() {
           disabled={
             !selectedWallet ||
             hxuiLiteToken.isLoading ||
-            !hxuiLiteToken.maybeRegistrationAccount.exists ||
-            hxuiLiteToken.maybeRegistrationAccount.data.nextMintableTimestamp <
+            !hxuiLiteToken.maybeFreeMintTrackerAccount.exists ||
+            hxuiLiteToken.maybeFreeMintTrackerAccount.data.nextMintTimestamp >
               timeNow
           }
           className="w-full"
@@ -726,9 +877,10 @@ function UnregisterAndClaimbackDepositButton() {
         </HxuiButton>
       </div>
 
-      {!hxuiLiteToken.isLoading &&
-        hxuiLiteToken.maybeRegistrationAccount.exists &&
-        hxuiLiteToken.maybeRegistrationAccount.data.nextMintableTimestamp >=
+      {selectedWallet &&
+        !hxuiLiteToken.isLoading &&
+        hxuiLiteToken.maybeFreeMintTrackerAccount.exists &&
+        hxuiLiteToken.maybeFreeMintTrackerAccount.data.nextMintTimestamp >
           timeNow && (
           <div
             className={cn(
@@ -738,12 +890,13 @@ function UnregisterAndClaimbackDepositButton() {
           >
             <InfoIcon className="size-4" />
             <div>
-              Your Deposit can only be claimed after
+              Your Deposit can only be claimed after&nbsp;
               {new Date(
                 Number(
-                  hxuiLiteToken.maybeRegistrationAccount.data.closableTimestamp
-                )
-              ).toDateString()}
+                  hxuiLiteToken.maybeFreeMintTrackerAccount.data
+                    .nextMintTimestamp
+                ) * 1000
+              ).toLocaleString()}
             </div>
           </div>
         )}

@@ -56,7 +56,7 @@ export function HxuiTokenProvider({ children }: { children: ReactNode }) {
         owner: selectedWalletAddress,
       });
 
-      const hxuiTokenAccountInfos = await client.rpcSubscriptions
+      const hxuiTokenNotifications = await client.rpcSubscriptions
         .accountNotifications(hxuiTokenAddress, {
           encoding: "base64",
           commitment: "confirmed",
@@ -64,13 +64,13 @@ export function HxuiTokenProvider({ children }: { children: ReactNode }) {
         .subscribe({ abortSignal: abortController.signal });
 
       run(async () => {
-        for await (const accountInfo of hxuiTokenAccountInfos) {
-          const encodedBase64Data = accountInfo.value.data[0];
-          const dataBytes = getTokenCodec().decode(
-            getBase64Encoder().encode(encodedBase64Data)
-          );
-
+        for await (const accountInfo of hxuiTokenNotifications) {
           if (accountInfo.value.owner == TOKEN_2022_PROGRAM_ADDRESS) {
+            const encodedBase64Data = accountInfo.value.data[0];
+            const dataBytes = getTokenCodec().decode(
+              getBase64Encoder().encode(encodedBase64Data)
+            );
+
             const maybeHxuiTokenAccount: MaybeAccount<Token, string> = {
               exists: true,
               address: hxuiTokenAddress,
@@ -96,7 +96,7 @@ export function HxuiTokenProvider({ children }: { children: ReactNode }) {
       setHxuiToken({ isLoading: true });
       abortController.abort();
     };
-  }, [selectedWallet?.address]);
+  }, [client.rpc, client.rpcSubscriptions, selectedWalletAddress]);
 
   return (
     <HxuiTokenContext.Provider value={hxuiToken}>

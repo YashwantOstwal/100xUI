@@ -4,7 +4,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -15,6 +14,7 @@ import { ChevronDownIcon, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePrivyAsSolanaWallet } from "@/providers/privy-as-solana-wallet";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 export function ConnectButton() {
   const {
     wallets,
@@ -42,7 +42,9 @@ export function ConnectButton() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button className="col-start-1 row-start-1 text-sm">
-                  <img
+                  <Image
+                    width={20}
+                    height={20}
                     src={selectedWallet.standardWallet.icon}
                     alt={selectedWallet + "icon"}
                     className="size-5"
@@ -53,10 +55,11 @@ export function ConnectButton() {
                   <ChevronDownIcon className="size-4 shrink-0" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent className="relative z-100">
                 <DropdownMenuGroup>
                   {wallets.map((wallet) => (
                     <DropdownMenuItem
+                      key={wallet.address}
                       className={cn(
                         "mb-1 items-center justify-between font-mono text-sm",
                         wallet.standardWallet.name ==

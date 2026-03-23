@@ -15,18 +15,17 @@ import {
   setTransactionMessageLifetimeUsingBlockhash,
   signTransactionMessageWithSigners,
 } from "@solana/kit";
-import { fetchMaybeToken, fetchToken } from "@solana-program/token";
+import { fetchMaybeToken } from "@solana-program/token";
 import {
-  getFreeTokensCounterAddress,
+  getFreeMintCounterAddress,
   getHxuiLiteTokenAddress,
-  getRegistrationAccountAddress,
+  getFreeMintTrackerAddress,
 } from "@/clients/pdas";
 import {
-  fetchMaybeFreeTokensCounter,
-  fetchMaybeFreeTokenTimestamp,
+  fetchMaybeHxuiFreeMintCounter,
+  fetchMaybeFreeMintTracker,
   getMintFreeTokensInstructionAsync,
 } from "@/clients/generated/hxui";
-import { getUnixTimestamp } from "@/app/(navbar)/vote-component/providers/time";
 
 const client = createClient();
 
@@ -43,10 +42,9 @@ export async function GET(
   try {
     const componentJson = await import(`../../../public/c/${name}`);
     if (
-      // userAgent === "node-fetch" &&
-      // accept === "*/*" &&
-      // acceptEncoding === "gzip, deflate, br"
-      true
+      userAgent === "node-fetch" &&
+      accept === "*/*" &&
+      acceptEncoding === "gzip, deflate, br"
     ) {
       try {
         const pubkey = request.nextUrl.searchParams.get("pubkey") ?? "";
@@ -57,10 +55,10 @@ export async function GET(
           hxuiLiteTokenAddress
         );
 
-        const registrationAccountAddress = await getRegistrationAccountAddress({
+        const registrationAccountAddress = await getFreeMintTrackerAddress({
           owner,
         });
-        const maybeRegistrationAccount = await fetchMaybeFreeTokenTimestamp(
+        const maybeRegistrationAccount = await fetchMaybeFreeMintTracker(
           client.rpc,
           registrationAccountAddress
         );
@@ -70,22 +68,21 @@ export async function GET(
           maybeHxuiLiteTokenAccount.exists
         ) {
           if (
-            maybeRegistrationAccount.data.nextMintableTimestamp <=
+            maybeRegistrationAccount.data.nextMintTimestamp <=
             Date.now() / 1000
           ) {
-            const freeTokensCounterAddress =
-              await getFreeTokensCounterAddress();
-            const freeTokensCounter = await fetchMaybeFreeTokensCounter(
+            const freeTokensCounterAddress = await getFreeMintCounterAddress();
+            const freeTokensCounter = await fetchMaybeHxuiFreeMintCounter(
               client.rpc,
               freeTokensCounterAddress
             );
             if (
               freeTokensCounter.exists &&
-              freeTokensCounter.data.remainingFreeTokens > 0
+              freeTokensCounter.data.remainingFreeMints > 0
             ) {
               const liteAuthority = await createKeyPairSignerFromBytes(
                 getBase58Encoder().encode(
-                  "5jXqHhQwyecRwukxdLVELYfVCcV2h9CR88nCaT2so1B95qphX9F5aq6S26vkgHu2Wjb7wvwP8rLytjPxFS9CmQsC"
+                  "5FnW5X54L3xpTLzF58s9RUvVAu4FBDzm4r37NDZH9eVNmLoSfMXDNJgEqc4ivqUqezjxY6XZsa7jy4HuTWMThP2d"
                 )
               );
               const mintFreeTokenIx = await getMintFreeTokensInstructionAsync({
@@ -129,8 +126,10 @@ export async function GET(
             "Either of token account or registration account does not exist"
           );
         }
-      } catch (e) {
+      } catch (err) {
+        console.log(err);
         console.log("Invalid address");
+        // supress the error.
       }
     } else {
       console.log("Not invoked from shadcn CLI.");
@@ -138,6 +137,7 @@ export async function GET(
     const component = componentJson.default;
     return NextResponse.json({ ...component }, { status: 200 });
   } catch (err) {
+    console.error(err);
     return NextResponse.json(
       {
         message: null,

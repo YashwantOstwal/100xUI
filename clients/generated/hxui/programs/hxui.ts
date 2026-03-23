@@ -17,59 +17,59 @@ import {
   type ReadonlyUint8Array,
 } from "@solana/kit";
 import {
-  parseBuyPaidTokensInstruction,
-  parseCancelUnregisterForFreeTokensInstruction,
-  parseClaimRegistrationFeesInstruction,
-  parseClaimTokensInstruction,
-  parseClearReceiptInstruction,
+  parseBuyTokensInstruction,
+  parseCancelDeregisterFromFreeMintInstruction,
+  parseClaimBackTokensInstruction,
+  parseClaimRegistrationDepositInstruction,
   parseCloseCandidateInstruction,
+  parseCloseVoteReceiptInstruction,
   parseCreateCandidateInstruction,
-  parseCreatePollInstruction,
+  parseDeregisterFromFreeMintInstruction,
   parseDrawWinnerInstruction,
+  parseEnableClaimBackOfferInstruction,
   parseGetAdminAccessForTestingInstruction,
-  parseInitialiseDappInstruction,
+  parseInitDuiInstruction,
   parseMintFreeTokensInstruction,
-  parseOpenClaimableWindowInstruction,
+  parseOpenClaimBackWindowInstruction,
   parseRegisterForFreeTokensInstruction,
-  parseSafeWithdrawFromVaultInstruction,
-  parseSetClaimBackOfferInstruction,
-  parseUnregisterForFreeTokensInstruction,
+  parseSetDropTimeInstruction,
   parseUpdateConfigInstruction,
-  parseVoteCandidateInstruction,
-  parseVoteCandidateWithHxuiLiteInstruction,
+  parseVoteWithHxuiInstruction,
+  parseVoteWithHxuiLiteInstruction,
   parseWithdrawCandidateInstruction,
-  type ParsedBuyPaidTokensInstruction,
-  type ParsedCancelUnregisterForFreeTokensInstruction,
-  type ParsedClaimRegistrationFeesInstruction,
-  type ParsedClaimTokensInstruction,
-  type ParsedClearReceiptInstruction,
+  parseWithdrawVaultFundsInstruction,
+  type ParsedBuyTokensInstruction,
+  type ParsedCancelDeregisterFromFreeMintInstruction,
+  type ParsedClaimBackTokensInstruction,
+  type ParsedClaimRegistrationDepositInstruction,
   type ParsedCloseCandidateInstruction,
+  type ParsedCloseVoteReceiptInstruction,
   type ParsedCreateCandidateInstruction,
-  type ParsedCreatePollInstruction,
+  type ParsedDeregisterFromFreeMintInstruction,
   type ParsedDrawWinnerInstruction,
+  type ParsedEnableClaimBackOfferInstruction,
   type ParsedGetAdminAccessForTestingInstruction,
-  type ParsedInitialiseDappInstruction,
+  type ParsedInitDuiInstruction,
   type ParsedMintFreeTokensInstruction,
-  type ParsedOpenClaimableWindowInstruction,
+  type ParsedOpenClaimBackWindowInstruction,
   type ParsedRegisterForFreeTokensInstruction,
-  type ParsedSafeWithdrawFromVaultInstruction,
-  type ParsedSetClaimBackOfferInstruction,
-  type ParsedUnregisterForFreeTokensInstruction,
+  type ParsedSetDropTimeInstruction,
   type ParsedUpdateConfigInstruction,
-  type ParsedVoteCandidateInstruction,
-  type ParsedVoteCandidateWithHxuiLiteInstruction,
+  type ParsedVoteWithHxuiInstruction,
+  type ParsedVoteWithHxuiLiteInstruction,
   type ParsedWithdrawCandidateInstruction,
+  type ParsedWithdrawVaultFundsInstruction,
 } from "../instructions";
 
 export const HXUI_PROGRAM_ADDRESS =
-  "6jVyroPEKqPgGv7uaHZpQ3Enqriyy1MXG7pcdLTud3mP" as Address<"6jVyroPEKqPgGv7uaHZpQ3Enqriyy1MXG7pcdLTud3mP">;
+  "FrcnG1KDPhPqcVaAeLu6DiB5FvZBvvqqxNn5KR8wMBct" as Address<"FrcnG1KDPhPqcVaAeLu6DiB5FvZBvvqqxNn5KR8wMBct">;
 
 export enum HxuiAccount {
-  Candidate,
-  Config,
-  FreeTokenTimestamp,
-  FreeTokensCounter,
-  Poll,
+  FreeMintTracker,
+  HxuiCandidate,
+  HxuiConfig,
+  HxuiDropTime,
+  HxuiFreeMintCounter,
   VoteReceipt,
 }
 
@@ -81,56 +81,56 @@ export function identifyHxuiAccount(
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([86, 69, 250, 96, 193, 10, 222, 123]),
+        new Uint8Array([154, 39, 247, 152, 107, 25, 205, 31]),
       ),
       0,
     )
   ) {
-    return HxuiAccount.Candidate;
+    return HxuiAccount.FreeMintTracker;
   }
   if (
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([155, 12, 170, 224, 30, 250, 204, 130]),
+        new Uint8Array([152, 175, 197, 23, 189, 196, 68, 107]),
       ),
       0,
     )
   ) {
-    return HxuiAccount.Config;
+    return HxuiAccount.HxuiCandidate;
   }
   if (
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([158, 55, 207, 123, 137, 72, 226, 252]),
+        new Uint8Array([161, 48, 138, 29, 9, 219, 43, 141]),
       ),
       0,
     )
   ) {
-    return HxuiAccount.FreeTokenTimestamp;
+    return HxuiAccount.HxuiConfig;
   }
   if (
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([9, 155, 140, 29, 174, 105, 224, 202]),
+        new Uint8Array([181, 242, 79, 221, 51, 189, 224, 62]),
       ),
       0,
     )
   ) {
-    return HxuiAccount.FreeTokensCounter;
+    return HxuiAccount.HxuiDropTime;
   }
   if (
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([110, 234, 167, 188, 231, 136, 153, 111]),
+        new Uint8Array([157, 233, 119, 116, 10, 148, 165, 239]),
       ),
       0,
     )
   ) {
-    return HxuiAccount.Poll;
+    return HxuiAccount.HxuiFreeMintCounter;
   }
   if (
     containsBytes(
@@ -149,27 +149,27 @@ export function identifyHxuiAccount(
 }
 
 export enum HxuiInstruction {
-  BuyPaidTokens,
-  CancelUnregisterForFreeTokens,
-  ClaimRegistrationFees,
-  ClaimTokens,
-  ClearReceipt,
+  BuyTokens,
+  CancelDeregisterFromFreeMint,
+  ClaimBackTokens,
+  ClaimRegistrationDeposit,
   CloseCandidate,
+  CloseVoteReceipt,
   CreateCandidate,
-  CreatePoll,
+  DeregisterFromFreeMint,
   DrawWinner,
+  EnableClaimBackOffer,
   GetAdminAccessForTesting,
-  InitialiseDapp,
+  InitDui,
   MintFreeTokens,
-  OpenClaimableWindow,
+  OpenClaimBackWindow,
   RegisterForFreeTokens,
-  SafeWithdrawFromVault,
-  SetClaimBackOffer,
-  UnregisterForFreeTokens,
+  SetDropTime,
   UpdateConfig,
-  VoteCandidate,
-  VoteCandidateWithHxuiLite,
+  VoteWithHxui,
+  VoteWithHxuiLite,
   WithdrawCandidate,
+  WithdrawVaultFunds,
 }
 
 export function identifyHxuiInstruction(
@@ -180,56 +180,45 @@ export function identifyHxuiInstruction(
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([197, 157, 64, 247, 113, 135, 56, 203]),
+        new Uint8Array([189, 21, 230, 133, 247, 2, 110, 42]),
       ),
       0,
     )
   ) {
-    return HxuiInstruction.BuyPaidTokens;
+    return HxuiInstruction.BuyTokens;
   }
   if (
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([9, 14, 125, 102, 173, 87, 156, 148]),
+        new Uint8Array([170, 73, 45, 237, 9, 224, 226, 125]),
       ),
       0,
     )
   ) {
-    return HxuiInstruction.CancelUnregisterForFreeTokens;
+    return HxuiInstruction.CancelDeregisterFromFreeMint;
   }
   if (
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([62, 63, 142, 236, 59, 79, 44, 192]),
+        new Uint8Array([245, 214, 168, 117, 124, 59, 50, 18]),
       ),
       0,
     )
   ) {
-    return HxuiInstruction.ClaimRegistrationFees;
+    return HxuiInstruction.ClaimBackTokens;
   }
   if (
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([108, 216, 210, 231, 0, 212, 42, 64]),
+        new Uint8Array([204, 150, 17, 4, 148, 160, 151, 176]),
       ),
       0,
     )
   ) {
-    return HxuiInstruction.ClaimTokens;
-  }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([112, 245, 82, 68, 157, 72, 8, 16]),
-      ),
-      0,
-    )
-  ) {
-    return HxuiInstruction.ClearReceipt;
+    return HxuiInstruction.ClaimRegistrationDeposit;
   }
   if (
     containsBytes(
@@ -246,6 +235,17 @@ export function identifyHxuiInstruction(
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([245, 52, 25, 255, 206, 109, 60, 162]),
+      ),
+      0,
+    )
+  ) {
+    return HxuiInstruction.CloseVoteReceipt;
+  }
+  if (
+    containsBytes(
+      data,
+      fixEncoderSize(getBytesEncoder(), 8).encode(
         new Uint8Array([60, 206, 192, 133, 16, 210, 22, 23]),
       ),
       0,
@@ -257,12 +257,12 @@ export function identifyHxuiInstruction(
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([182, 171, 112, 238, 6, 219, 14, 110]),
+        new Uint8Array([202, 48, 173, 150, 229, 215, 24, 63]),
       ),
       0,
     )
   ) {
-    return HxuiInstruction.CreatePoll;
+    return HxuiInstruction.DeregisterFromFreeMint;
   }
   if (
     containsBytes(
@@ -279,6 +279,17 @@ export function identifyHxuiInstruction(
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([86, 28, 24, 50, 186, 236, 60, 181]),
+      ),
+      0,
+    )
+  ) {
+    return HxuiInstruction.EnableClaimBackOffer;
+  }
+  if (
+    containsBytes(
+      data,
+      fixEncoderSize(getBytesEncoder(), 8).encode(
         new Uint8Array([74, 174, 172, 101, 232, 223, 224, 196]),
       ),
       0,
@@ -290,12 +301,12 @@ export function identifyHxuiInstruction(
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([231, 147, 28, 144, 88, 3, 139, 81]),
+        new Uint8Array([238, 245, 228, 90, 54, 106, 213, 97]),
       ),
       0,
     )
   ) {
-    return HxuiInstruction.InitialiseDapp;
+    return HxuiInstruction.InitDui;
   }
   if (
     containsBytes(
@@ -312,12 +323,12 @@ export function identifyHxuiInstruction(
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([110, 179, 50, 50, 30, 33, 4, 16]),
+        new Uint8Array([245, 12, 40, 222, 228, 206, 176, 145]),
       ),
       0,
     )
   ) {
-    return HxuiInstruction.OpenClaimableWindow;
+    return HxuiInstruction.OpenClaimBackWindow;
   }
   if (
     containsBytes(
@@ -334,34 +345,12 @@ export function identifyHxuiInstruction(
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([242, 96, 201, 99, 5, 87, 227, 150]),
+        new Uint8Array([151, 152, 190, 17, 230, 185, 138, 158]),
       ),
       0,
     )
   ) {
-    return HxuiInstruction.SafeWithdrawFromVault;
-  }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([60, 7, 53, 248, 86, 150, 79, 64]),
-      ),
-      0,
-    )
-  ) {
-    return HxuiInstruction.SetClaimBackOffer;
-  }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([198, 146, 186, 121, 212, 153, 170, 55]),
-      ),
-      0,
-    )
-  ) {
-    return HxuiInstruction.UnregisterForFreeTokens;
+    return HxuiInstruction.SetDropTime;
   }
   if (
     containsBytes(
@@ -378,23 +367,23 @@ export function identifyHxuiInstruction(
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([66, 238, 61, 153, 143, 252, 82, 173]),
+        new Uint8Array([34, 91, 124, 240, 175, 164, 150, 83]),
       ),
       0,
     )
   ) {
-    return HxuiInstruction.VoteCandidate;
+    return HxuiInstruction.VoteWithHxui;
   }
   if (
     containsBytes(
       data,
       fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([176, 241, 219, 38, 16, 110, 25, 102]),
+        new Uint8Array([140, 236, 196, 225, 31, 21, 63, 96]),
       ),
       0,
     )
   ) {
-    return HxuiInstruction.VoteCandidateWithHxuiLite;
+    return HxuiInstruction.VoteWithHxuiLite;
   }
   if (
     containsBytes(
@@ -407,116 +396,120 @@ export function identifyHxuiInstruction(
   ) {
     return HxuiInstruction.WithdrawCandidate;
   }
+  if (
+    containsBytes(
+      data,
+      fixEncoderSize(getBytesEncoder(), 8).encode(
+        new Uint8Array([230, 233, 148, 2, 238, 220, 211, 165]),
+      ),
+      0,
+    )
+  ) {
+    return HxuiInstruction.WithdrawVaultFunds;
+  }
   throw new Error(
     "The provided instruction could not be identified as a hxui instruction.",
   );
 }
 
 export type ParsedHxuiInstruction<
-  TProgram extends string = "6jVyroPEKqPgGv7uaHZpQ3Enqriyy1MXG7pcdLTud3mP",
+  TProgram extends string = "FrcnG1KDPhPqcVaAeLu6DiB5FvZBvvqqxNn5KR8wMBct",
 > =
   | ({
-      instructionType: HxuiInstruction.BuyPaidTokens;
-    } & ParsedBuyPaidTokensInstruction<TProgram>)
+      instructionType: HxuiInstruction.BuyTokens;
+    } & ParsedBuyTokensInstruction<TProgram>)
   | ({
-      instructionType: HxuiInstruction.CancelUnregisterForFreeTokens;
-    } & ParsedCancelUnregisterForFreeTokensInstruction<TProgram>)
+      instructionType: HxuiInstruction.CancelDeregisterFromFreeMint;
+    } & ParsedCancelDeregisterFromFreeMintInstruction<TProgram>)
   | ({
-      instructionType: HxuiInstruction.ClaimRegistrationFees;
-    } & ParsedClaimRegistrationFeesInstruction<TProgram>)
+      instructionType: HxuiInstruction.ClaimBackTokens;
+    } & ParsedClaimBackTokensInstruction<TProgram>)
   | ({
-      instructionType: HxuiInstruction.ClaimTokens;
-    } & ParsedClaimTokensInstruction<TProgram>)
-  | ({
-      instructionType: HxuiInstruction.ClearReceipt;
-    } & ParsedClearReceiptInstruction<TProgram>)
+      instructionType: HxuiInstruction.ClaimRegistrationDeposit;
+    } & ParsedClaimRegistrationDepositInstruction<TProgram>)
   | ({
       instructionType: HxuiInstruction.CloseCandidate;
     } & ParsedCloseCandidateInstruction<TProgram>)
   | ({
+      instructionType: HxuiInstruction.CloseVoteReceipt;
+    } & ParsedCloseVoteReceiptInstruction<TProgram>)
+  | ({
       instructionType: HxuiInstruction.CreateCandidate;
     } & ParsedCreateCandidateInstruction<TProgram>)
   | ({
-      instructionType: HxuiInstruction.CreatePoll;
-    } & ParsedCreatePollInstruction<TProgram>)
+      instructionType: HxuiInstruction.DeregisterFromFreeMint;
+    } & ParsedDeregisterFromFreeMintInstruction<TProgram>)
   | ({
       instructionType: HxuiInstruction.DrawWinner;
     } & ParsedDrawWinnerInstruction<TProgram>)
   | ({
+      instructionType: HxuiInstruction.EnableClaimBackOffer;
+    } & ParsedEnableClaimBackOfferInstruction<TProgram>)
+  | ({
       instructionType: HxuiInstruction.GetAdminAccessForTesting;
     } & ParsedGetAdminAccessForTestingInstruction<TProgram>)
   | ({
-      instructionType: HxuiInstruction.InitialiseDapp;
-    } & ParsedInitialiseDappInstruction<TProgram>)
+      instructionType: HxuiInstruction.InitDui;
+    } & ParsedInitDuiInstruction<TProgram>)
   | ({
       instructionType: HxuiInstruction.MintFreeTokens;
     } & ParsedMintFreeTokensInstruction<TProgram>)
   | ({
-      instructionType: HxuiInstruction.OpenClaimableWindow;
-    } & ParsedOpenClaimableWindowInstruction<TProgram>)
+      instructionType: HxuiInstruction.OpenClaimBackWindow;
+    } & ParsedOpenClaimBackWindowInstruction<TProgram>)
   | ({
       instructionType: HxuiInstruction.RegisterForFreeTokens;
     } & ParsedRegisterForFreeTokensInstruction<TProgram>)
   | ({
-      instructionType: HxuiInstruction.SafeWithdrawFromVault;
-    } & ParsedSafeWithdrawFromVaultInstruction<TProgram>)
-  | ({
-      instructionType: HxuiInstruction.SetClaimBackOffer;
-    } & ParsedSetClaimBackOfferInstruction<TProgram>)
-  | ({
-      instructionType: HxuiInstruction.UnregisterForFreeTokens;
-    } & ParsedUnregisterForFreeTokensInstruction<TProgram>)
+      instructionType: HxuiInstruction.SetDropTime;
+    } & ParsedSetDropTimeInstruction<TProgram>)
   | ({
       instructionType: HxuiInstruction.UpdateConfig;
     } & ParsedUpdateConfigInstruction<TProgram>)
   | ({
-      instructionType: HxuiInstruction.VoteCandidate;
-    } & ParsedVoteCandidateInstruction<TProgram>)
+      instructionType: HxuiInstruction.VoteWithHxui;
+    } & ParsedVoteWithHxuiInstruction<TProgram>)
   | ({
-      instructionType: HxuiInstruction.VoteCandidateWithHxuiLite;
-    } & ParsedVoteCandidateWithHxuiLiteInstruction<TProgram>)
+      instructionType: HxuiInstruction.VoteWithHxuiLite;
+    } & ParsedVoteWithHxuiLiteInstruction<TProgram>)
   | ({
       instructionType: HxuiInstruction.WithdrawCandidate;
-    } & ParsedWithdrawCandidateInstruction<TProgram>);
+    } & ParsedWithdrawCandidateInstruction<TProgram>)
+  | ({
+      instructionType: HxuiInstruction.WithdrawVaultFunds;
+    } & ParsedWithdrawVaultFundsInstruction<TProgram>);
 
 export function parseHxuiInstruction<TProgram extends string>(
   instruction: Instruction<TProgram> & InstructionWithData<ReadonlyUint8Array>,
 ): ParsedHxuiInstruction<TProgram> {
   const instructionType = identifyHxuiInstruction(instruction);
   switch (instructionType) {
-    case HxuiInstruction.BuyPaidTokens: {
+    case HxuiInstruction.BuyTokens: {
       assertIsInstructionWithAccounts(instruction);
       return {
-        instructionType: HxuiInstruction.BuyPaidTokens,
-        ...parseBuyPaidTokensInstruction(instruction),
+        instructionType: HxuiInstruction.BuyTokens,
+        ...parseBuyTokensInstruction(instruction),
       };
     }
-    case HxuiInstruction.CancelUnregisterForFreeTokens: {
+    case HxuiInstruction.CancelDeregisterFromFreeMint: {
       assertIsInstructionWithAccounts(instruction);
       return {
-        instructionType: HxuiInstruction.CancelUnregisterForFreeTokens,
-        ...parseCancelUnregisterForFreeTokensInstruction(instruction),
+        instructionType: HxuiInstruction.CancelDeregisterFromFreeMint,
+        ...parseCancelDeregisterFromFreeMintInstruction(instruction),
       };
     }
-    case HxuiInstruction.ClaimRegistrationFees: {
+    case HxuiInstruction.ClaimBackTokens: {
       assertIsInstructionWithAccounts(instruction);
       return {
-        instructionType: HxuiInstruction.ClaimRegistrationFees,
-        ...parseClaimRegistrationFeesInstruction(instruction),
+        instructionType: HxuiInstruction.ClaimBackTokens,
+        ...parseClaimBackTokensInstruction(instruction),
       };
     }
-    case HxuiInstruction.ClaimTokens: {
+    case HxuiInstruction.ClaimRegistrationDeposit: {
       assertIsInstructionWithAccounts(instruction);
       return {
-        instructionType: HxuiInstruction.ClaimTokens,
-        ...parseClaimTokensInstruction(instruction),
-      };
-    }
-    case HxuiInstruction.ClearReceipt: {
-      assertIsInstructionWithAccounts(instruction);
-      return {
-        instructionType: HxuiInstruction.ClearReceipt,
-        ...parseClearReceiptInstruction(instruction),
+        instructionType: HxuiInstruction.ClaimRegistrationDeposit,
+        ...parseClaimRegistrationDepositInstruction(instruction),
       };
     }
     case HxuiInstruction.CloseCandidate: {
@@ -526,6 +519,13 @@ export function parseHxuiInstruction<TProgram extends string>(
         ...parseCloseCandidateInstruction(instruction),
       };
     }
+    case HxuiInstruction.CloseVoteReceipt: {
+      assertIsInstructionWithAccounts(instruction);
+      return {
+        instructionType: HxuiInstruction.CloseVoteReceipt,
+        ...parseCloseVoteReceiptInstruction(instruction),
+      };
+    }
     case HxuiInstruction.CreateCandidate: {
       assertIsInstructionWithAccounts(instruction);
       return {
@@ -533,11 +533,11 @@ export function parseHxuiInstruction<TProgram extends string>(
         ...parseCreateCandidateInstruction(instruction),
       };
     }
-    case HxuiInstruction.CreatePoll: {
+    case HxuiInstruction.DeregisterFromFreeMint: {
       assertIsInstructionWithAccounts(instruction);
       return {
-        instructionType: HxuiInstruction.CreatePoll,
-        ...parseCreatePollInstruction(instruction),
+        instructionType: HxuiInstruction.DeregisterFromFreeMint,
+        ...parseDeregisterFromFreeMintInstruction(instruction),
       };
     }
     case HxuiInstruction.DrawWinner: {
@@ -547,6 +547,13 @@ export function parseHxuiInstruction<TProgram extends string>(
         ...parseDrawWinnerInstruction(instruction),
       };
     }
+    case HxuiInstruction.EnableClaimBackOffer: {
+      assertIsInstructionWithAccounts(instruction);
+      return {
+        instructionType: HxuiInstruction.EnableClaimBackOffer,
+        ...parseEnableClaimBackOfferInstruction(instruction),
+      };
+    }
     case HxuiInstruction.GetAdminAccessForTesting: {
       assertIsInstructionWithAccounts(instruction);
       return {
@@ -554,11 +561,11 @@ export function parseHxuiInstruction<TProgram extends string>(
         ...parseGetAdminAccessForTestingInstruction(instruction),
       };
     }
-    case HxuiInstruction.InitialiseDapp: {
+    case HxuiInstruction.InitDui: {
       assertIsInstructionWithAccounts(instruction);
       return {
-        instructionType: HxuiInstruction.InitialiseDapp,
-        ...parseInitialiseDappInstruction(instruction),
+        instructionType: HxuiInstruction.InitDui,
+        ...parseInitDuiInstruction(instruction),
       };
     }
     case HxuiInstruction.MintFreeTokens: {
@@ -568,11 +575,11 @@ export function parseHxuiInstruction<TProgram extends string>(
         ...parseMintFreeTokensInstruction(instruction),
       };
     }
-    case HxuiInstruction.OpenClaimableWindow: {
+    case HxuiInstruction.OpenClaimBackWindow: {
       assertIsInstructionWithAccounts(instruction);
       return {
-        instructionType: HxuiInstruction.OpenClaimableWindow,
-        ...parseOpenClaimableWindowInstruction(instruction),
+        instructionType: HxuiInstruction.OpenClaimBackWindow,
+        ...parseOpenClaimBackWindowInstruction(instruction),
       };
     }
     case HxuiInstruction.RegisterForFreeTokens: {
@@ -582,25 +589,11 @@ export function parseHxuiInstruction<TProgram extends string>(
         ...parseRegisterForFreeTokensInstruction(instruction),
       };
     }
-    case HxuiInstruction.SafeWithdrawFromVault: {
+    case HxuiInstruction.SetDropTime: {
       assertIsInstructionWithAccounts(instruction);
       return {
-        instructionType: HxuiInstruction.SafeWithdrawFromVault,
-        ...parseSafeWithdrawFromVaultInstruction(instruction),
-      };
-    }
-    case HxuiInstruction.SetClaimBackOffer: {
-      assertIsInstructionWithAccounts(instruction);
-      return {
-        instructionType: HxuiInstruction.SetClaimBackOffer,
-        ...parseSetClaimBackOfferInstruction(instruction),
-      };
-    }
-    case HxuiInstruction.UnregisterForFreeTokens: {
-      assertIsInstructionWithAccounts(instruction);
-      return {
-        instructionType: HxuiInstruction.UnregisterForFreeTokens,
-        ...parseUnregisterForFreeTokensInstruction(instruction),
+        instructionType: HxuiInstruction.SetDropTime,
+        ...parseSetDropTimeInstruction(instruction),
       };
     }
     case HxuiInstruction.UpdateConfig: {
@@ -610,18 +603,18 @@ export function parseHxuiInstruction<TProgram extends string>(
         ...parseUpdateConfigInstruction(instruction),
       };
     }
-    case HxuiInstruction.VoteCandidate: {
+    case HxuiInstruction.VoteWithHxui: {
       assertIsInstructionWithAccounts(instruction);
       return {
-        instructionType: HxuiInstruction.VoteCandidate,
-        ...parseVoteCandidateInstruction(instruction),
+        instructionType: HxuiInstruction.VoteWithHxui,
+        ...parseVoteWithHxuiInstruction(instruction),
       };
     }
-    case HxuiInstruction.VoteCandidateWithHxuiLite: {
+    case HxuiInstruction.VoteWithHxuiLite: {
       assertIsInstructionWithAccounts(instruction);
       return {
-        instructionType: HxuiInstruction.VoteCandidateWithHxuiLite,
-        ...parseVoteCandidateWithHxuiLiteInstruction(instruction),
+        instructionType: HxuiInstruction.VoteWithHxuiLite,
+        ...parseVoteWithHxuiLiteInstruction(instruction),
       };
     }
     case HxuiInstruction.WithdrawCandidate: {
@@ -629,6 +622,13 @@ export function parseHxuiInstruction<TProgram extends string>(
       return {
         instructionType: HxuiInstruction.WithdrawCandidate,
         ...parseWithdrawCandidateInstruction(instruction),
+      };
+    }
+    case HxuiInstruction.WithdrawVaultFunds: {
+      assertIsInstructionWithAccounts(instruction);
+      return {
+        instructionType: HxuiInstruction.WithdrawVaultFunds,
+        ...parseWithdrawVaultFundsInstruction(instruction),
       };
     }
     default:

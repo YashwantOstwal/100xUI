@@ -57,7 +57,7 @@ export type WithdrawCandidateInstruction<
   TProgram extends string = typeof HXUI_PROGRAM_ADDRESS,
   TAccountAdmin extends string | AccountMeta<string> = string,
   TAccountHxuiCandidate extends string | AccountMeta<string> = string,
-  TAccountHxuiPoll extends string | AccountMeta<string> = string,
+  TAccountHxuiDropTime extends string | AccountMeta<string> = string,
   TRemainingAccounts extends readonly AccountMeta<string>[] = [],
 > = Instruction<TProgram> &
   InstructionWithData<ReadonlyUint8Array> &
@@ -70,9 +70,9 @@ export type WithdrawCandidateInstruction<
       TAccountHxuiCandidate extends string
         ? WritableAccount<TAccountHxuiCandidate>
         : TAccountHxuiCandidate,
-      TAccountHxuiPoll extends string
-        ? WritableAccount<TAccountHxuiPoll>
-        : TAccountHxuiPoll,
+      TAccountHxuiDropTime extends string
+        ? WritableAccount<TAccountHxuiDropTime>
+        : TAccountHxuiDropTime,
       ...TRemainingAccounts,
     ]
   >;
@@ -114,24 +114,24 @@ export function getWithdrawCandidateInstructionDataCodec(): Codec<
 export type WithdrawCandidateAsyncInput<
   TAccountAdmin extends string = string,
   TAccountHxuiCandidate extends string = string,
-  TAccountHxuiPoll extends string = string,
+  TAccountHxuiDropTime extends string = string,
 > = {
   admin: TransactionSigner<TAccountAdmin>;
   hxuiCandidate?: Address<TAccountHxuiCandidate>;
-  hxuiPoll?: Address<TAccountHxuiPoll>;
+  hxuiDropTime?: Address<TAccountHxuiDropTime>;
   name: WithdrawCandidateInstructionDataArgs["name"];
 };
 
 export async function getWithdrawCandidateInstructionAsync<
   TAccountAdmin extends string,
   TAccountHxuiCandidate extends string,
-  TAccountHxuiPoll extends string,
+  TAccountHxuiDropTime extends string,
   TProgramAddress extends Address = typeof HXUI_PROGRAM_ADDRESS,
 >(
   input: WithdrawCandidateAsyncInput<
     TAccountAdmin,
     TAccountHxuiCandidate,
-    TAccountHxuiPoll
+    TAccountHxuiDropTime
   >,
   config?: { programAddress?: TProgramAddress },
 ): Promise<
@@ -139,7 +139,7 @@ export async function getWithdrawCandidateInstructionAsync<
     TProgramAddress,
     TAccountAdmin,
     TAccountHxuiCandidate,
-    TAccountHxuiPoll
+    TAccountHxuiDropTime
   >
 > {
   // Program address.
@@ -149,7 +149,7 @@ export async function getWithdrawCandidateInstructionAsync<
   const originalAccounts = {
     admin: { value: input.admin ?? null, isWritable: false },
     hxuiCandidate: { value: input.hxuiCandidate ?? null, isWritable: true },
-    hxuiPoll: { value: input.hxuiPoll ?? null, isWritable: true },
+    hxuiDropTime: { value: input.hxuiDropTime ?? null, isWritable: true },
   };
   const accounts = originalAccounts as Record<
     keyof typeof originalAccounts,
@@ -173,12 +173,14 @@ export async function getWithdrawCandidateInstructionAsync<
       ],
     });
   }
-  if (!accounts.hxuiPoll.value) {
-    accounts.hxuiPoll.value = await getProgramDerivedAddress({
+  if (!accounts.hxuiDropTime.value) {
+    accounts.hxuiDropTime.value = await getProgramDerivedAddress({
       programAddress,
       seeds: [
         getBytesEncoder().encode(
-          new Uint8Array([104, 120, 117, 105, 95, 112, 111, 108, 108]),
+          new Uint8Array([
+            104, 120, 117, 105, 95, 100, 114, 111, 112, 95, 116, 105, 109, 101,
+          ]),
         ),
       ],
     });
@@ -189,7 +191,7 @@ export async function getWithdrawCandidateInstructionAsync<
     accounts: [
       getAccountMeta(accounts.admin),
       getAccountMeta(accounts.hxuiCandidate),
-      getAccountMeta(accounts.hxuiPoll),
+      getAccountMeta(accounts.hxuiDropTime),
     ],
     data: getWithdrawCandidateInstructionDataEncoder().encode(
       args as WithdrawCandidateInstructionDataArgs,
@@ -199,38 +201,38 @@ export async function getWithdrawCandidateInstructionAsync<
     TProgramAddress,
     TAccountAdmin,
     TAccountHxuiCandidate,
-    TAccountHxuiPoll
+    TAccountHxuiDropTime
   >);
 }
 
 export type WithdrawCandidateInput<
   TAccountAdmin extends string = string,
   TAccountHxuiCandidate extends string = string,
-  TAccountHxuiPoll extends string = string,
+  TAccountHxuiDropTime extends string = string,
 > = {
   admin: TransactionSigner<TAccountAdmin>;
   hxuiCandidate: Address<TAccountHxuiCandidate>;
-  hxuiPoll: Address<TAccountHxuiPoll>;
+  hxuiDropTime: Address<TAccountHxuiDropTime>;
   name: WithdrawCandidateInstructionDataArgs["name"];
 };
 
 export function getWithdrawCandidateInstruction<
   TAccountAdmin extends string,
   TAccountHxuiCandidate extends string,
-  TAccountHxuiPoll extends string,
+  TAccountHxuiDropTime extends string,
   TProgramAddress extends Address = typeof HXUI_PROGRAM_ADDRESS,
 >(
   input: WithdrawCandidateInput<
     TAccountAdmin,
     TAccountHxuiCandidate,
-    TAccountHxuiPoll
+    TAccountHxuiDropTime
   >,
   config?: { programAddress?: TProgramAddress },
 ): WithdrawCandidateInstruction<
   TProgramAddress,
   TAccountAdmin,
   TAccountHxuiCandidate,
-  TAccountHxuiPoll
+  TAccountHxuiDropTime
 > {
   // Program address.
   const programAddress = config?.programAddress ?? HXUI_PROGRAM_ADDRESS;
@@ -239,7 +241,7 @@ export function getWithdrawCandidateInstruction<
   const originalAccounts = {
     admin: { value: input.admin ?? null, isWritable: false },
     hxuiCandidate: { value: input.hxuiCandidate ?? null, isWritable: true },
-    hxuiPoll: { value: input.hxuiPoll ?? null, isWritable: true },
+    hxuiDropTime: { value: input.hxuiDropTime ?? null, isWritable: true },
   };
   const accounts = originalAccounts as Record<
     keyof typeof originalAccounts,
@@ -254,7 +256,7 @@ export function getWithdrawCandidateInstruction<
     accounts: [
       getAccountMeta(accounts.admin),
       getAccountMeta(accounts.hxuiCandidate),
-      getAccountMeta(accounts.hxuiPoll),
+      getAccountMeta(accounts.hxuiDropTime),
     ],
     data: getWithdrawCandidateInstructionDataEncoder().encode(
       args as WithdrawCandidateInstructionDataArgs,
@@ -264,7 +266,7 @@ export function getWithdrawCandidateInstruction<
     TProgramAddress,
     TAccountAdmin,
     TAccountHxuiCandidate,
-    TAccountHxuiPoll
+    TAccountHxuiDropTime
   >);
 }
 
@@ -276,7 +278,7 @@ export type ParsedWithdrawCandidateInstruction<
   accounts: {
     admin: TAccountMetas[0];
     hxuiCandidate: TAccountMetas[1];
-    hxuiPoll: TAccountMetas[2];
+    hxuiDropTime: TAccountMetas[2];
   };
   data: WithdrawCandidateInstructionData;
 };
@@ -304,7 +306,7 @@ export function parseWithdrawCandidateInstruction<
     accounts: {
       admin: getNextAccount(),
       hxuiCandidate: getNextAccount(),
-      hxuiPoll: getNextAccount(),
+      hxuiDropTime: getNextAccount(),
     },
     data: getWithdrawCandidateInstructionDataDecoder().decode(instruction.data),
   };

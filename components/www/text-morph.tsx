@@ -2,7 +2,7 @@
 import { AnimatePresence, easeOut, motion, MotionConfig } from "motion/react";
 import { useId } from "react";
 
-import ClipboardIcon from "./file-explorer/icons/Clipboard";
+import { ClipboardCopyIcon } from "lucide-react";
 
 interface TextMorphProps {
   children: string;
@@ -31,7 +31,7 @@ const TextMorph = ({ children, copied }: TextMorphProps) => {
             animate="fadeIn"
             exit="fadeOut"
           >
-            <ClipboardIcon />
+            <ClipboardCopyIcon className="mr-1" />
           </motion.div>
         )}
         {children.split("").map((eachChar) => {

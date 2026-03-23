@@ -15,6 +15,7 @@ import { IsAdminViewProvider } from "@/providers/is-admin-view";
 import { ProgramAccountsProvider } from "./(navbar)/vote-component/providers/program-accounts";
 import { TimeProvider } from "./(navbar)/vote-component/providers/time";
 import { HxuiLiteTokenProvider } from "./(navbar)/vote-component/providers/hxui-lite-token";
+import { Toaster } from "sonner";
 
 // Fonts
 const poppins = Poppins({
@@ -104,6 +105,17 @@ export default function RootLayout({
                             <Footer />
                           </div>
                         </div>
+                        <Toaster
+                          // toastOptions={{
+                          //   classNames: {
+                          //     toast:
+                          //       "!bg-background !text-foreground !font-sans !border-border",
+                          //   },
+                          // }}
+                          expand
+                          richColors
+                          theme="dark"
+                        />
                       </ThemeProvider>
                     </IsAdminViewProvider>
                   </HxuiLiteTokenProvider>

@@ -6,24 +6,24 @@
  * @see https://github.com/codama-idl/codama
  */
 
-export * from "./buyPaidTokens";
-export * from "./cancelUnregisterForFreeTokens";
-export * from "./claimRegistrationFees";
-export * from "./claimTokens";
-export * from "./clearReceipt";
+export * from "./buyTokens";
+export * from "./cancelDeregisterFromFreeMint";
+export * from "./claimBackTokens";
+export * from "./claimRegistrationDeposit";
 export * from "./closeCandidate";
+export * from "./closeVoteReceipt";
 export * from "./createCandidate";
-export * from "./createPoll";
+export * from "./deregisterFromFreeMint";
 export * from "./drawWinner";
+export * from "./enableClaimBackOffer";
 export * from "./getAdminAccessForTesting";
-export * from "./initialiseDapp";
+export * from "./initDui";
 export * from "./mintFreeTokens";
-export * from "./openClaimableWindow";
+export * from "./openClaimBackWindow";
 export * from "./registerForFreeTokens";
-export * from "./safeWithdrawFromVault";
-export * from "./setClaimBackOffer";
-export * from "./unregisterForFreeTokens";
+export * from "./setDropTime";
 export * from "./updateConfig";
-export * from "./voteCandidate";
-export * from "./voteCandidateWithHxuiLite";
+export * from "./voteWithHxui";
+export * from "./voteWithHxuiLite";
 export * from "./withdrawCandidate";
+export * from "./withdrawVaultFunds";

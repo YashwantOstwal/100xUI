@@ -8,19 +8,19 @@ import { SquareTerminalIcon } from "lucide-react";
 import { CodeCard } from "@/components/www/code-card";
 import SyntaxHighlighterClient from "@/components/www/syntax-highlighter/client";
 import { usePackageManager } from "@/components/www/package-manager-providers";
-import { usePrivyAsSolanaWallet } from "@/providers/privy-as-solana-wallet";
-import { useHxuiLiteTokenContext } from "../vote-component/providers/hxui-lite-token";
+import { RegisterToMintFreeTokens } from "../vote-component/components/register-for-free-tokens";
 
-type packageManagers = "pnpm" | "npm" | "bun" | "yarn";
+export type PackageManagers = "pnpm" | "npm" | "bun" | "yarn";
 export function Terminal({
   packageManagerCommands,
+  mintFreeTokens = false,
 }: {
-  packageManagerCommands: Record<packageManagers, string>;
+  packageManagerCommands: Record<PackageManagers, string>;
+  mintFreeTokens?: boolean;
 }) {
   const { packageManager: currentPackageManager, handleClick } =
     usePackageManager();
-  const { selectedWallet } = usePrivyAsSolanaWallet();
-  const hxuiLiteToken = useHxuiLiteTokenContext();
+
   return (
     <CodeCard>
       <CardHeader>
@@ -35,35 +35,20 @@ export function Terminal({
                   ? "decoration-foreground underline decoration-2 underline-offset-3"
                   : "hover:opacity-75"
               )}
-              onClick={() => handleClick(tab as packageManagers)}
+              onClick={() => handleClick(tab as PackageManagers)}
             >
               {tab}
             </button>
           ))}
         </CardHeader.FlexOneFlex>
+        {mintFreeTokens && <RegisterToMintFreeTokens />}
         <CopyButton
-          codeString={
-            selectedWallet &&
-            !hxuiLiteToken.isLoading &&
-            hxuiLiteToken.maybeHxuiLiteTokenAccount.exists &&
-            hxuiLiteToken.maybeRegistrationAccount.exists
-              ? packageManagerCommands[currentPackageManager] +
-                `?pubkey=${selectedWallet.address}`
-              : packageManagerCommands[currentPackageManager]
-          }
+          codeString={packageManagerCommands[currentPackageManager]}
         />
       </CardHeader>
       <CodeCanvas className="!h-fit overflow-auto rounded-lg">
         <SyntaxHighlighterClient
-          codeString={
-            selectedWallet &&
-            !hxuiLiteToken.isLoading &&
-            hxuiLiteToken.maybeHxuiLiteTokenAccount.exists &&
-            hxuiLiteToken.maybeRegistrationAccount.exists
-              ? packageManagerCommands[currentPackageManager] +
-                `?pubkey=${selectedWallet.address}`
-              : packageManagerCommands[currentPackageManager]
-          }
+          codeString={packageManagerCommands[currentPackageManager]}
           Loader={
             <pre>
               <code>{packageManagerCommands[currentPackageManager]}</code>

@@ -17,13 +17,13 @@ import {
   setTransactionMessageLifetimeUsingBlockhash,
   getBase58Decoder,
 } from "@solana/kit";
-import { getHxuiConfigAddress } from "@/clients/pdas";
 import {
-  Candidate,
+  HxuiCandidate,
   CandidateStatus,
-  fetchConfig,
   getWithdrawCandidateInstructionAsync,
 } from "@/clients/generated/hxui";
+import { SolanaExplorerFull } from "@/icons/solana-explorer.icon";
+
 import {
   Tooltip,
   TooltipContent,
@@ -37,7 +37,6 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogMedia,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
@@ -45,22 +44,31 @@ import { InfoIcon } from "lucide-react";
 import { run } from "@/utils";
 import { useProgramAccounts } from "../providers/program-accounts";
 import { Spinner } from "@/components/ui/spinner";
-export function WithdrawCandidate({ candidate }: { candidate: Candidate }) {
+import { toast } from "sonner";
+export function WithdrawCandidate({ candidate }: { candidate: HxuiCandidate }) {
   const client = useSolanaClient();
   const { selectedWallet, signAndSendTransaction } = usePrivyAsSolanaWallet();
   const programAccounts = useProgramAccounts();
   async function withdrawCandidate() {
     if (!selectedWallet)
-      return console.error("Please connect to wallet to invoke this ixn.");
-    const hxuiConfigAddress = await getHxuiConfigAddress();
-    const hxuiConfigAccount = await fetchConfig(client.rpc, hxuiConfigAddress);
+      return console.error(
+        "wallet not connected. please connect with your admin wallet to create a candidate"
+      );
+
+    if (programAccounts.isLoading)
+      return console.error(
+        "program accounts are loading. please wait and try again"
+      );
     const selectedWalletAddress = address(selectedWallet.address);
-    if (selectedWalletAddress !== hxuiConfigAccount.data.admin)
-      return console.error("only admin can invoke this instruction");
+    if (programAccounts.hxuiConfig.data.admin !== selectedWalletAddress)
+      return console.error("only admin can invoke this instruction.");
     const adminSigner = createNoopSigner(selectedWalletAddress);
 
-    if (candidate.candidateStatus != CandidateStatus.Active) {
-      return console.error("only active candidate can be withdrawn");
+    if (candidate.status == CandidateStatus.Withdrawn) {
+      return console.error("This component has already been withdrawn.");
+    }
+    if (candidate.status != CandidateStatus.Active) {
+      return console.error("only active component can be withdrawn");
     }
 
     const withdrawCandidateIx = await getWithdrawCandidateInstructionAsync({
@@ -83,23 +91,44 @@ export function WithdrawCandidate({ candidate }: { candidate: Candidate }) {
       (tx) => new Uint8Array(getTransactionEncoder().encode(tx))
     );
 
-    try {
-      const { signature } = await signAndSendTransaction({
+    toast.promise(
+      signAndSendTransaction({
         transaction: compiledAndEncodedTx,
         wallet: selectedWallet,
         options: { commitment: "confirmed" },
-      });
-      console.log(getBase58Decoder().decode(signature));
-    } catch (err) {
-      console.log(err);
-    }
+      }),
+      {
+        loading: "Pending...",
+        success: ({ signature }) => {
+          return (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className=""
+              href={`https://explorer.solana.com/tx/${getBase58Decoder().decode(signature)}?cluster=devnet`}
+            >
+              <div className="flex items-center gap-1 text-nowrap">
+                Transaction confirmed. View on
+                <SolanaExplorerFull className="w-30" />
+              </div>
+            </a>
+          );
+        },
+        error: (err) => {
+          console.error(err);
+          if (err?.message?.includes("rejected"))
+            return "Transaction rejected.";
+          return "Transaction failed to execute. Check the logs.";
+        },
+      }
+    );
   }
   const disabled =
     !selectedWallet ||
     programAccounts.isLoading ||
     selectedWallet.address !== programAccounts.hxuiConfig.data.admin ||
-    candidate.candidateStatus == CandidateStatus.Withdrawn ||
-    candidate.candidateStatus !== CandidateStatus.Active;
+    candidate.status == CandidateStatus.Withdrawn ||
+    candidate.status !== CandidateStatus.Active;
   return (
     <AlertDialog>
       <HxuiButtonGroup>
@@ -119,7 +148,10 @@ export function WithdrawCandidate({ candidate }: { candidate: Candidate }) {
           {run(() => {
             if (!selectedWallet) {
               return (
-                <TooltipContent>Please connect to admin wallet.</TooltipContent>
+                <TooltipContent>
+                  Please connect your wallet to verify delegated admin
+                  privileges.
+                </TooltipContent>
               );
             }
 
@@ -132,23 +164,23 @@ export function WithdrawCandidate({ candidate }: { candidate: Candidate }) {
             ) {
               return (
                 <TooltipContent>
-                  Only admin can perform this action.
+                  This instruction can only be invoked by the delegated admin.
                 </TooltipContent>
               );
             }
 
-            if (candidate.candidateStatus == CandidateStatus.Withdrawn) {
+            if (candidate.status == CandidateStatus.Withdrawn) {
               return (
                 <TooltipContent>
-                  This candidate has already been withdrawn.
+                  This component has already been withdrawn.
                 </TooltipContent>
               );
             }
 
-            if (candidate.candidateStatus !== CandidateStatus.Active) {
+            if (candidate.status !== CandidateStatus.Active) {
               return (
                 <TooltipContent>
-                  Only active candidate can be withdrawn.
+                  Only an active candidate component can be withdrawn.
                 </TooltipContent>
               );
             }
@@ -161,18 +193,23 @@ export function WithdrawCandidate({ candidate }: { candidate: Candidate }) {
               <InfoIcon />
             </HxuiButton>
           </TooltipTrigger>
-          <TooltipContent>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim,
-            facere.
+          <TooltipContent className="max-w-100">
+            Removes an active candidate component due to insufficient user
+            traction or technical limitations in building. The admin must
+            subsequently open a claim-back window for users to reclaim spent
+            HxUI tokens.
           </TooltipContent>
         </Tooltip>
       </HxuiButtonGroup>
-      <AlertDialogContent size="sm">
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Withdraw candidate?</AlertDialogTitle>
           <AlertDialogDescription>
-            This withdraw the candidate from the poll and have the tokens spent
-            by users to be claimed back
+            This removes an active candidate component. If withdrawing due to
+            low traction, consider enabling the &quot;Claim back if winner&quot;
+            offer instead to create voting pressure. Otherwise, you must open a
+            claim-back window for HxUI token recovery after confirming this
+            withdrawal.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

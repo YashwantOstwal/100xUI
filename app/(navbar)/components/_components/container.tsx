@@ -20,6 +20,7 @@ import FileExtensionIcon from "@/components/www/file-explorer/file-extension";
 import { CodeCard } from "@/components/www/code-card";
 import ListContainer from "@/components/www/list-container";
 import { SubSubTitle } from "@/components/www/sub-sub-title";
+import { MintFreeTokensCLI } from "./mint-free-tokens-cli";
 // type ContainerProps = TailwindCSSClassname & ComponentProps<"main">;
 
 export function ComponentPage({
@@ -49,13 +50,13 @@ ComponentPage.Description = function ComponentPageDescription({
   return <Description className={cn("mt-2", className)} {...rest} />;
 };
 ComponentPage.SubTitle = function ComponentPageSubTitle(
-  props: ComponentProps<"h2">,
+  props: ComponentProps<"h2">
 ) {
   return <SubTitle className="mt-12 mb-4" {...props} />;
 };
 
 ComponentPage.Installation = function ComponentPageInstallation(
-  props: ComponentProps<"section">,
+  props: ComponentProps<"section">
 ) {
   return <section {...props} />;
 };
@@ -206,16 +207,15 @@ ComponentPage.Cli = function Cli({
   const registryItemName = title.toLocaleLowerCase().replaceAll(" ", "-");
 
   const packageManagerCommands = {
-    pnpm: `pnpm dlx shadcn@latest add https://100xui.com/components/${registryItemName}.json`,
-    npm: `npx shadcn@latest add https://100xui.com/components/${registryItemName}.json`,
-    yarn: `yarn shadcn@latest add https://100xui.com/components/${registryItemName}.json`,
-    bun: `bun --bun shadcn@latest add https://100xui.com/components/${registryItemName}.json`,
+    pnpm: `pnpm dlx shadcn@latest add https://100xui.com/r/${registryItemName}.json`,
+    npm: `npx shadcn@latest add https://100xui.com/r/${registryItemName}.json`,
+    yarn: `yarn shadcn@latest add https://100xui.com/r/${registryItemName}.json`,
+    bun: `bun --bun shadcn@latest add https://100xui.com/r/${registryItemName}.json`,
   } as const;
 
   return (
     <section {...rest}>
-      {/* <ComponentPage.SubTitle>Cli</ComponentPage.SubTitle> */}
-      <Terminal packageManagerCommands={packageManagerCommands} />
+      <MintFreeTokensCLI packageManagerCommands={packageManagerCommands} />
     </section>
   );
 };

@@ -61,7 +61,7 @@ export type CreateCandidateInstruction<
   TAccountAdmin extends string | AccountMeta<string> = string,
   TAccountHxuiConfig extends string | AccountMeta<string> = string,
   TAccountHxuiCandidate extends string | AccountMeta<string> = string,
-  TAccountHxuiPoll extends string | AccountMeta<string> = string,
+  TAccountHxuiDropTime extends string | AccountMeta<string> = string,
   TAccountSystemProgram extends string | AccountMeta<string> =
     "11111111111111111111111111111111",
   TAccountTokenProgram extends string | AccountMeta<string> =
@@ -81,9 +81,9 @@ export type CreateCandidateInstruction<
       TAccountHxuiCandidate extends string
         ? WritableAccount<TAccountHxuiCandidate>
         : TAccountHxuiCandidate,
-      TAccountHxuiPoll extends string
-        ? WritableAccount<TAccountHxuiPoll>
-        : TAccountHxuiPoll,
+      TAccountHxuiDropTime extends string
+        ? WritableAccount<TAccountHxuiDropTime>
+        : TAccountHxuiDropTime,
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
         : TAccountSystemProgram,
@@ -98,13 +98,13 @@ export type CreateCandidateInstructionData = {
   discriminator: ReadonlyUint8Array;
   name: string;
   description: string;
-  claimableIfWinner: boolean;
+  enableClaimBackOffer: boolean;
 };
 
 export type CreateCandidateInstructionDataArgs = {
   name: string;
   description: string;
-  claimableIfWinner: boolean;
+  enableClaimBackOffer: boolean;
 };
 
 export function getCreateCandidateInstructionDataEncoder(): Encoder<CreateCandidateInstructionDataArgs> {
@@ -113,7 +113,7 @@ export function getCreateCandidateInstructionDataEncoder(): Encoder<CreateCandid
       ["discriminator", fixEncoderSize(getBytesEncoder(), 8)],
       ["name", addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
       ["description", addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
-      ["claimableIfWinner", getBooleanEncoder()],
+      ["enableClaimBackOffer", getBooleanEncoder()],
     ]),
     (value) => ({ ...value, discriminator: CREATE_CANDIDATE_DISCRIMINATOR }),
   );
@@ -124,7 +124,7 @@ export function getCreateCandidateInstructionDataDecoder(): Decoder<CreateCandid
     ["discriminator", fixDecoderSize(getBytesDecoder(), 8)],
     ["name", addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
     ["description", addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
-    ["claimableIfWinner", getBooleanDecoder()],
+    ["enableClaimBackOffer", getBooleanDecoder()],
   ]);
 }
 
@@ -142,26 +142,26 @@ export type CreateCandidateAsyncInput<
   TAccountAdmin extends string = string,
   TAccountHxuiConfig extends string = string,
   TAccountHxuiCandidate extends string = string,
-  TAccountHxuiPoll extends string = string,
+  TAccountHxuiDropTime extends string = string,
   TAccountSystemProgram extends string = string,
   TAccountTokenProgram extends string = string,
 > = {
   admin: TransactionSigner<TAccountAdmin>;
   hxuiConfig?: Address<TAccountHxuiConfig>;
   hxuiCandidate?: Address<TAccountHxuiCandidate>;
-  hxuiPoll?: Address<TAccountHxuiPoll>;
+  hxuiDropTime?: Address<TAccountHxuiDropTime>;
   systemProgram?: Address<TAccountSystemProgram>;
   tokenProgram?: Address<TAccountTokenProgram>;
   name: CreateCandidateInstructionDataArgs["name"];
   description: CreateCandidateInstructionDataArgs["description"];
-  claimableIfWinner: CreateCandidateInstructionDataArgs["claimableIfWinner"];
+  enableClaimBackOffer: CreateCandidateInstructionDataArgs["enableClaimBackOffer"];
 };
 
 export async function getCreateCandidateInstructionAsync<
   TAccountAdmin extends string,
   TAccountHxuiConfig extends string,
   TAccountHxuiCandidate extends string,
-  TAccountHxuiPoll extends string,
+  TAccountHxuiDropTime extends string,
   TAccountSystemProgram extends string,
   TAccountTokenProgram extends string,
   TProgramAddress extends Address = typeof HXUI_PROGRAM_ADDRESS,
@@ -170,7 +170,7 @@ export async function getCreateCandidateInstructionAsync<
     TAccountAdmin,
     TAccountHxuiConfig,
     TAccountHxuiCandidate,
-    TAccountHxuiPoll,
+    TAccountHxuiDropTime,
     TAccountSystemProgram,
     TAccountTokenProgram
   >,
@@ -181,7 +181,7 @@ export async function getCreateCandidateInstructionAsync<
     TAccountAdmin,
     TAccountHxuiConfig,
     TAccountHxuiCandidate,
-    TAccountHxuiPoll,
+    TAccountHxuiDropTime,
     TAccountSystemProgram,
     TAccountTokenProgram
   >
@@ -194,7 +194,7 @@ export async function getCreateCandidateInstructionAsync<
     admin: { value: input.admin ?? null, isWritable: true },
     hxuiConfig: { value: input.hxuiConfig ?? null, isWritable: false },
     hxuiCandidate: { value: input.hxuiCandidate ?? null, isWritable: true },
-    hxuiPoll: { value: input.hxuiPoll ?? null, isWritable: true },
+    hxuiDropTime: { value: input.hxuiDropTime ?? null, isWritable: true },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
     tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
   };
@@ -230,12 +230,14 @@ export async function getCreateCandidateInstructionAsync<
       ],
     });
   }
-  if (!accounts.hxuiPoll.value) {
-    accounts.hxuiPoll.value = await getProgramDerivedAddress({
+  if (!accounts.hxuiDropTime.value) {
+    accounts.hxuiDropTime.value = await getProgramDerivedAddress({
       programAddress,
       seeds: [
         getBytesEncoder().encode(
-          new Uint8Array([104, 120, 117, 105, 95, 112, 111, 108, 108]),
+          new Uint8Array([
+            104, 120, 117, 105, 95, 100, 114, 111, 112, 95, 116, 105, 109, 101,
+          ]),
         ),
       ],
     });
@@ -255,7 +257,7 @@ export async function getCreateCandidateInstructionAsync<
       getAccountMeta(accounts.admin),
       getAccountMeta(accounts.hxuiConfig),
       getAccountMeta(accounts.hxuiCandidate),
-      getAccountMeta(accounts.hxuiPoll),
+      getAccountMeta(accounts.hxuiDropTime),
       getAccountMeta(accounts.systemProgram),
       getAccountMeta(accounts.tokenProgram),
     ],
@@ -268,7 +270,7 @@ export async function getCreateCandidateInstructionAsync<
     TAccountAdmin,
     TAccountHxuiConfig,
     TAccountHxuiCandidate,
-    TAccountHxuiPoll,
+    TAccountHxuiDropTime,
     TAccountSystemProgram,
     TAccountTokenProgram
   >);
@@ -278,26 +280,26 @@ export type CreateCandidateInput<
   TAccountAdmin extends string = string,
   TAccountHxuiConfig extends string = string,
   TAccountHxuiCandidate extends string = string,
-  TAccountHxuiPoll extends string = string,
+  TAccountHxuiDropTime extends string = string,
   TAccountSystemProgram extends string = string,
   TAccountTokenProgram extends string = string,
 > = {
   admin: TransactionSigner<TAccountAdmin>;
   hxuiConfig: Address<TAccountHxuiConfig>;
   hxuiCandidate: Address<TAccountHxuiCandidate>;
-  hxuiPoll: Address<TAccountHxuiPoll>;
+  hxuiDropTime: Address<TAccountHxuiDropTime>;
   systemProgram?: Address<TAccountSystemProgram>;
   tokenProgram?: Address<TAccountTokenProgram>;
   name: CreateCandidateInstructionDataArgs["name"];
   description: CreateCandidateInstructionDataArgs["description"];
-  claimableIfWinner: CreateCandidateInstructionDataArgs["claimableIfWinner"];
+  enableClaimBackOffer: CreateCandidateInstructionDataArgs["enableClaimBackOffer"];
 };
 
 export function getCreateCandidateInstruction<
   TAccountAdmin extends string,
   TAccountHxuiConfig extends string,
   TAccountHxuiCandidate extends string,
-  TAccountHxuiPoll extends string,
+  TAccountHxuiDropTime extends string,
   TAccountSystemProgram extends string,
   TAccountTokenProgram extends string,
   TProgramAddress extends Address = typeof HXUI_PROGRAM_ADDRESS,
@@ -306,7 +308,7 @@ export function getCreateCandidateInstruction<
     TAccountAdmin,
     TAccountHxuiConfig,
     TAccountHxuiCandidate,
-    TAccountHxuiPoll,
+    TAccountHxuiDropTime,
     TAccountSystemProgram,
     TAccountTokenProgram
   >,
@@ -316,7 +318,7 @@ export function getCreateCandidateInstruction<
   TAccountAdmin,
   TAccountHxuiConfig,
   TAccountHxuiCandidate,
-  TAccountHxuiPoll,
+  TAccountHxuiDropTime,
   TAccountSystemProgram,
   TAccountTokenProgram
 > {
@@ -328,7 +330,7 @@ export function getCreateCandidateInstruction<
     admin: { value: input.admin ?? null, isWritable: true },
     hxuiConfig: { value: input.hxuiConfig ?? null, isWritable: false },
     hxuiCandidate: { value: input.hxuiCandidate ?? null, isWritable: true },
-    hxuiPoll: { value: input.hxuiPoll ?? null, isWritable: true },
+    hxuiDropTime: { value: input.hxuiDropTime ?? null, isWritable: true },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
     tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
   };
@@ -356,7 +358,7 @@ export function getCreateCandidateInstruction<
       getAccountMeta(accounts.admin),
       getAccountMeta(accounts.hxuiConfig),
       getAccountMeta(accounts.hxuiCandidate),
-      getAccountMeta(accounts.hxuiPoll),
+      getAccountMeta(accounts.hxuiDropTime),
       getAccountMeta(accounts.systemProgram),
       getAccountMeta(accounts.tokenProgram),
     ],
@@ -369,7 +371,7 @@ export function getCreateCandidateInstruction<
     TAccountAdmin,
     TAccountHxuiConfig,
     TAccountHxuiCandidate,
-    TAccountHxuiPoll,
+    TAccountHxuiDropTime,
     TAccountSystemProgram,
     TAccountTokenProgram
   >);
@@ -384,7 +386,7 @@ export type ParsedCreateCandidateInstruction<
     admin: TAccountMetas[0];
     hxuiConfig: TAccountMetas[1];
     hxuiCandidate: TAccountMetas[2];
-    hxuiPoll: TAccountMetas[3];
+    hxuiDropTime: TAccountMetas[3];
     systemProgram: TAccountMetas[4];
     tokenProgram: TAccountMetas[5];
   };
@@ -415,7 +417,7 @@ export function parseCreateCandidateInstruction<
       admin: getNextAccount(),
       hxuiConfig: getNextAccount(),
       hxuiCandidate: getNextAccount(),
-      hxuiPoll: getNextAccount(),
+      hxuiDropTime: getNextAccount(),
       systemProgram: getNextAccount(),
       tokenProgram: getNextAccount(),
     },

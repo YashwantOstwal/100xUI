@@ -1,55 +1,27 @@
 "use client";
 
-import { useSolanaClient } from "@/providers/solana-client";
-import Button, {
+import {
   HxuiButton,
   HxuiButtonGroup,
 } from "@/components/www/file-explorer/button";
 import { usePrivyAsSolanaWallet } from "@/providers/privy-as-solana-wallet";
-import bs58 from "bs58";
 import {
-  Address,
-  address,
-  appendTransactionMessageInstructions,
-  Base58EncodedBytes,
-  compileTransaction,
-  createNoopSigner,
-  createTransactionMessage,
-  getProgramDerivedAddress,
-  getTransactionEncoder,
-  Instruction,
-  isSolanaError,
-  lamports,
-  pipe,
-  setTransactionMessageFeePayerSigner,
-  setTransactionMessageLifetimeUsingBlockhash,
-  SOLANA_ERROR__ACCOUNTS__ACCOUNT_NOT_FOUND,
-  StringifiedNumber,
-} from "@solana/kit";
-
-import {
-  fetchMaybeToken,
-  getCreateAssociatedTokenInstructionAsync,
-} from "@solana-program/token";
-import { getBuyPaidTokensInstructionAsync } from "@/clients/generated/hxui";
+  RegisterButton,
+  CreateHxuiTokenAccountButton,
+  UnregisterButton,
+  CancelUnregisterButton,
+  ClaimBackDepositButton,
+  UnregisterAndClaimbackDepositButton,
+} from "./register-for-free-tokens";
 import {
   Popover,
   PopoverContent,
+  PopoverDescription,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { ButtonGroup } from "@/components/ui/button-group";
-import { useEffect, useState } from "react";
-import {
-  LAMPORTS_PER_SOL,
-  TOKEN_2022_PROGRAM_ADDRESS,
-} from "@/clients/constants";
-import { getHxuiMintAddress, getHxuiTokenAddress } from "@/clients/pdas";
+import { Field, FieldLabel } from "@/components/ui/field";
 import { Checkbox } from "../../../../components/ui/checkbox";
 import { cn } from "@/lib/utils";
-import { useHxuiTokenContext } from "../providers/hxui-token";
-import { useProgramAccounts } from "../providers/program-accounts";
 import { InfoIcon, PlusCircleIcon } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -64,6 +36,18 @@ export function MintFreeTokens() {
   const hxuiLiteToken = useHxuiLiteTokenContext();
 
   const disabled = !selectedWallet || hxuiLiteToken.isLoading;
+
+  const accountsLoading = hxuiLiteToken.isLoading;
+  const freeMintTrackerExists =
+    !hxuiLiteToken.isLoading &&
+    hxuiLiteToken.maybeFreeMintTrackerAccount.exists;
+  const tokenAccountExists =
+    !hxuiLiteToken.isLoading && hxuiLiteToken.maybeHxuiLiteTokenAccount.exists;
+  const unregistered =
+    !hxuiLiteToken.isLoading &&
+    hxuiLiteToken.maybeFreeMintTrackerAccount.exists &&
+    hxuiLiteToken.maybeFreeMintTrackerAccount.data.unregistered;
+
   return (
     <Popover>
       <HxuiButtonGroup className="">
@@ -71,15 +55,21 @@ export function MintFreeTokens() {
           <TooltipTrigger asChild>
             <span>
               <PopoverTrigger asChild disabled={disabled}>
-                <HxuiButton>
-                  {hxuiLiteToken.isLoading ? (
-                    <Spinner className="size-4" />
-                  ) : hxuiLiteToken.maybeHxuiLiteTokenAccount.exists ? (
-                    hxuiLiteToken.maybeHxuiLiteTokenAccount.data.amount
-                  ) : (
-                    0
-                  )}{" "}
-                  HXUI Lite tokens
+                <HxuiButton className="">
+                  {run(() => {
+                    if (selectedWallet) {
+                      if (hxuiLiteToken.isLoading) {
+                        return <Spinner className="size-4" />;
+                      }
+                      if (hxuiLiteToken.maybeHxuiLiteTokenAccount.exists) {
+                        return hxuiLiteToken.maybeHxuiLiteTokenAccount.data
+                          .amount;
+                      }
+                    }
+
+                    return 0;
+                  })}
+                  &nbsp;HxUI Lite tokens
                   <PlusCircleIcon className="fill-primary stroke-secondary size-5.5 rounded-full"></PlusCircleIcon>
                 </HxuiButton>
               </PopoverTrigger>
@@ -89,7 +79,7 @@ export function MintFreeTokens() {
             if (!selectedWallet) {
               return (
                 <TooltipContent>
-                  Please connect to a solana wallet
+                  Please connect to a Solana wallet
                 </TooltipContent>
               );
             }
@@ -102,26 +92,87 @@ export function MintFreeTokens() {
               <InfoIcon />
             </HxuiButton>
           </TooltipTrigger>
-          <TooltipContent>
-            Hxui Lite tokens can be used to vote candidate components.
+          <TooltipContent className="max-w-100">
+            HxUI Lite tokens are earned for free by adding 100xUI components to
+            your project via the shadcn CLI to vote on active candidate
+            components.
           </TooltipContent>
         </Tooltip>
       </HxuiButtonGroup>
-      {!disabled && (
-        <PopoverContent className="h-40">
-          {hxuiLiteToken.maybeRegistrationAccount.exists &&
-          hxuiLiteToken.maybeHxuiLiteTokenAccount.exists ? (
-            <Field>
-              <FieldDescription>
-                Add 100xUI components using shadcn CLI to earn Hxui lite tokens.
-              </FieldDescription>
-            </Field>
-          ) : (
-            <FieldDescription>
-              Please complete the regisration process and earn tokens by adding
-              100xUI components to your project using shadcn CLI.
-            </FieldDescription>
-          )}
+      {selectedWallet && !accountsLoading && (
+        <PopoverContent className="w-80 space-y-3">
+          {run(() => {
+            if (!freeMintTrackerExists) {
+              return (
+                <>
+                  <PopoverDescription className="text-sm">
+                    Complete registration to start minting free HxUI Lite tokens
+                    by adding 100xUI components to your project via the shadcn
+                    CLI.
+                  </PopoverDescription>
+                  <Field>
+                    <Field
+                      orientation="horizontal"
+                      // data-disabled
+                    >
+                      <Checkbox
+                        id="registration-account"
+                        name="registration-account"
+                        checked={!freeMintTrackerExists}
+                      />
+                      <FieldLabel htmlFor="registration-account ">
+                        Registration deposit of 0.00101616 SOL (redeemable)
+                      </FieldLabel>
+                    </Field>
+                    <Field
+                      orientation="horizontal"
+                      // data-disabled
+                    >
+                      <Checkbox
+                        id="hxui-lite-token-account"
+                        name="hxui-lite-token-account"
+                        disabled={tokenAccountExists}
+                        checked={!tokenAccountExists}
+                      />
+                      <FieldLabel
+                        htmlFor="hxui-lite-token-account"
+                        className={cn(
+                          "whitespace-nowrap",
+                          tokenAccountExists && "line-through"
+                        )}
+                      >
+                        Create HxUI Lite token account
+                      </FieldLabel>
+                    </Field>
+                    <Field>
+                      <RegisterButton />
+                    </Field>
+                  </Field>
+                </>
+              );
+            }
+            // control reaches here when registration account exists.
+            else if (unregistered) {
+              return (
+                <div className="space-y-3">
+                  <CancelUnregisterButton />
+                  <ClaimBackDepositButton />
+                </div>
+              );
+            } else {
+              return (
+                <>
+                  <PopoverDescription className="text-sm">
+                    Add 100xUI components using shadcn CLI to earn HxUI Lite
+                    tokens.
+                  </PopoverDescription>
+                  {!tokenAccountExists && <CreateHxuiTokenAccountButton />}
+                  <UnregisterButton />
+                  <UnregisterAndClaimbackDepositButton />
+                </>
+              );
+            }
+          })}
         </PopoverContent>
       )}
     </Popover>

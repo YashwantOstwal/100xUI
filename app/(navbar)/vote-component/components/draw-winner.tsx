@@ -1,67 +1,31 @@
 "use client";
 
+import { CodeCard } from "@/components/www/code-card";
+
 import { InfoIcon, RefreshCcwIcon } from "lucide-react";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
 import { useSolanaClient } from "@/providers/solana-client";
-import Button from "../../../../components/www/file-explorer/button";
 import { usePrivyAsSolanaWallet } from "@/providers/privy-as-solana-wallet";
 import {
-  Address,
   address,
   appendTransactionMessageInstruction,
-  appendTransactionMessageInstructions,
   Base58EncodedBytes,
   compileTransaction,
   createNoopSigner,
   createTransactionMessage,
-  getProgramDerivedAddress,
   getTransactionEncoder,
-  Instruction,
-  isSolanaError,
-  lamports,
   pipe,
   setTransactionMessageFeePayerSigner,
   setTransactionMessageLifetimeUsingBlockhash,
-  SOLANA_ERROR__ACCOUNTS__ACCOUNT_NOT_FOUND,
   getBase58Decoder,
-  StringifiedNumber,
-  getBase64Encoder,
   AccountMeta,
 } from "@solana/kit";
-import { getHxuiConfigAddress, getHxuiPollAddress } from "@/clients/pdas";
-import { Calendar } from "@/components/ui/calendar";
-
 import {
-  fetchMaybeToken,
-  getCreateAssociatedTokenInstructionAsync,
-} from "@solana-program/token";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Switch } from "@/components/ui/switch";
-import { Button as ShadcnButton } from "@/components/ui/button";
-import {
-  CANDIDATE_DISCRIMINATOR,
-  CandidateStatus,
-  fetchConfig,
-  fetchPoll,
-  getCandidateCodec,
-  getCreateCandidateInstructionAsync,
-  getCreatePollInstructionAsync,
+  HXUI_CANDIDATE_DISCRIMINATOR,
   getDrawWinnerInstructionAsync,
-  getPollCodec,
   HXUI_PROGRAM_ADDRESS,
-  isHxuiError,
 } from "@/clients/generated/hxui";
-import bs58 from "bs58";
 import { run } from "@/utils";
-import { Input } from "@/components/ui/input";
 import { getAccountMetaFactory } from "@/clients/generated/hxui/shared";
-import { ButtonGroup } from "@/components/ui/button-group";
 import {
   HxuiButtonGroup,
   HxuiButton,
@@ -72,13 +36,64 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Spinner } from "@/components/ui/spinner";
-import { useProgramAccounts } from "../providers/program-accounts";
 import { getUnixTimestamp, useTimeContext } from "../providers/time";
+import { useCanDrawWinnerContext } from "../providers/can-draw-winner";
+import { SolanaExplorerFull } from "@/icons/solana-explorer.icon";
+import { useProgramAccounts } from "../providers/program-accounts";
+
+import { toast } from "sonner";
+
 export function DrawWinner() {
+  const programAccounts = useProgramAccounts();
+  const { timeNow } = useTimeContext();
+  const { canDrawWinner } = useCanDrawWinnerContext();
+
+  return (
+    <div className="flex items-center justify-center py-2">
+      <CodeCard className="bg-secondary mb-2 flex w-full items-center justify-between rounded-full pl-3">
+        <h2 className="ml-2.5 text-base">
+          {run(() => {
+            if (programAccounts.isLoading) {
+              return <Spinner />;
+            }
+
+            if (programAccounts.hxuiDropTime.data.isWinnerDrawn) {
+              return "Current cycle complete. Set a new drop time.";
+            }
+
+            if (timeNow <= programAccounts.hxuiDropTime.data.dropTimestamp) {
+              const seconds = Number(
+                programAccounts.hxuiDropTime.data.dropTimestamp
+              );
+              const date = new Date(seconds * 1000);
+              return (
+                <>
+                  Winner selection unlocks after{" "}
+                  <span className="text-muted-foreground">
+                    {date.toLocaleString()}
+                  </span>
+                </>
+              );
+            }
+            if (!canDrawWinner) {
+              return "Waiting for a candidate to reach 10 votes to draw a winner.";
+            }
+            return "Draw winner now";
+          })}
+        </h2>
+
+        <DrawWinnerButton />
+      </CodeCard>
+    </div>
+  );
+}
+
+export function DrawWinnerButton() {
   const client = useSolanaClient();
   const { selectedWallet, signAndSendTransaction } = usePrivyAsSolanaWallet();
 
   const { timeNow, reload } = useTimeContext();
+  const { canDrawWinner } = useCanDrawWinnerContext();
   const programAccounts = useProgramAccounts();
 
   async function drawWinner() {
@@ -89,15 +104,20 @@ export function DrawWinner() {
       return console.error(
         "Program accounts are still loading. Please wait and try again."
       );
-    else if (programAccounts.hxuiPoll.data.currentPollWinnerDrawn)
+    else if (programAccounts.hxuiDropTime.data.isWinnerDrawn)
       return console.error(
-        "Winner for current poll is already drawn. Create a new poll."
+        "Winner for current cycle is already drawn. Set a new drop time."
       );
     else if (
-      programAccounts.hxuiPoll.data.currentPollDeadline >= getUnixTimestamp()
+      programAccounts.hxuiDropTime.data.dropTimestamp >= getUnixTimestamp()
     ) {
       return console.error(
-        "Winner cannot be drawn now as the poll is still live. Please wait until the poll deadline has passed to draw the winner."
+        "Winner cannot be drawn wait until the drop time has passed to draw the winner."
+      );
+    }
+    if (!canDrawWinner) {
+      return console.error(
+        "No active candidate with minimum votes to be drawn as winner."
       );
     }
 
@@ -114,7 +134,7 @@ export function DrawWinner() {
               encoding: "base58",
               offset: BigInt(0),
               bytes: getBase58Decoder().decode(
-                CANDIDATE_DISCRIMINATOR
+                HXUI_CANDIDATE_DISCRIMINATOR
               ) as Base58EncodedBytes,
             },
           },
@@ -140,7 +160,7 @@ export function DrawWinner() {
     //     const base64Data = activeCandidate.account.data[0];
     //     const dataBytes = getBase64Encoder().encode(base64Data);
     //     const decodedCandidateData = getCandidateCodec().decode(dataBytes);
-    //     return decodedCandidateData.candidateStatus === CandidateStatus.Active;
+    //     return decodedCandidateData.status === CandidateStatus.Active;
     //   })
     //   .map((eachActiveCandidate) =>
     //     getAccountMeta({
@@ -156,8 +176,7 @@ export function DrawWinner() {
     ) as AccountMeta<string>[];
     const drawWinnerIx = await getDrawWinnerInstructionAsync({});
     drawWinnerIx.accounts.push(
-      //@ts-ignore
-      // passing active candidate for picking winner among them.
+      // @ts-expect-error passing active candidate for picking winner among them.
       ...remainingAccounts
     );
 
@@ -176,16 +195,37 @@ export function DrawWinner() {
       (tx) => new Uint8Array(getTransactionEncoder().encode(tx))
     );
 
-    try {
-      const { signature } = await signAndSendTransaction({
+    toast.promise(
+      signAndSendTransaction({
         transaction: compiledAndEncodedTx,
         wallet: selectedWallet,
         options: { commitment: "confirmed" },
-      });
-      console.log(getBase58Decoder().decode(signature));
-    } catch (err) {
-      console.log(err);
-    }
+      }),
+      {
+        loading: "Pending...",
+        success: ({ signature }) => {
+          return (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className=""
+              href={`https://explorer.solana.com/tx/${getBase58Decoder().decode(signature)}?cluster=devnet`}
+            >
+              <div className="flex items-center gap-1 text-nowrap">
+                Transaction confirmed. View on
+                <SolanaExplorerFull className="w-30" />
+              </div>
+            </a>
+          );
+        },
+        error: (err) => {
+          console.error(err);
+          if (err?.message?.includes("rejected"))
+            return "Transaction rejected.";
+          return "Transaction failed to execute. Check the logs.";
+        },
+      }
+    );
   }
   return (
     <HxuiButtonGroup>
@@ -194,9 +234,11 @@ export function DrawWinner() {
           <span>
             <HxuiButton
               disabled={
+                !selectedWallet ||
+                !canDrawWinner ||
                 programAccounts.isLoading ||
-                programAccounts.hxuiPoll.data.currentPollWinnerDrawn ||
-                programAccounts.hxuiPoll.data.currentPollDeadline >= timeNow
+                programAccounts.hxuiDropTime.data.isWinnerDrawn ||
+                programAccounts.hxuiDropTime.data.dropTimestamp >= timeNow
               }
               onClick={drawWinner}
             >
@@ -206,21 +248,39 @@ export function DrawWinner() {
           </span>
         </TooltipTrigger>
         {run(() => {
+          if (!selectedWallet) {
+            return (
+              <TooltipContent>Please connect a Solana wallet.</TooltipContent>
+            );
+          }
+
           if (programAccounts.isLoading) {
             return null;
           }
-          if (programAccounts.hxuiPoll.data.currentPollWinnerDrawn) {
+
+          if (programAccounts.hxuiDropTime.data.isWinnerDrawn) {
             return (
-              <TooltipContent>
-                Winner has already been drawn for the current poll.
+              <TooltipContent className="max-w-80">
+                A winner has already been drawn and a new drop time must be
+                created to begin the next cycle.
               </TooltipContent>
             );
           }
-          if (programAccounts.hxuiPoll.data.currentPollDeadline >= timeNow) {
+
+          if (programAccounts.hxuiDropTime.data.dropTimestamp >= timeNow) {
             return (
-              <TooltipContent>
-                Winner cannot be drawn now as the poll is still live. Please
-                wait until the poll deadline has passed to draw the winner.
+              <TooltipContent className="max-w-80">
+                No winner can be selected before the drop time. Please wait
+                until this milestone has passed.
+              </TooltipContent>
+            );
+          }
+
+          if (!canDrawWinner) {
+            return (
+              <TooltipContent className="max-w-80">
+                There are currently no active candidate components that meet the
+                minimum vote requirement to be drawn as a winner.
               </TooltipContent>
             );
           }
@@ -235,8 +295,10 @@ export function DrawWinner() {
             <InfoIcon />
           </HxuiButton>
         </TooltipTrigger>
-        <TooltipContent>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim, facere.
+        <TooltipContent className="max-w-80">
+          Selects the winning candidate component based on the highest votes
+          meeting the minimum requirement. This can be invoked by anyone after
+          the drop time passes, completing the current cycle.
         </TooltipContent>
       </Tooltip>
     </HxuiButtonGroup>

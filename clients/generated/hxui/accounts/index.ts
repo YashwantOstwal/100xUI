@@ -6,9 +6,9 @@
  * @see https://github.com/codama-idl/codama
  */
 
-export * from "./candidate";
-export * from "./config";
-export * from "./freeTokensCounter";
-export * from "./freeTokenTimestamp";
-export * from "./poll";
+export * from "./freeMintTracker";
+export * from "./hxuiCandidate";
+export * from "./hxuiConfig";
+export * from "./hxuiDropTime";
+export * from "./hxuiFreeMintCounter";
 export * from "./voteReceipt";

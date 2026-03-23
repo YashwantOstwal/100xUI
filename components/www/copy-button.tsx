@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
-import Button from "./file-explorer/button";
+import { HxuiButton, HxuiButtonGroup } from "./file-explorer/button";
 import TextMorph from "./text-morph";
 // import { useCopiedFiles } from "@/components/file-explorer/providers/CopiedFilesTrackerProvider";
 import { HTMLMotionProps } from "motion/react";
@@ -22,15 +22,17 @@ export const CopyButton = ({ codeString, onClick }: CopyButtonProps) => {
   };
 
   return (
-    <Button
-      className="relative h-8 w-20 gap-0 p-0"
-      // h-8
-      onClick={(e) => {
-        handleCopy(codeString);
-        onClick?.(e);
-      }}
-    >
-      <TextMorph copied={copied}>{copied ? "Copied!" : "Copy"}</TextMorph>
-    </Button>
+    <HxuiButtonGroup>
+      <HxuiButton
+        className="relative h-8 w-20 gap-0 p-0"
+        // h-8
+        onClick={(e) => {
+          handleCopy(codeString);
+          onClick?.(e);
+        }}
+      >
+        <TextMorph copied={copied}>{copied ? "Copied!" : "Copy"}</TextMorph>
+      </HxuiButton>
+    </HxuiButtonGroup>
   );
 };

@@ -1,15 +1,15 @@
 "use client";
 
 import {
-  fetchMaybeFreeTokenTimestamp,
-  FreeTokenTimestamp,
-  getFreeTokenTimestampCodec,
+  fetchMaybeFreeMintTracker,
+  FreeMintTracker,
+  getFreeMintTrackerCodec,
   HXUI_PROGRAM_ADDRESS,
 } from "@/clients/generated/hxui";
 import { TOKEN_2022_PROGRAM_ADDRESS } from "@/clients/constants";
 import {
   getHxuiLiteTokenAddress,
-  getRegistrationAccountAddress,
+  getFreeMintTrackerAddress,
 } from "@/clients/pdas";
 import { usePrivyAsSolanaWallet } from "@/providers/privy-as-solana-wallet";
 import { useSolanaClient } from "@/providers/solana-client";
@@ -22,7 +22,7 @@ type HxuiLiteToken =
   | {
       isLoading: false;
       maybeHxuiLiteTokenAccount: MaybeAccount<Token, string>;
-      maybeRegistrationAccount: MaybeAccount<FreeTokenTimestamp, string>;
+      maybeFreeMintTrackerAccount: MaybeAccount<FreeMintTracker, string>;
     }
   | { isLoading: true };
 const HxuiLiteToken = createContext<HxuiLiteToken | null>(null);
@@ -34,7 +34,7 @@ export function HxuiLiteTokenProvider({
   const client = useSolanaClient();
   const { selectedWallet } = usePrivyAsSolanaWallet();
 
-  const [freeVotingToken, setFreeVotingToken] = useState<HxuiLiteToken>({
+  const [freeMintTracker, setFreeMintTracker] = useState<HxuiLiteToken>({
     isLoading: true,
   });
 
@@ -54,18 +54,18 @@ export function HxuiLiteTokenProvider({
         hxuiLiteTokenAddress
       );
 
-      const registrationAddress = await getRegistrationAccountAddress({
+      const freeMintTrackerAddress = await getFreeMintTrackerAddress({
         owner: selectedWalletAddress,
       });
 
-      const maybeRegistrationAccount = await fetchMaybeFreeTokenTimestamp(
+      const maybeFreeMintTrackerAccount = await fetchMaybeFreeMintTracker(
         client.rpc,
-        registrationAddress
+        freeMintTrackerAddress
       );
 
-      setFreeVotingToken({
+      setFreeMintTracker({
         isLoading: false,
-        maybeRegistrationAccount,
+        maybeFreeMintTrackerAccount,
         maybeHxuiLiteTokenAccount,
       });
     });
@@ -86,11 +86,12 @@ export function HxuiLiteTokenProvider({
         .subscribe({ abortSignal: abortController.signal });
       run(async () => {
         for await (const accountInfo of hxuiLiteTokenAccountInfos) {
-          const encodedBase64Data = accountInfo.value.data[0];
-          const encodedDataBytes = getBase64Encoder().encode(encodedBase64Data);
-
-          const decodedData = getTokenCodec().decode(encodedDataBytes);
           if (accountInfo.value.owner == TOKEN_2022_PROGRAM_ADDRESS) {
+            const encodedBase64Data = accountInfo.value.data[0];
+            const encodedDataBytes =
+              getBase64Encoder().encode(encodedBase64Data);
+
+            const decodedData = getTokenCodec().decode(encodedDataBytes);
             const maybeHxuiLiteTokenAccount: MaybeAccount<Token, string> = {
               exists: true,
               address: hxuiLiteTokenAddress,
@@ -99,13 +100,13 @@ export function HxuiLiteTokenProvider({
               data: decodedData,
             };
 
-            setFreeVotingToken((prev) => {
+            setFreeMintTracker((prev) => {
               if (!prev.isLoading) {
                 return { ...prev, maybeHxuiLiteTokenAccount };
               } else return prev;
             });
           } else {
-            setFreeVotingToken((prev) => {
+            setFreeMintTracker((prev) => {
               if (!prev.isLoading) {
                 return {
                   ...prev,
@@ -120,49 +121,48 @@ export function HxuiLiteTokenProvider({
         }
       });
 
-      const registrationAddress = await getRegistrationAccountAddress({
+      const freeMintTrackerAddress = await getFreeMintTrackerAddress({
         owner: selectedWalletAddress,
       });
 
-      const registrationAccountAccountInfos = await client.rpcSubscriptions
-        .accountNotifications(registrationAddress, {
+      const freeMintTrackerNotifications = await client.rpcSubscriptions
+        .accountNotifications(freeMintTrackerAddress, {
           encoding: "base64",
           commitment: "confirmed",
         })
         .subscribe({ abortSignal: abortController2.signal });
 
       run(async () => {
-        for await (const accountInfo of registrationAccountAccountInfos) {
-          const encodedBase64Data = accountInfo.value.data[0];
-          const encodedDataBytes = getBase64Encoder().encode(encodedBase64Data);
-          const decodedData =
-            getFreeTokenTimestampCodec().decode(encodedDataBytes);
-          console.log({ accountInfo, decodedData });
-
+        for await (const accountInfo of freeMintTrackerNotifications) {
           if (accountInfo.value.owner == HXUI_PROGRAM_ADDRESS) {
-            const maybeRegistrationAccount: MaybeAccount<
-              FreeTokenTimestamp,
+            const encodedBase64Data = accountInfo.value.data[0];
+            const encodedDataBytes =
+              getBase64Encoder().encode(encodedBase64Data);
+            const decodedData =
+              getFreeMintTrackerCodec().decode(encodedDataBytes);
+            const maybeFreeMintTrackerAccount: MaybeAccount<
+              FreeMintTracker,
               string
             > = {
               exists: true,
-              address: registrationAddress,
+              address: freeMintTrackerAddress,
               programAddress: HXUI_PROGRAM_ADDRESS,
               ...accountInfo.value,
               data: decodedData,
             };
-            setFreeVotingToken((prev) => {
+            setFreeMintTracker((prev) => {
               if (!prev.isLoading) {
-                return { ...prev, maybeRegistrationAccount };
+                return { ...prev, maybeFreeMintTrackerAccount };
               } else return prev;
             });
           } else {
-            setFreeVotingToken((prev) => {
+            setFreeMintTracker((prev) => {
               if (!prev.isLoading) {
                 return {
                   ...prev,
-                  maybeRegistrationAccount: {
+                  maybeFreeMintTrackerAccount: {
                     exists: false,
-                    address: registrationAddress,
+                    address: freeMintTrackerAddress,
                   },
                 };
               } else return prev;
@@ -172,13 +172,13 @@ export function HxuiLiteTokenProvider({
       });
     });
     return () => {
-      setFreeVotingToken({ isLoading: true });
+      setFreeMintTracker({ isLoading: true });
       abortController.abort();
     };
-  }, [selectedWallet?.address]);
+  }, [selectedWalletAddress, client.rpc, client.rpcSubscriptions]);
 
   return (
-    <HxuiLiteToken.Provider value={freeVotingToken}>
+    <HxuiLiteToken.Provider value={freeMintTracker}>
       {children}
     </HxuiLiteToken.Provider>
   );

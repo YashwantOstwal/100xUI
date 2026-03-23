@@ -6,13 +6,13 @@ import {
 import type { PropTableProps } from "../_components/prop-table";
 import { GLOBALS_CSS } from "@/app/code-strings";
 
-import registryItem from "@/public/components/morph-modal.json";
+import registryItem from "@/public/c/morph-modal.json";
 
 const MORPH_MODAL_TSX = registryItem?.files?.find(({ path }) =>
-  path.endsWith("morph-modal.tsx"),
+  path.endsWith("morph-modal.tsx")
 )?.content;
 const UTILS_TS = registryItem?.files?.find(({ path }) =>
-  path.endsWith("utils.ts"),
+  path.endsWith("utils.ts")
 )?.content;
 export const DESCRIPTION =
   'A reusable modal component that smoothly "morphs" from the dimensions and position of its trigger element';

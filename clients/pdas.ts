@@ -9,9 +9,9 @@ import { TOKEN_2022_PROGRAM_ADDRESS } from "./constants";
 let hxuiMintAddress: Address | undefined;
 let hxuiLiteMintAddress: Address | undefined;
 let hxuiConfigAddress: Address | undefined;
-let hxuiPollAddress: Address | undefined;
+let hxuiDropTimeAddress: Address | undefined;
 let hxuiVaultAddress: Address | undefined;
-let hxuiFreeTokensCounter: Address | undefined;
+let hxuiFreeMintCounter: Address | undefined;
 
 const textEncoder = new TextEncoder();
 export async function getHxuiMintAddress() {
@@ -29,11 +29,7 @@ export async function getHxuiLiteMintAddress() {
   if (!hxuiLiteMintAddress) {
     const [address] = await getProgramDerivedAddress({
       programAddress: HXUI_PROGRAM_ADDRESS,
-      seeds: [
-        new Uint8Array([
-          104, 120, 117, 105, 95, 108, 105, 116, 101, 95, 109, 105, 110, 116,
-        ]),
-      ],
+      seeds: [textEncoder.encode("hxui_lite_mint")],
     });
     hxuiLiteMintAddress = address;
   }
@@ -59,17 +55,11 @@ export async function getHxuiLiteTokenAddress({ owner }: { owner: Address }) {
   return address;
 }
 
-export async function getRegistrationAccountAddress(seeds: { owner: Address }) {
+export async function getFreeMintTrackerAddress(seeds: { owner: Address }) {
   const ownerAddressInBytes = getAddressEncoder().encode(seeds.owner);
   const [address] = await getProgramDerivedAddress({
     programAddress: HXUI_PROGRAM_ADDRESS,
-    seeds: [
-      new Uint8Array([
-        109, 105, 110, 116, 101, 100, 95, 116, 105, 109, 101, 115, 116, 97, 109,
-        112,
-      ]),
-      ownerAddressInBytes,
-    ],
+    seeds: [textEncoder.encode("free_mint_tracker"), ownerAddressInBytes],
   });
   return address;
 }
@@ -78,31 +68,29 @@ export async function getHxuiConfigAddress() {
   if (!hxuiConfigAddress) {
     const [address] = await getProgramDerivedAddress({
       programAddress: HXUI_PROGRAM_ADDRESS,
-      seeds: [
-        new Uint8Array([104, 120, 117, 105, 95, 99, 111, 110, 102, 105, 103]),
-      ],
+      seeds: [textEncoder.encode("hxui_config")],
     });
     hxuiConfigAddress = address;
   }
   return hxuiConfigAddress;
 }
 
-export async function getHxuiPollAddress() {
-  if (!hxuiPollAddress) {
+export async function getHxuiDropTimeAddress() {
+  if (!hxuiDropTimeAddress) {
     const [address] = await getProgramDerivedAddress({
       programAddress: HXUI_PROGRAM_ADDRESS,
-      seeds: [new Uint8Array([104, 120, 117, 105, 95, 112, 111, 108, 108])],
+      seeds: [textEncoder.encode("hxui_drop_time")],
     });
-    hxuiPollAddress = address;
+    hxuiDropTimeAddress = address;
   }
-  return hxuiPollAddress;
+  return hxuiDropTimeAddress;
 }
 
 export async function getHxuiVaultAddress() {
   if (!hxuiVaultAddress) {
     const [address] = await getProgramDerivedAddress({
       programAddress: HXUI_PROGRAM_ADDRESS,
-      seeds: [new Uint8Array([104, 120, 117, 105, 95, 118, 97, 117, 108, 116])],
+      seeds: [textEncoder.encode("hxui_vault")],
     });
     hxuiVaultAddress = address;
   }
@@ -116,10 +104,8 @@ export async function getVoteReceiptAddress(dynamicSeeds: {
   const [address] = await getProgramDerivedAddress({
     programAddress: HXUI_PROGRAM_ADDRESS,
     seeds: [
-      new Uint8Array([
-        118, 111, 116, 101, 95, 114, 101, 99, 101, 105, 112, 116,
-      ]),
-      new TextEncoder().encode(dynamicSeeds.candidateName),
+      textEncoder.encode("vote_receipt"),
+      textEncoder.encode(dynamicSeeds.candidateName),
       getAddressEncoder().encode(dynamicSeeds.owner),
     ],
   });
@@ -132,27 +118,20 @@ export async function getCandidateAddress(dynamicSeeds: {
   const [address] = await getProgramDerivedAddress({
     programAddress: HXUI_PROGRAM_ADDRESS,
     seeds: [
-      new Uint8Array([
-        104, 120, 117, 105, 95, 99, 97, 110, 100, 105, 100, 97, 116, 101,
-      ]),
+      textEncoder.encode("hxui_candidate"),
       new TextEncoder().encode(dynamicSeeds.candidateName),
     ],
   });
   return address;
 }
 
-export async function getFreeTokensCounterAddress() {
-  if (!hxuiFreeTokensCounter) {
+export async function getFreeMintCounterAddress() {
+  if (!hxuiFreeMintCounter) {
     const [address] = await getProgramDerivedAddress({
       programAddress: HXUI_PROGRAM_ADDRESS,
-      seeds: [
-        new Uint8Array([
-          104, 120, 117, 105, 95, 102, 114, 101, 101, 95, 116, 111, 107, 101,
-          110, 115, 95, 99, 111, 117, 110, 116, 101, 114,
-        ]),
-      ],
+      seeds: [textEncoder.encode("hxui_free_mint_counter")],
     });
-    hxuiFreeTokensCounter = address;
+    hxuiFreeMintCounter = address;
   }
-  return hxuiFreeTokensCounter;
+  return hxuiFreeMintCounter;
 }

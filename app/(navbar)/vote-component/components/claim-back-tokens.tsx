@@ -15,11 +15,12 @@ import {
   MaybeAccount,
   getBase64Encoder,
 } from "@solana/kit";
+
 import {
-  Candidate,
+  HxuiCandidate,
   CandidateStatus,
   fetchMaybeVoteReceipt,
-  getClaimTokensInstructionAsync,
+  getClaimBackTokensInstructionAsync,
   getVoteReceiptCodec,
   HXUI_PROGRAM_ADDRESS,
   VoteReceipt,
@@ -35,16 +36,21 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { run } from "@/utils";
-import { ChevronDownIcon, InfoIcon, RefreshCcwIcon } from "lucide-react";
+import { InfoIcon, RefreshCcwIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getVoteReceiptAddress } from "@/clients/pdas";
 import { Spinner } from "@/components/ui/spinner";
 import { getUnixTimestamp, useTimeContext } from "../providers/time";
+import {
+  SolanaExplorerWithArrow,
+  SolanaExplorerFull,
+} from "@/icons/solana-explorer.icon";
+import { toast } from "sonner";
 
 type Receipt =
   | { isLoading: true }
   | { isLoading: false; maybeVoteReceipt: MaybeAccount<VoteReceipt, string> };
-export function ClaimBackTokens({ candidate }: { candidate: Candidate }) {
+export function ClaimBackTokens({ candidate }: { candidate: HxuiCandidate }) {
   const client = useSolanaClient();
   const { selectedWallet, signAndSendTransaction } = usePrivyAsSolanaWallet();
   const { timeNow, reload } = useTimeContext();
@@ -108,7 +114,13 @@ export function ClaimBackTokens({ candidate }: { candidate: Candidate }) {
       setVoteReceipt({ isLoading: true });
       abortController.abort();
     };
-  }, [selectedWallet?.address]);
+  }, [
+    selectedWallet?.address,
+    candidate.name,
+    client.rpc,
+    client.rpcSubscriptions,
+    selectedWallet,
+  ]);
 
   async function claimBackTokens() {
     if (!selectedWallet)
@@ -125,29 +137,29 @@ export function ClaimBackTokens({ candidate }: { candidate: Candidate }) {
     }
 
     if (
-      candidate.candidateStatus === CandidateStatus.Active ||
-      candidate.candidateStatus === CandidateStatus.Winner
+      candidate.status === CandidateStatus.Active ||
+      candidate.status === CandidateStatus.Winner
     ) {
       return console.error(
         "The candidate is not withdrawn or winner with claimback offer."
       );
     }
 
-    if (candidate.claimWindow === BigInt(0)) {
+    if (candidate.claimDeadline === BigInt(0)) {
       return console.error(
         "Withdraw window is not opened for the candidate. wait until the admin opens the withdraw window."
       );
     }
 
-    if (candidate.claimWindow <= getUnixTimestamp()) {
+    if (candidate.claimDeadline < getUnixTimestamp()) {
       return console.error(
-        "Withdraw window is not closed for the candidate and can no longer be claimed."
+        "Withdraw window is opened and subsequently closed for the candidate and can no longer be claimed."
       );
     }
     const selectedWalletAddress = address(selectedWallet.address);
     const selectedWalletSigner = createNoopSigner(selectedWalletAddress);
 
-    const claimBackTokensIx = await getClaimTokensInstructionAsync({
+    const claimBackTokensIx = await getClaimBackTokensInstructionAsync({
       owner: selectedWalletSigner,
       name: candidate.name,
     });
@@ -167,49 +179,77 @@ export function ClaimBackTokens({ candidate }: { candidate: Candidate }) {
       (tx) => new Uint8Array(getTransactionEncoder().encode(tx))
     );
 
-    try {
-      const { signature } = await signAndSendTransaction({
+    toast.promise(
+      signAndSendTransaction({
         transaction: compiledAndEncodedTx,
         wallet: selectedWallet,
         options: { commitment: "confirmed" },
-      });
-
-      console.log(getBase58Decoder().decode(signature));
-    } catch (err) {
-      console.log(err);
-    }
+      }),
+      {
+        loading: "Pending...",
+        success: ({ signature }) => {
+          return (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className=""
+              href={`https://explorer.solana.com/tx/${getBase58Decoder().decode(signature)}?cluster=devnet`}
+            >
+              <div className="flex items-center gap-1 text-nowrap">
+                Transaction confirmed. View on
+                <SolanaExplorerFull className="w-30" />
+              </div>
+            </a>
+          );
+        },
+        error: (err) => {
+          console.error(err);
+          if (err?.message?.includes("rejected"))
+            return "Transaction rejected.";
+          return "Transaction failed to execute. Check the logs.";
+        },
+      }
+    );
   }
 
   const disabled =
     !selectedWallet ||
-    candidate.candidateStatus == CandidateStatus.Active ||
-    candidate.candidateStatus == CandidateStatus.Winner ||
+    candidate.status == CandidateStatus.Active ||
+    candidate.status == CandidateStatus.Winner ||
     voteReceipt.isLoading ||
     !voteReceipt.maybeVoteReceipt.exists ||
-    candidate.claimWindow == BigInt(0) ||
-    candidate.claimWindow <= timeNow;
+    candidate.claimDeadline == BigInt(0) ||
+    candidate.claimDeadline < timeNow;
+
   return (
     <HxuiButtonGroup>
       <Tooltip delayDuration={250}>
         <TooltipTrigger asChild>
           <span>
             <HxuiButton onClick={claimBackTokens} disabled={disabled}>
-              Claim back tokens
-              {voteReceipt.isLoading && <Spinner className="size-4" />}
+              Claim back tokens&nbsp;
+              {run(() => {
+                if (selectedWallet && voteReceipt.isLoading) {
+                  return <Spinner className="size-4" />;
+                }
+                return null;
+              })}
             </HxuiButton>
           </span>
         </TooltipTrigger>
         {run(() => {
           if (!selectedWallet) {
             return (
-              <TooltipContent>Please connect to a solana wallet</TooltipContent>
+              <TooltipContent className="max-w-80">
+                Please connect to a Solana wallet.
+              </TooltipContent>
             );
           }
 
-          if (candidate.candidateStatus == CandidateStatus.Winner) {
+          if (candidate.status == CandidateStatus.Winner) {
             return (
-              <TooltipContent>
-                Tokens spent cannot be claimed back for this candidate.
+              <TooltipContent className="max-w-80">
+                Spent HxUI tokens cannot be reclaimed for this candidate.
               </TooltipContent>
             );
           }
@@ -219,39 +259,113 @@ export function ClaimBackTokens({ candidate }: { candidate: Candidate }) {
           }
 
           if (voteReceipt.maybeVoteReceipt.exists) {
-            // the control will reacch here if the claimback offer is availed for this candidate.
-            if (
-              candidate.claimWindow == BigInt(0) ||
-              candidate.candidateStatus == CandidateStatus.Active
-            ) {
-              const tokens = voteReceipt.maybeVoteReceipt.data.tokens;
+            const tokens = voteReceipt.maybeVoteReceipt.data.tokens;
+
+            if (candidate.status == CandidateStatus.Active) {
+              if (candidate.claimBackOffer) {
+                return (
+                  <TooltipContent className="max-w-80">
+                    You are eligible to reclaim {tokens / BigInt(2)} HxUI tokens
+                    (50%) if this candidate wins, or {tokens} HxUI tokens (100%)
+                    if it is withdrawn during claim-back window opened by the
+                    admin.
+                  </TooltipContent>
+                );
+              } else {
+                // The control will reach here if the claim-back offer is not nabled for an active candidate
+
+                return (
+                  <TooltipContent className="max-w-80">
+                    Spent HxUI tokens cannot be reclaimed unless this candidate
+                    is withdrawn by the admin, or a 50% claim-back offer is
+                    later enabled.
+                  </TooltipContent>
+                );
+              }
+            }
+
+            // The control reaches here if and only if the candidate has status of winner with claim-back offer or withdrawn.
+            if (candidate.claimDeadline == BigInt(0)) {
               return (
-                <TooltipContent>
-                  Wait until the admin opens the claim back window upon winner
-                  or withdrawal to claim {tokens / BigInt(2)} tokens (50%) or{" "}
-                  {tokens} (100%) respectively.
+                <TooltipContent className="max-w-80">
+                  Please wait for the admin to open the claim-back window to
+                  reclaim{" "}
+                  {candidate.status == CandidateStatus.Withdrawn
+                    ? tokens
+                    : tokens / BigInt(2)}{" "}
+                  HxUI tokens.
                 </TooltipContent>
               );
             }
 
-            if (candidate.claimWindow <= timeNow) {
+            if (candidate.claimDeadline < timeNow) {
               return (
-                <TooltipContent>
-                  The Claim back window is closed.
+                <TooltipContent className="max-w-80">
+                  The claim-back window has subsequently closed. HxUI tokens can
+                  no longer be reclaimed.
                 </TooltipContent>
               );
             }
           }
 
           if (!voteReceipt.maybeVoteReceipt.exists) {
+            if (
+              candidate.claimDeadline !== BigInt(0) &&
+              candidate.claimDeadline < timeNow
+            ) {
+              return (
+                <TooltipContent className="max-w-80">
+                  No vote receipt exists. Either you did not spend paid HxUI
+                  tokens, or your receipt was cleared by the admin after the
+                  claim-back window subsequently closed.
+                </TooltipContent>
+              );
+            }
             return (
-              <TooltipContent>
-                No tokens to claim back for this candidate.
+              <TooltipContent className="max-w-80">
+                No vote receipt exists. You have not spent paid HxUI tokens on
+                this candidate, and HxUI Lite tokens are non-refundable.
               </TooltipContent>
             );
           }
         })}
       </Tooltip>
+      <Tooltip delayDuration={250}>
+        <TooltipTrigger asChild>
+          <span>
+            <HxuiButton
+              disabled={
+                voteReceipt.isLoading || !voteReceipt.maybeVoteReceipt.exists
+              }
+            >
+              <a
+                target="_blank"
+                {...(!voteReceipt.isLoading &&
+                  voteReceipt.maybeVoteReceipt.exists && {
+                    href: `https://explorer.solana.com/address/${voteReceipt.maybeVoteReceipt.address}/anchor-account?cluster=devnet`,
+                  })}
+              >
+                <SolanaExplorerWithArrow />
+              </a>
+            </HxuiButton>
+          </span>
+        </TooltipTrigger>
+        {run(() => {
+          if (voteReceipt.isLoading) {
+            return null;
+          }
+          if (!voteReceipt.maybeVoteReceipt.exists) {
+            return (
+              <TooltipContent className="max-w-80">
+                No vote receipt exists. Either you did not spend paid HxUI
+                tokens, or your receipt was cleared by the admin after the
+                claim-back window subsequently closed.
+              </TooltipContent>
+            );
+          }
+        })}
+      </Tooltip>
+
       <HxuiButton onClick={reload}>
         <RefreshCcwIcon />
       </HxuiButton>
@@ -261,9 +375,9 @@ export function ClaimBackTokens({ candidate }: { candidate: Candidate }) {
             <InfoIcon />
           </HxuiButton>
         </TooltipTrigger>
-        <TooltipContent>
-          50% or 100% of the tokens can be claimed back if winner or withdrawn
-          respectively during withdraw window.
+        <TooltipContent className="max-w-80">
+          Reclaim 50% (if winner with claim-back offer) or 100% (if withdrawn)
+          of your paid HxUI tokens during the claim-back window.
         </TooltipContent>
       </Tooltip>
     </HxuiButtonGroup>

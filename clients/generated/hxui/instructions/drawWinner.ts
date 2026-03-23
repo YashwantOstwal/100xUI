@@ -42,7 +42,7 @@ export function getDrawWinnerDiscriminatorBytes() {
 export type DrawWinnerInstruction<
   TProgram extends string = typeof HXUI_PROGRAM_ADDRESS,
   TAccountHxuiConfig extends string | AccountMeta<string> = string,
-  TAccountHxuiPoll extends string | AccountMeta<string> = string,
+  TAccountHxuiDropTime extends string | AccountMeta<string> = string,
   TRemainingAccounts extends readonly AccountMeta<string>[] = [],
 > = Instruction<TProgram> &
   InstructionWithData<ReadonlyUint8Array> &
@@ -51,9 +51,9 @@ export type DrawWinnerInstruction<
       TAccountHxuiConfig extends string
         ? ReadonlyAccount<TAccountHxuiConfig>
         : TAccountHxuiConfig,
-      TAccountHxuiPoll extends string
-        ? WritableAccount<TAccountHxuiPoll>
-        : TAccountHxuiPoll,
+      TAccountHxuiDropTime extends string
+        ? WritableAccount<TAccountHxuiDropTime>
+        : TAccountHxuiDropTime,
       ...TRemainingAccounts,
     ]
   >;
@@ -87,21 +87,25 @@ export function getDrawWinnerInstructionDataCodec(): FixedSizeCodec<
 
 export type DrawWinnerAsyncInput<
   TAccountHxuiConfig extends string = string,
-  TAccountHxuiPoll extends string = string,
+  TAccountHxuiDropTime extends string = string,
 > = {
   hxuiConfig?: Address<TAccountHxuiConfig>;
-  hxuiPoll?: Address<TAccountHxuiPoll>;
+  hxuiDropTime?: Address<TAccountHxuiDropTime>;
 };
 
 export async function getDrawWinnerInstructionAsync<
   TAccountHxuiConfig extends string,
-  TAccountHxuiPoll extends string,
+  TAccountHxuiDropTime extends string,
   TProgramAddress extends Address = typeof HXUI_PROGRAM_ADDRESS,
 >(
-  input: DrawWinnerAsyncInput<TAccountHxuiConfig, TAccountHxuiPoll>,
+  input: DrawWinnerAsyncInput<TAccountHxuiConfig, TAccountHxuiDropTime>,
   config?: { programAddress?: TProgramAddress },
 ): Promise<
-  DrawWinnerInstruction<TProgramAddress, TAccountHxuiConfig, TAccountHxuiPoll>
+  DrawWinnerInstruction<
+    TProgramAddress,
+    TAccountHxuiConfig,
+    TAccountHxuiDropTime
+  >
 > {
   // Program address.
   const programAddress = config?.programAddress ?? HXUI_PROGRAM_ADDRESS;
@@ -109,7 +113,7 @@ export async function getDrawWinnerInstructionAsync<
   // Original accounts.
   const originalAccounts = {
     hxuiConfig: { value: input.hxuiConfig ?? null, isWritable: false },
-    hxuiPoll: { value: input.hxuiPoll ?? null, isWritable: true },
+    hxuiDropTime: { value: input.hxuiDropTime ?? null, isWritable: true },
   };
   const accounts = originalAccounts as Record<
     keyof typeof originalAccounts,
@@ -127,12 +131,14 @@ export async function getDrawWinnerInstructionAsync<
       ],
     });
   }
-  if (!accounts.hxuiPoll.value) {
-    accounts.hxuiPoll.value = await getProgramDerivedAddress({
+  if (!accounts.hxuiDropTime.value) {
+    accounts.hxuiDropTime.value = await getProgramDerivedAddress({
       programAddress,
       seeds: [
         getBytesEncoder().encode(
-          new Uint8Array([104, 120, 117, 105, 95, 112, 111, 108, 108]),
+          new Uint8Array([
+            104, 120, 117, 105, 95, 100, 114, 111, 112, 95, 116, 105, 109, 101,
+          ]),
         ),
       ],
     });
@@ -142,36 +148,36 @@ export async function getDrawWinnerInstructionAsync<
   return Object.freeze({
     accounts: [
       getAccountMeta(accounts.hxuiConfig),
-      getAccountMeta(accounts.hxuiPoll),
+      getAccountMeta(accounts.hxuiDropTime),
     ],
     data: getDrawWinnerInstructionDataEncoder().encode({}),
     programAddress,
   } as DrawWinnerInstruction<
     TProgramAddress,
     TAccountHxuiConfig,
-    TAccountHxuiPoll
+    TAccountHxuiDropTime
   >);
 }
 
 export type DrawWinnerInput<
   TAccountHxuiConfig extends string = string,
-  TAccountHxuiPoll extends string = string,
+  TAccountHxuiDropTime extends string = string,
 > = {
   hxuiConfig: Address<TAccountHxuiConfig>;
-  hxuiPoll: Address<TAccountHxuiPoll>;
+  hxuiDropTime: Address<TAccountHxuiDropTime>;
 };
 
 export function getDrawWinnerInstruction<
   TAccountHxuiConfig extends string,
-  TAccountHxuiPoll extends string,
+  TAccountHxuiDropTime extends string,
   TProgramAddress extends Address = typeof HXUI_PROGRAM_ADDRESS,
 >(
-  input: DrawWinnerInput<TAccountHxuiConfig, TAccountHxuiPoll>,
+  input: DrawWinnerInput<TAccountHxuiConfig, TAccountHxuiDropTime>,
   config?: { programAddress?: TProgramAddress },
 ): DrawWinnerInstruction<
   TProgramAddress,
   TAccountHxuiConfig,
-  TAccountHxuiPoll
+  TAccountHxuiDropTime
 > {
   // Program address.
   const programAddress = config?.programAddress ?? HXUI_PROGRAM_ADDRESS;
@@ -179,7 +185,7 @@ export function getDrawWinnerInstruction<
   // Original accounts.
   const originalAccounts = {
     hxuiConfig: { value: input.hxuiConfig ?? null, isWritable: false },
-    hxuiPoll: { value: input.hxuiPoll ?? null, isWritable: true },
+    hxuiDropTime: { value: input.hxuiDropTime ?? null, isWritable: true },
   };
   const accounts = originalAccounts as Record<
     keyof typeof originalAccounts,
@@ -190,14 +196,14 @@ export function getDrawWinnerInstruction<
   return Object.freeze({
     accounts: [
       getAccountMeta(accounts.hxuiConfig),
-      getAccountMeta(accounts.hxuiPoll),
+      getAccountMeta(accounts.hxuiDropTime),
     ],
     data: getDrawWinnerInstructionDataEncoder().encode({}),
     programAddress,
   } as DrawWinnerInstruction<
     TProgramAddress,
     TAccountHxuiConfig,
-    TAccountHxuiPoll
+    TAccountHxuiDropTime
   >);
 }
 
@@ -208,7 +214,7 @@ export type ParsedDrawWinnerInstruction<
   programAddress: Address<TProgram>;
   accounts: {
     hxuiConfig: TAccountMetas[0];
-    hxuiPoll: TAccountMetas[1];
+    hxuiDropTime: TAccountMetas[1];
   };
   data: DrawWinnerInstructionData;
 };
@@ -233,7 +239,7 @@ export function parseDrawWinnerInstruction<
   };
   return {
     programAddress: instruction.programAddress,
-    accounts: { hxuiConfig: getNextAccount(), hxuiPoll: getNextAccount() },
+    accounts: { hxuiConfig: getNextAccount(), hxuiDropTime: getNextAccount() },
     data: getDrawWinnerInstructionDataDecoder().decode(instruction.data),
   };
 }

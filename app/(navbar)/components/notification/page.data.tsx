@@ -7,10 +7,10 @@ import {
 import { GLOBALS_CSS } from "@/app/code-strings";
 import { UTILS_TS } from "@/lib/code-strings";
 
-import registryItem from "@/public/components/notification.json";
+import registryItem from "@/public/c/notification.json";
 
 const NOTIFICATION = registryItem?.files?.find(({ path }) =>
-  path.endsWith("notification.tsx"),
+  path.endsWith("notification.tsx")
 )?.content as string;
 export const TITLE = "Notification";
 export const DESCRIPTION =

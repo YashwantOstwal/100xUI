@@ -1,6 +1,8 @@
 import * as motion from "motion/react-client";
 import { SmoothScrollA } from "./smooth-scroll-a";
-import { LastlyAdded } from "./lastly-added";
+import { cn } from "@/lib/utils";
+import { ArrowRightIcon } from "lucide-react";
+import { MotionLinkUnderline } from "@/registry/100xui/blocks/motion-link/components/motion-link";
 
 export function Hero() {
   return (
@@ -45,10 +47,20 @@ export function Hero() {
             Browse Components
           </SmoothScrollA>
         </div>
-        <LastlyAdded
+        {/* <LastlyAdded
           href="/components/notification"
           lastAddedDate={new Date()}
-        />
+        /> */}
+        <MotionLinkUnderline
+          href="/vote-component"
+          className={cn(
+            "group my-auto flex items-center gap-x-2 text-sm transition-opacity"
+            // isMounted ? "opacity-100" : "opacity-0"
+          )}
+        >
+          Decide the Next Drop
+          <ArrowRightIcon className="size-4 -translate-x-0.5 transition-transform ease-out group-hover:translate-x-0 group-focus-visible:translate-x-0" />
+        </MotionLinkUnderline>
       </div>
       <span className="text-muted-foreground mt-5 text-center text-sm">
         Fully compatible with shadcn/ui theming ecosystem.

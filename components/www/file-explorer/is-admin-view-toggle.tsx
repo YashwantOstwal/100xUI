@@ -1,22 +1,15 @@
 "use client";
 
 import { useProgramAccounts } from "@/app/(navbar)/vote-component/providers/program-accounts";
-import { fetchConfig, HXUI_PROGRAM_ADDRESS } from "@/clients/generated/hxui";
-import { getHxuiConfigAddress } from "@/clients/pdas";
-import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import { useIsAdminView } from "@/providers/is-admin-view";
 import { usePrivyAsSolanaWallet } from "@/providers/privy-as-solana-wallet";
 
-import { useSolanaClient } from "@/providers/solana-client";
 import { run } from "@/utils";
-import { getProgramDerivedAddress } from "@solana/kit";
 import { useEffect, useState } from "react";
-import { HxuiButtonGroup } from "./button";
 
 export function IsAdminViewToggle() {
-  const client = useSolanaClient();
   const [showAdminViewToggle, setShowAdminViewToggle] = useState(false);
   const { selectedWallet } = usePrivyAsSolanaWallet();
   const { isAdminView, setIsAdminView } = useIsAdminView();
@@ -24,7 +17,11 @@ export function IsAdminViewToggle() {
 
   useEffect(() => {
     run(async () => {
-      if (!selectedWallet) return;
+      if (!selectedWallet) {
+        setIsAdminView(false);
+        setShowAdminViewToggle(false);
+        return;
+      }
       if (programAccounts.isLoading) {
         return;
       }
@@ -35,7 +32,7 @@ export function IsAdminViewToggle() {
         programAccounts.hxuiConfig.data.admin == selectedWallet.address
       );
     });
-  }, [selectedWallet?.address, programAccounts]);
+  }, [selectedWallet, setIsAdminView, programAccounts]);
 
   if (showAdminViewToggle) {
     return (

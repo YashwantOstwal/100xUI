@@ -52,7 +52,7 @@ export function getRegisterForFreeTokensDiscriminatorBytes() {
 export type RegisterForFreeTokensInstruction<
   TProgram extends string = typeof HXUI_PROGRAM_ADDRESS,
   TAccountOwner extends string | AccountMeta<string> = string,
-  TAccountHxuiLiteMintedTimestamp extends string | AccountMeta<string> = string,
+  TAccountFreeMintTracker extends string | AccountMeta<string> = string,
   TAccountSystemProgram extends string | AccountMeta<string> =
     "11111111111111111111111111111111",
   TRemainingAccounts extends readonly AccountMeta<string>[] = [],
@@ -64,9 +64,9 @@ export type RegisterForFreeTokensInstruction<
         ? WritableSignerAccount<TAccountOwner> &
             AccountSignerMeta<TAccountOwner>
         : TAccountOwner,
-      TAccountHxuiLiteMintedTimestamp extends string
-        ? WritableAccount<TAccountHxuiLiteMintedTimestamp>
-        : TAccountHxuiLiteMintedTimestamp,
+      TAccountFreeMintTracker extends string
+        ? WritableAccount<TAccountFreeMintTracker>
+        : TAccountFreeMintTracker,
       TAccountSystemProgram extends string
         ? ReadonlyAccount<TAccountSystemProgram>
         : TAccountSystemProgram,
@@ -108,23 +108,23 @@ export function getRegisterForFreeTokensInstructionDataCodec(): FixedSizeCodec<
 
 export type RegisterForFreeTokensAsyncInput<
   TAccountOwner extends string = string,
-  TAccountHxuiLiteMintedTimestamp extends string = string,
+  TAccountFreeMintTracker extends string = string,
   TAccountSystemProgram extends string = string,
 > = {
   owner: TransactionSigner<TAccountOwner>;
-  hxuiLiteMintedTimestamp?: Address<TAccountHxuiLiteMintedTimestamp>;
+  freeMintTracker?: Address<TAccountFreeMintTracker>;
   systemProgram?: Address<TAccountSystemProgram>;
 };
 
 export async function getRegisterForFreeTokensInstructionAsync<
   TAccountOwner extends string,
-  TAccountHxuiLiteMintedTimestamp extends string,
+  TAccountFreeMintTracker extends string,
   TAccountSystemProgram extends string,
   TProgramAddress extends Address = typeof HXUI_PROGRAM_ADDRESS,
 >(
   input: RegisterForFreeTokensAsyncInput<
     TAccountOwner,
-    TAccountHxuiLiteMintedTimestamp,
+    TAccountFreeMintTracker,
     TAccountSystemProgram
   >,
   config?: { programAddress?: TProgramAddress },
@@ -132,7 +132,7 @@ export async function getRegisterForFreeTokensInstructionAsync<
   RegisterForFreeTokensInstruction<
     TProgramAddress,
     TAccountOwner,
-    TAccountHxuiLiteMintedTimestamp,
+    TAccountFreeMintTracker,
     TAccountSystemProgram
   >
 > {
@@ -142,10 +142,7 @@ export async function getRegisterForFreeTokensInstructionAsync<
   // Original accounts.
   const originalAccounts = {
     owner: { value: input.owner ?? null, isWritable: true },
-    hxuiLiteMintedTimestamp: {
-      value: input.hxuiLiteMintedTimestamp ?? null,
-      isWritable: true,
-    },
+    freeMintTracker: { value: input.freeMintTracker ?? null, isWritable: true },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
   };
   const accounts = originalAccounts as Record<
@@ -154,14 +151,14 @@ export async function getRegisterForFreeTokensInstructionAsync<
   >;
 
   // Resolve default values.
-  if (!accounts.hxuiLiteMintedTimestamp.value) {
-    accounts.hxuiLiteMintedTimestamp.value = await getProgramDerivedAddress({
+  if (!accounts.freeMintTracker.value) {
+    accounts.freeMintTracker.value = await getProgramDerivedAddress({
       programAddress,
       seeds: [
         getBytesEncoder().encode(
           new Uint8Array([
-            109, 105, 110, 116, 101, 100, 95, 116, 105, 109, 101, 115, 116, 97,
-            109, 112,
+            102, 114, 101, 101, 95, 109, 105, 110, 116, 95, 116, 114, 97, 99,
+            107, 101, 114,
           ]),
         ),
         getAddressEncoder().encode(expectAddress(accounts.owner.value)),
@@ -177,7 +174,7 @@ export async function getRegisterForFreeTokensInstructionAsync<
   return Object.freeze({
     accounts: [
       getAccountMeta(accounts.owner),
-      getAccountMeta(accounts.hxuiLiteMintedTimestamp),
+      getAccountMeta(accounts.freeMintTracker),
       getAccountMeta(accounts.systemProgram),
     ],
     data: getRegisterForFreeTokensInstructionDataEncoder().encode({}),
@@ -185,37 +182,37 @@ export async function getRegisterForFreeTokensInstructionAsync<
   } as RegisterForFreeTokensInstruction<
     TProgramAddress,
     TAccountOwner,
-    TAccountHxuiLiteMintedTimestamp,
+    TAccountFreeMintTracker,
     TAccountSystemProgram
   >);
 }
 
 export type RegisterForFreeTokensInput<
   TAccountOwner extends string = string,
-  TAccountHxuiLiteMintedTimestamp extends string = string,
+  TAccountFreeMintTracker extends string = string,
   TAccountSystemProgram extends string = string,
 > = {
   owner: TransactionSigner<TAccountOwner>;
-  hxuiLiteMintedTimestamp: Address<TAccountHxuiLiteMintedTimestamp>;
+  freeMintTracker: Address<TAccountFreeMintTracker>;
   systemProgram?: Address<TAccountSystemProgram>;
 };
 
 export function getRegisterForFreeTokensInstruction<
   TAccountOwner extends string,
-  TAccountHxuiLiteMintedTimestamp extends string,
+  TAccountFreeMintTracker extends string,
   TAccountSystemProgram extends string,
   TProgramAddress extends Address = typeof HXUI_PROGRAM_ADDRESS,
 >(
   input: RegisterForFreeTokensInput<
     TAccountOwner,
-    TAccountHxuiLiteMintedTimestamp,
+    TAccountFreeMintTracker,
     TAccountSystemProgram
   >,
   config?: { programAddress?: TProgramAddress },
 ): RegisterForFreeTokensInstruction<
   TProgramAddress,
   TAccountOwner,
-  TAccountHxuiLiteMintedTimestamp,
+  TAccountFreeMintTracker,
   TAccountSystemProgram
 > {
   // Program address.
@@ -224,10 +221,7 @@ export function getRegisterForFreeTokensInstruction<
   // Original accounts.
   const originalAccounts = {
     owner: { value: input.owner ?? null, isWritable: true },
-    hxuiLiteMintedTimestamp: {
-      value: input.hxuiLiteMintedTimestamp ?? null,
-      isWritable: true,
-    },
+    freeMintTracker: { value: input.freeMintTracker ?? null, isWritable: true },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
   };
   const accounts = originalAccounts as Record<
@@ -245,7 +239,7 @@ export function getRegisterForFreeTokensInstruction<
   return Object.freeze({
     accounts: [
       getAccountMeta(accounts.owner),
-      getAccountMeta(accounts.hxuiLiteMintedTimestamp),
+      getAccountMeta(accounts.freeMintTracker),
       getAccountMeta(accounts.systemProgram),
     ],
     data: getRegisterForFreeTokensInstructionDataEncoder().encode({}),
@@ -253,7 +247,7 @@ export function getRegisterForFreeTokensInstruction<
   } as RegisterForFreeTokensInstruction<
     TProgramAddress,
     TAccountOwner,
-    TAccountHxuiLiteMintedTimestamp,
+    TAccountFreeMintTracker,
     TAccountSystemProgram
   >);
 }
@@ -265,7 +259,7 @@ export type ParsedRegisterForFreeTokensInstruction<
   programAddress: Address<TProgram>;
   accounts: {
     owner: TAccountMetas[0];
-    hxuiLiteMintedTimestamp: TAccountMetas[1];
+    freeMintTracker: TAccountMetas[1];
     systemProgram: TAccountMetas[2];
   };
   data: RegisterForFreeTokensInstructionData;
@@ -293,7 +287,7 @@ export function parseRegisterForFreeTokensInstruction<
     programAddress: instruction.programAddress,
     accounts: {
       owner: getNextAccount(),
-      hxuiLiteMintedTimestamp: getNextAccount(),
+      freeMintTracker: getNextAccount(),
       systemProgram: getNextAccount(),
     },
     data: getRegisterForFreeTokensInstructionDataDecoder().decode(
