@@ -1,5 +1,5 @@
 {
-  "address": "FrcnG1KDPhPqcVaAeLu6DiB5FvZBvvqqxNn5KR8wMBct",
+  "address": "HLSeyqzgTyQZpUDqYZpo1sH1uJkE16gGRmRpvUmJRW7r",
   "metadata": {
     "name": "hxui",
     "version": "0.1.0",
@@ -1247,6 +1247,10 @@
         {
           "name": "free_mint_cool_down",
           "type": "i64"
+        },
+        {
+          "name": "min_votes_to_win",
+          "type": "u64"
         }
       ]
     },
@@ -2432,8 +2436,8 @@
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidDropTime",
-      "msg": "The drop time must be set in the future."
+      "name": "TimestampNotInFuture",
+      "msg": "The specified timestamp must be set in the future."
     },
     {
       "code": 6001,
@@ -2443,7 +2447,7 @@
     {
       "code": 6002,
       "name": "PendingWinnerDraw",
-      "msg": "Draw winner for current cycle before setting a new drop time."
+      "msg": "You must draw a winner for the current cycle before setting a new drop time."
     },
     {
       "code": 6003,
@@ -2452,173 +2456,148 @@
     },
     {
       "code": 6004,
-      "name": "NameTooLong",
-      "msg": "Candidate name should be less than or equal to 32 characters"
+      "name": "CandidateDescriptionTooLong",
+      "msg": "The candidate's description exceeds the maximum length of 128 characters."
     },
     {
       "code": 6005,
-      "name": "DescriptionTooLong",
-      "msg": "Candidate description should be less than or equal to 32 characters"
+      "name": "VaultInsufficientFunds",
+      "msg": "The vault has insufficient funds to complete this transfer."
     },
     {
       "code": 6006,
-      "name": "InsufficientFunds",
-      "msg": "Not Enough funds in the vault to afford this transfer."
+      "name": "InvalidTokenPrice",
+      "msg": "The specified token price must be greater than or equal to half of Vote receipt (21 bytes) account rent."
     },
     {
       "code": 6007,
-      "name": "TokenPriceNotSufficient",
-      "msg": "Token price economically does not make sense."
+      "name": "UnauthorizedAdminAccess",
+      "msg": "Unauthorized: Only an administrator can invoke this instruction."
     },
     {
       "code": 6008,
-      "name": "OnlyAdminAccess",
-      "msg": "Only admin can invoke this instruction"
+      "name": "InactiveCandidateVoted",
+      "msg": "Votes can only be cast for active candidates."
     },
     {
       "code": 6009,
-      "name": "CandidateAlreadyAWinner",
-      "msg": "This candidate is already a winner."
+      "name": "FeeClaimCooldownActive",
+      "msg": "Registration fees can only be claimed after the free mint cooldown period."
     },
     {
       "code": 6010,
-      "name": "CandidateIsNoLongerVotable",
-      "msg": "Only active candidates can be voted."
+      "name": "UserAlreadyUnregistered",
+      "msg": "This user has already unregistered."
     },
     {
       "code": 6011,
-      "name": "UnclaimableYet",
-      "msg": "The registration fees can only be claimed free mint cooldown."
+      "name": "NotRegisteredForFreeTokens",
+      "msg": "The user is not registered for free tokens."
     },
     {
       "code": 6012,
-      "name": "AlreadyUnregistered",
-      "msg": "User have already unregistered."
+      "name": "CycleWinnerAlreadyDrawn",
+      "msg": "A winner for the current cycle has already been drawn. Set a new drop time first."
     },
     {
       "code": 6013,
-      "name": "UnregisteredForFreeTokens",
-      "msg": "UnregisteredFreeTokens."
+      "name": "MustUnregisterFirst",
+      "msg": "You must unregister before performing this action."
     },
     {
       "code": 6014,
-      "name": "WinnerForCurrentPollAlreadyDrawn",
-      "msg": "Only one winner can be drawn in each cycle. set a new drop time and draw a winer after the drop time."
+      "name": "OverallFreeMintLimitExceeded",
+      "msg": "The rate limit for free mints per epoch has been exceeded."
     },
     {
       "code": 6015,
-      "name": "UnregisterFirst",
-      "msg": "Not unregistered"
+      "name": "InvalidCandidate",
+      "msg": "The provided candidate is an invalid candidate."
     },
     {
       "code": 6016,
-      "name": "AllFreeTokensForTheDayMinted",
-      "msg": "Rate limit exceeded for maximum free mints per epoch"
+      "name": "IncompleteActiveCandidateList",
+      "msg": "You must provide all active candidates listed in the drop time account."
     },
     {
       "code": 6017,
-      "name": "InvalidCandidate",
-      "msg": "Received an invalid candidate."
+      "name": "EmptyCandidatePool",
+      "msg": "There are currently no valid candidates to choose a winner from."
     },
     {
       "code": 6018,
-      "name": "MissingCandidate",
-      "msg": "One or more active candidates are missing."
+      "name": "PendingReceiptsExist",
+      "msg": "You must close all receipt accounts first to prevent loss of funds."
     },
     {
       "code": 6019,
-      "name": "PassAllActiveCandidates",
-      "msg": "Pass all the active candidates mentioned in the drop time account."
+      "name": "CannotCloseActiveCandidate",
+      "msg": "An active candidate cannot be closed."
     },
     {
       "code": 6020,
-      "name": "NoCandidates",
-      "msg": "There are no candidates to pick winner from."
+      "name": "ClaimBackWindowNotOpen",
+      "msg": "The claim back window must be opened before claiming."
     },
     {
       "code": 6021,
-      "name": "CloseAllReceiptAccount",
-      "msg": "Close all the receipts first otherwise you will lose your money."
+      "name": "RequiresReceiptClearance",
+      "msg": "Clear all receipts to immediately close this component."
     },
     {
       "code": 6022,
-      "name": "ActiveCandidateCannotBeClosed",
-      "msg": "Cannot close Non active candidate."
+      "name": "ZeroReceiptsImmediateClose",
+      "msg": "This component has zero receipts and can be closed immediately without a claim back window."
     },
     {
       "code": 6023,
-      "name": "OpenWithdrawWindowFirst",
-      "msg": "The component is either claimable or withdrawn. Considering opening withdraw window first"
+      "name": "IneligibleForTokenClaim",
+      "msg": "Tokens cannot be claimed for an active candidate or a winner candidate without claim-back offer."
     },
     {
       "code": 6024,
-      "name": "CanBeClosedImmediatelyByClearingReceipts",
-      "msg": "This component can be closed immediately by clearing all the receipts."
+      "name": "ReceiptCandidateMismatch",
+      "msg": "The provided receipt does not match the specified candidate."
     },
     {
       "code": 6025,
-      "name": "CanBeClosedImmediatelyWithoutWithdrawWindow",
-      "msg": "This component can be closed immediately without the withdraw window as there are 0 receipts."
+      "name": "InactiveCandidateWithdrawal",
+      "msg": "Withdrawals are only permitted for active candidates."
     },
     {
       "code": 6026,
-      "name": "TokensCannotBeClaimed",
-      "msg": "Tokens cannot be claimed while the candidate is active or is a winner without claim back offer.."
+      "name": "CannotCloseActiveReceipts",
+      "msg": "Receipt accounts cannot be closed while the candidate is still active."
     },
     {
       "code": 6027,
-      "name": "InvalidClosetime",
-      "msg": "Close time should be greater than the current time."
+      "name": "ZeroVotesProvided",
+      "msg": "The vote amount must be greater than zero."
     },
     {
       "code": 6028,
-      "name": "InvalidReceiptForCandidate",
-      "msg": "Mismatch in candidate and its receipt."
+      "name": "OutsideClaimBackWindow",
+      "msg": "Tokens cannot be claimed at this time. The claim back window is either closed or has not yet opened."
     },
     {
       "code": 6029,
-      "name": "OnlyActiveCandidateCanBeVoted",
-      "msg": "Only active candidate can be voted."
+      "name": "ClaimBackWindowStillOpen",
+      "msg": "You must wait until the current claim back window has closed."
     },
     {
       "code": 6030,
-      "name": "OnlyActiveCandidateCanBeWithdrawn",
-      "msg": "Only active candidate can be withdrawn."
+      "name": "ActiveCandidateClaimBackWindowBlocked",
+      "msg": "An active candidate is not permitted to open a claim back window."
     },
     {
       "code": 6031,
-      "name": "ReceiptsCannotBeClosedForAnActiveCandidate",
-      "msg": "Receipts cannot be closed for an active candidate."
+      "name": "InactiveCandidateClaimBlocked",
+      "msg": "Claim back offer cannot be set for a non-active candidate."
     },
     {
       "code": 6032,
-      "name": "VotesMustBeGreaterThan0",
-      "msg": "Votes must be greater than zero."
-    },
-    {
-      "code": 6033,
-      "name": "UnclaimableNow",
-      "msg": "Tokens cannot be claimed now. Either the withdraw window is yet to open or closed."
-    },
-    {
-      "code": 6034,
-      "name": "WaitUntilWithdrawWindowIsClosed",
-      "msg": "Wait until the withdraw window is closed."
-    },
-    {
-      "code": 6035,
-      "name": "ActiveCandidateCannotOpenWithdrawWindow",
-      "msg": "Active candidate cannot open a withdraw window."
-    },
-    {
-      "code": 6036,
-      "name": "CannotSetClaimableForNonActiveCandidate",
-      "msg": "Cannot set claimable for non active candidate."
-    },
-    {
-      "code": 6037,
-      "name": "NotEnoughVotesForWinner",
-      "msg": "HxuiCandidate must have atleast 10 votes to be a winner."
+      "name": "InsufficientVotesForWinner",
+      "msg": "No candidate meets the minimum vote requirement."
     }
   ],
   "types": [
@@ -2738,6 +2717,10 @@
           {
             "name": "free_mint_cool_down",
             "type": "i64"
+          },
+          {
+            "name": "min_votes_to_win",
+            "type": "u64"
           },
           {
             "name": "bump",

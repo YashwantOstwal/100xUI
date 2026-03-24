@@ -57,6 +57,7 @@ export type HxuiConfig = {
   freeTokensPerMint: bigint;
   freeMintsPerEpoch: bigint;
   freeMintCoolDown: bigint;
+  minVotesToWin: bigint;
   bump: number;
 };
 
@@ -67,6 +68,7 @@ export type HxuiConfigArgs = {
   freeTokensPerMint: number | bigint;
   freeMintsPerEpoch: number | bigint;
   freeMintCoolDown: number | bigint;
+  minVotesToWin: number | bigint;
   bump: number;
 };
 
@@ -81,6 +83,7 @@ export function getHxuiConfigEncoder(): FixedSizeEncoder<HxuiConfigArgs> {
       ["freeTokensPerMint", getU64Encoder()],
       ["freeMintsPerEpoch", getU64Encoder()],
       ["freeMintCoolDown", getI64Encoder()],
+      ["minVotesToWin", getU64Encoder()],
       ["bump", getU8Encoder()],
     ]),
     (value) => ({ ...value, discriminator: HXUI_CONFIG_DISCRIMINATOR }),
@@ -97,6 +100,7 @@ export function getHxuiConfigDecoder(): FixedSizeDecoder<HxuiConfig> {
     ["freeTokensPerMint", getU64Decoder()],
     ["freeMintsPerEpoch", getU64Decoder()],
     ["freeMintCoolDown", getI64Decoder()],
+    ["minVotesToWin", getU64Decoder()],
     ["bump", getU8Decoder()],
   ]);
 }
@@ -163,5 +167,5 @@ export async function fetchAllMaybeHxuiConfig(
 }
 
 export function getHxuiConfigSize(): number {
-  return 81;
+  return 89;
 }

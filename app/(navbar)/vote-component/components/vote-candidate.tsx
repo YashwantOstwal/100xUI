@@ -410,7 +410,7 @@ function VoteWithHxui({ candidate }: { candidate: HxuiCandidate }) {
             ) && "line-through"
           )}
         >
-          Buy &nbsp;
+          Buy&nbsp;
           {hxuiToken.maybeHxuiTokenAccount.exists
             ? hxuiToken.maybeHxuiTokenAccount.data.amount /
                 programAccounts.hxuiConfig.data.tokensPerVote <

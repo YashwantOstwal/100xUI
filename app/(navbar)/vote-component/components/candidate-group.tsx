@@ -1,5 +1,6 @@
 "use client";
 import { CodeCanvas as CandidateContent } from "@/components/www/file-explorer/code-canvas";
+import { useTheme } from "next-themes";
 
 import {
   HXUI_PROGRAM_ADDRESS,
@@ -67,7 +68,7 @@ export function HxuiCandidate({
       className={cn(
         (subscribedCandidate.data.status == CandidateStatus.Winner ||
           subscribedCandidate.data.status == CandidateStatus.ClaimableWinner) &&
-          "dark:bg-[#253610]",
+          "dark:bg-[#2a5018]",
         subscribedCandidate.data.status == CandidateStatus.Withdrawn &&
           "dark:bg-[#240B0A]"
       )}
@@ -105,34 +106,40 @@ export function HxuiCandidate({
       </div>
       <CandidateContent className="flex flex-col justify-between gap-6 rounded-lg p-4 lg:h-50 lg:flex-row xl:h-75">
         <div className="text-muted-foreground text-base leading-[130%]">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Earum
-          voluptate eveniet corrupti tempora incidunt voluptas eos obcaecati,
-          excepturi doloremque distinctio? Cumque quae iusto eligendi rem
-          architecto distinctio dicta quasi enim.
+          {subscribedCandidate.data.description}
         </div>
-        <div className="bg-muted aspect-video lg:h-full">
-          <video
-            width="100%"
-            className="h-full w-full object-cover"
-            // height="100%"
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster="/og/default.png"
-          >
-            <source
-              src="/candidate-meta/parallax-container.mp4"
-              type="video/mp4"
-            />
-            Sorry, your browser doesn&apos;t support embedded videos.
-          </video>
+        <div className="aspect-video lg:h-full">
+          <Video candidateName={subscribedCandidate.data.name} />
         </div>
       </CandidateContent>
     </CandidateCard>
   );
 }
+const Video = ({ candidateName }: { candidateName: string }) => {
+  const { theme, systemTheme } = useTheme();
 
+  const slug = candidateName.toLowerCase().replaceAll(" ", "-");
+  console.log(slug);
+  return (
+    <video
+      width="100%"
+      height="100%"
+      className="h-full w-full object-cover"
+      // height="100%"
+      autoPlay
+      muted
+      loop
+      playsInline
+      poster="/og/default.png"
+      src={
+        theme?.startsWith("light") ||
+        (theme === "system" && systemTheme === "light")
+          ? `/candidate-meta/${slug}-light.mp4`
+          : `/candidate-meta/${slug}-dark.mp4`
+      }
+    ></video>
+  );
+};
 const CandidateCard = ({
   className,
   ...props

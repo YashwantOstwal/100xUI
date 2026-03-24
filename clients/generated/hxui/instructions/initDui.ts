@@ -109,6 +109,7 @@ export type InitDuiInstructionData = {
   freeTokensPerMint: bigint;
   freeMintsPerEpoch: bigint;
   freeMintCoolDown: bigint;
+  minVotesToWin: bigint;
 };
 
 export type InitDuiInstructionDataArgs = {
@@ -117,6 +118,7 @@ export type InitDuiInstructionDataArgs = {
   freeTokensPerMint: number | bigint;
   freeMintsPerEpoch: number | bigint;
   freeMintCoolDown: number | bigint;
+  minVotesToWin: number | bigint;
 };
 
 export function getInitDuiInstructionDataEncoder(): FixedSizeEncoder<InitDuiInstructionDataArgs> {
@@ -128,6 +130,7 @@ export function getInitDuiInstructionDataEncoder(): FixedSizeEncoder<InitDuiInst
       ["freeTokensPerMint", getU64Encoder()],
       ["freeMintsPerEpoch", getU64Encoder()],
       ["freeMintCoolDown", getI64Encoder()],
+      ["minVotesToWin", getU64Encoder()],
     ]),
     (value) => ({ ...value, discriminator: INIT_DUI_DISCRIMINATOR }),
   );
@@ -141,6 +144,7 @@ export function getInitDuiInstructionDataDecoder(): FixedSizeDecoder<InitDuiInst
     ["freeTokensPerMint", getU64Decoder()],
     ["freeMintsPerEpoch", getU64Decoder()],
     ["freeMintCoolDown", getI64Decoder()],
+    ["minVotesToWin", getU64Decoder()],
   ]);
 }
 
@@ -181,6 +185,7 @@ export type InitDuiAsyncInput<
   freeTokensPerMint: InitDuiInstructionDataArgs["freeTokensPerMint"];
   freeMintsPerEpoch: InitDuiInstructionDataArgs["freeMintsPerEpoch"];
   freeMintCoolDown: InitDuiInstructionDataArgs["freeMintCoolDown"];
+  minVotesToWin: InitDuiInstructionDataArgs["minVotesToWin"];
 };
 
 export async function getInitDuiInstructionAsync<
@@ -388,6 +393,7 @@ export type InitDuiInput<
   freeTokensPerMint: InitDuiInstructionDataArgs["freeTokensPerMint"];
   freeMintsPerEpoch: InitDuiInstructionDataArgs["freeMintsPerEpoch"];
   freeMintCoolDown: InitDuiInstructionDataArgs["freeMintCoolDown"];
+  minVotesToWin: InitDuiInstructionDataArgs["minVotesToWin"];
 };
 
 export function getInitDuiInstruction<

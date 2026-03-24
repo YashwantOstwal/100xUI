@@ -14,164 +14,144 @@ import {
 } from "@solana/kit";
 import { HXUI_PROGRAM_ADDRESS } from "../programs";
 
-/** InvalidDropTime: The drop time must be set in the future. */
-export const HXUI_ERROR__INVALID_DROP_TIME = 0x1770; // 6000
+/** TimestampNotInFuture: The specified timestamp must be set in the future. */
+export const HXUI_ERROR__TIMESTAMP_NOT_IN_FUTURE = 0x1770; // 6000
 /** DrawTimeNotReached: A winner can only be drawn after the scheduled draw time has passed. */
 export const HXUI_ERROR__DRAW_TIME_NOT_REACHED = 0x1771; // 6001
-/** PendingWinnerDraw: Draw winner for current cycle before setting a new drop time. */
+/** PendingWinnerDraw: You must draw a winner for the current cycle before setting a new drop time. */
 export const HXUI_ERROR__PENDING_WINNER_DRAW = 0x1772; // 6002
 /** MintCooldownActive: Maximum tokens have already been minted. Please try again after the free mint cooldown. */
 export const HXUI_ERROR__MINT_COOLDOWN_ACTIVE = 0x1773; // 6003
-/** NameTooLong: Candidate name should be less than or equal to 32 characters */
-export const HXUI_ERROR__NAME_TOO_LONG = 0x1774; // 6004
-/** DescriptionTooLong: Candidate description should be less than or equal to 32 characters */
-export const HXUI_ERROR__DESCRIPTION_TOO_LONG = 0x1775; // 6005
-/** InsufficientFunds: Not Enough funds in the vault to afford this transfer. */
-export const HXUI_ERROR__INSUFFICIENT_FUNDS = 0x1776; // 6006
-/** TokenPriceNotSufficient: Token price economically does not make sense. */
-export const HXUI_ERROR__TOKEN_PRICE_NOT_SUFFICIENT = 0x1777; // 6007
-/** OnlyAdminAccess: Only admin can invoke this instruction */
-export const HXUI_ERROR__ONLY_ADMIN_ACCESS = 0x1778; // 6008
-/** CandidateAlreadyAWinner: This candidate is already a winner. */
-export const HXUI_ERROR__CANDIDATE_ALREADY_A_WINNER = 0x1779; // 6009
-/** CandidateIsNoLongerVotable: Only active candidates can be voted. */
-export const HXUI_ERROR__CANDIDATE_IS_NO_LONGER_VOTABLE = 0x177a; // 6010
-/** UnclaimableYet: The registration fees can only be claimed free mint cooldown. */
-export const HXUI_ERROR__UNCLAIMABLE_YET = 0x177b; // 6011
-/** AlreadyUnregistered: User have already unregistered. */
-export const HXUI_ERROR__ALREADY_UNREGISTERED = 0x177c; // 6012
-/** UnregisteredForFreeTokens: UnregisteredFreeTokens. */
-export const HXUI_ERROR__UNREGISTERED_FOR_FREE_TOKENS = 0x177d; // 6013
-/** WinnerForCurrentPollAlreadyDrawn: Only one winner can be drawn in each cycle. set a new drop time and draw a winer after the drop time. */
-export const HXUI_ERROR__WINNER_FOR_CURRENT_POLL_ALREADY_DRAWN = 0x177e; // 6014
-/** UnregisterFirst: Not unregistered */
-export const HXUI_ERROR__UNREGISTER_FIRST = 0x177f; // 6015
-/** AllFreeTokensForTheDayMinted: Rate limit exceeded for maximum free mints per epoch */
-export const HXUI_ERROR__ALL_FREE_TOKENS_FOR_THE_DAY_MINTED = 0x1780; // 6016
-/** InvalidCandidate: Received an invalid candidate. */
-export const HXUI_ERROR__INVALID_CANDIDATE = 0x1781; // 6017
-/** MissingCandidate: One or more active candidates are missing. */
-export const HXUI_ERROR__MISSING_CANDIDATE = 0x1782; // 6018
-/** PassAllActiveCandidates: Pass all the active candidates mentioned in the drop time account. */
-export const HXUI_ERROR__PASS_ALL_ACTIVE_CANDIDATES = 0x1783; // 6019
-/** NoCandidates: There are no candidates to pick winner from. */
-export const HXUI_ERROR__NO_CANDIDATES = 0x1784; // 6020
-/** CloseAllReceiptAccount: Close all the receipts first otherwise you will lose your money. */
-export const HXUI_ERROR__CLOSE_ALL_RECEIPT_ACCOUNT = 0x1785; // 6021
-/** ActiveCandidateCannotBeClosed: Cannot close Non active candidate. */
-export const HXUI_ERROR__ACTIVE_CANDIDATE_CANNOT_BE_CLOSED = 0x1786; // 6022
-/** OpenWithdrawWindowFirst: The component is either claimable or withdrawn. Considering opening withdraw window first */
-export const HXUI_ERROR__OPEN_WITHDRAW_WINDOW_FIRST = 0x1787; // 6023
-/** CanBeClosedImmediatelyByClearingReceipts: This component can be closed immediately by clearing all the receipts. */
-export const HXUI_ERROR__CAN_BE_CLOSED_IMMEDIATELY_BY_CLEARING_RECEIPTS = 0x1788; // 6024
-/** CanBeClosedImmediatelyWithoutWithdrawWindow: This component can be closed immediately without the withdraw window as there are 0 receipts. */
-export const HXUI_ERROR__CAN_BE_CLOSED_IMMEDIATELY_WITHOUT_WITHDRAW_WINDOW = 0x1789; // 6025
-/** TokensCannotBeClaimed: Tokens cannot be claimed while the candidate is active or is a winner without claim back offer.. */
-export const HXUI_ERROR__TOKENS_CANNOT_BE_CLAIMED = 0x178a; // 6026
-/** InvalidClosetime: Close time should be greater than the current time. */
-export const HXUI_ERROR__INVALID_CLOSETIME = 0x178b; // 6027
-/** InvalidReceiptForCandidate: Mismatch in candidate and its receipt. */
-export const HXUI_ERROR__INVALID_RECEIPT_FOR_CANDIDATE = 0x178c; // 6028
-/** OnlyActiveCandidateCanBeVoted: Only active candidate can be voted. */
-export const HXUI_ERROR__ONLY_ACTIVE_CANDIDATE_CAN_BE_VOTED = 0x178d; // 6029
-/** OnlyActiveCandidateCanBeWithdrawn: Only active candidate can be withdrawn. */
-export const HXUI_ERROR__ONLY_ACTIVE_CANDIDATE_CAN_BE_WITHDRAWN = 0x178e; // 6030
-/** ReceiptsCannotBeClosedForAnActiveCandidate: Receipts cannot be closed for an active candidate. */
-export const HXUI_ERROR__RECEIPTS_CANNOT_BE_CLOSED_FOR_AN_ACTIVE_CANDIDATE = 0x178f; // 6031
-/** VotesMustBeGreaterThan0: Votes must be greater than zero. */
-export const HXUI_ERROR__VOTES_MUST_BE_GREATER_THAN0 = 0x1790; // 6032
-/** UnclaimableNow: Tokens cannot be claimed now. Either the withdraw window is yet to open or closed. */
-export const HXUI_ERROR__UNCLAIMABLE_NOW = 0x1791; // 6033
-/** WaitUntilWithdrawWindowIsClosed: Wait until the withdraw window is closed. */
-export const HXUI_ERROR__WAIT_UNTIL_WITHDRAW_WINDOW_IS_CLOSED = 0x1792; // 6034
-/** ActiveCandidateCannotOpenWithdrawWindow: Active candidate cannot open a withdraw window. */
-export const HXUI_ERROR__ACTIVE_CANDIDATE_CANNOT_OPEN_WITHDRAW_WINDOW = 0x1793; // 6035
-/** CannotSetClaimableForNonActiveCandidate: Cannot set claimable for non active candidate. */
-export const HXUI_ERROR__CANNOT_SET_CLAIMABLE_FOR_NON_ACTIVE_CANDIDATE = 0x1794; // 6036
-/** NotEnoughVotesForWinner: HxuiCandidate must have atleast 10 votes to be a winner. */
-export const HXUI_ERROR__NOT_ENOUGH_VOTES_FOR_WINNER = 0x1795; // 6037
+/** CandidateDescriptionTooLong: The candidate's description exceeds the maximum length of 128 characters. */
+export const HXUI_ERROR__CANDIDATE_DESCRIPTION_TOO_LONG = 0x1774; // 6004
+/** VaultInsufficientFunds: The vault has insufficient funds to complete this transfer. */
+export const HXUI_ERROR__VAULT_INSUFFICIENT_FUNDS = 0x1775; // 6005
+/** InvalidTokenPrice: The specified token price must be greater than or equal to half of Vote receipt (21 bytes) account rent. */
+export const HXUI_ERROR__INVALID_TOKEN_PRICE = 0x1776; // 6006
+/** UnauthorizedAdminAccess: Unauthorized: Only an administrator can invoke this instruction. */
+export const HXUI_ERROR__UNAUTHORIZED_ADMIN_ACCESS = 0x1777; // 6007
+/** InactiveCandidateVoted: Votes can only be cast for active candidates. */
+export const HXUI_ERROR__INACTIVE_CANDIDATE_VOTED = 0x1778; // 6008
+/** FeeClaimCooldownActive: Registration fees can only be claimed after the free mint cooldown period. */
+export const HXUI_ERROR__FEE_CLAIM_COOLDOWN_ACTIVE = 0x1779; // 6009
+/** UserAlreadyUnregistered: This user has already unregistered. */
+export const HXUI_ERROR__USER_ALREADY_UNREGISTERED = 0x177a; // 6010
+/** NotRegisteredForFreeTokens: The user is not registered for free tokens. */
+export const HXUI_ERROR__NOT_REGISTERED_FOR_FREE_TOKENS = 0x177b; // 6011
+/** CycleWinnerAlreadyDrawn: A winner for the current cycle has already been drawn. Set a new drop time first. */
+export const HXUI_ERROR__CYCLE_WINNER_ALREADY_DRAWN = 0x177c; // 6012
+/** MustUnregisterFirst: You must unregister before performing this action. */
+export const HXUI_ERROR__MUST_UNREGISTER_FIRST = 0x177d; // 6013
+/** OverallFreeMintLimitExceeded: The rate limit for free mints per epoch has been exceeded. */
+export const HXUI_ERROR__OVERALL_FREE_MINT_LIMIT_EXCEEDED = 0x177e; // 6014
+/** InvalidCandidate: The provided candidate is an invalid candidate. */
+export const HXUI_ERROR__INVALID_CANDIDATE = 0x177f; // 6015
+/** IncompleteActiveCandidateList: You must provide all active candidates listed in the drop time account. */
+export const HXUI_ERROR__INCOMPLETE_ACTIVE_CANDIDATE_LIST = 0x1780; // 6016
+/** EmptyCandidatePool: There are currently no valid candidates to choose a winner from. */
+export const HXUI_ERROR__EMPTY_CANDIDATE_POOL = 0x1781; // 6017
+/** PendingReceiptsExist: You must close all receipt accounts first to prevent loss of funds. */
+export const HXUI_ERROR__PENDING_RECEIPTS_EXIST = 0x1782; // 6018
+/** CannotCloseActiveCandidate: An active candidate cannot be closed. */
+export const HXUI_ERROR__CANNOT_CLOSE_ACTIVE_CANDIDATE = 0x1783; // 6019
+/** ClaimBackWindowNotOpen: The claim back window must be opened before claiming. */
+export const HXUI_ERROR__CLAIM_BACK_WINDOW_NOT_OPEN = 0x1784; // 6020
+/** RequiresReceiptClearance: Clear all receipts to immediately close this component. */
+export const HXUI_ERROR__REQUIRES_RECEIPT_CLEARANCE = 0x1785; // 6021
+/** ZeroReceiptsImmediateClose: This component has zero receipts and can be closed immediately without a claim back window. */
+export const HXUI_ERROR__ZERO_RECEIPTS_IMMEDIATE_CLOSE = 0x1786; // 6022
+/** IneligibleForTokenClaim: Tokens cannot be claimed for an active candidate or a winner candidate without claim-back offer. */
+export const HXUI_ERROR__INELIGIBLE_FOR_TOKEN_CLAIM = 0x1787; // 6023
+/** ReceiptCandidateMismatch: The provided receipt does not match the specified candidate. */
+export const HXUI_ERROR__RECEIPT_CANDIDATE_MISMATCH = 0x1788; // 6024
+/** InactiveCandidateWithdrawal: Withdrawals are only permitted for active candidates. */
+export const HXUI_ERROR__INACTIVE_CANDIDATE_WITHDRAWAL = 0x1789; // 6025
+/** CannotCloseActiveReceipts: Receipt accounts cannot be closed while the candidate is still active. */
+export const HXUI_ERROR__CANNOT_CLOSE_ACTIVE_RECEIPTS = 0x178a; // 6026
+/** ZeroVotesProvided: The vote amount must be greater than zero. */
+export const HXUI_ERROR__ZERO_VOTES_PROVIDED = 0x178b; // 6027
+/** OutsideClaimBackWindow: Tokens cannot be claimed at this time. The claim back window is either closed or has not yet opened. */
+export const HXUI_ERROR__OUTSIDE_CLAIM_BACK_WINDOW = 0x178c; // 6028
+/** ClaimBackWindowStillOpen: You must wait until the current claim back window has closed. */
+export const HXUI_ERROR__CLAIM_BACK_WINDOW_STILL_OPEN = 0x178d; // 6029
+/** ActiveCandidateClaimBackWindowBlocked: An active candidate is not permitted to open a claim back window. */
+export const HXUI_ERROR__ACTIVE_CANDIDATE_CLAIM_BACK_WINDOW_BLOCKED = 0x178e; // 6030
+/** InactiveCandidateClaimBlocked: Claim back offer cannot be set for a non-active candidate. */
+export const HXUI_ERROR__INACTIVE_CANDIDATE_CLAIM_BLOCKED = 0x178f; // 6031
+/** InsufficientVotesForWinner: No candidate meets the minimum vote requirement. */
+export const HXUI_ERROR__INSUFFICIENT_VOTES_FOR_WINNER = 0x1790; // 6032
 
 export type HxuiError =
-  | typeof HXUI_ERROR__ACTIVE_CANDIDATE_CANNOT_BE_CLOSED
-  | typeof HXUI_ERROR__ACTIVE_CANDIDATE_CANNOT_OPEN_WITHDRAW_WINDOW
-  | typeof HXUI_ERROR__ALL_FREE_TOKENS_FOR_THE_DAY_MINTED
-  | typeof HXUI_ERROR__ALREADY_UNREGISTERED
-  | typeof HXUI_ERROR__CAN_BE_CLOSED_IMMEDIATELY_BY_CLEARING_RECEIPTS
-  | typeof HXUI_ERROR__CAN_BE_CLOSED_IMMEDIATELY_WITHOUT_WITHDRAW_WINDOW
-  | typeof HXUI_ERROR__CANDIDATE_ALREADY_A_WINNER
-  | typeof HXUI_ERROR__CANDIDATE_IS_NO_LONGER_VOTABLE
-  | typeof HXUI_ERROR__CANNOT_SET_CLAIMABLE_FOR_NON_ACTIVE_CANDIDATE
-  | typeof HXUI_ERROR__CLOSE_ALL_RECEIPT_ACCOUNT
-  | typeof HXUI_ERROR__DESCRIPTION_TOO_LONG
+  | typeof HXUI_ERROR__ACTIVE_CANDIDATE_CLAIM_BACK_WINDOW_BLOCKED
+  | typeof HXUI_ERROR__CANDIDATE_DESCRIPTION_TOO_LONG
+  | typeof HXUI_ERROR__CANNOT_CLOSE_ACTIVE_CANDIDATE
+  | typeof HXUI_ERROR__CANNOT_CLOSE_ACTIVE_RECEIPTS
+  | typeof HXUI_ERROR__CLAIM_BACK_WINDOW_NOT_OPEN
+  | typeof HXUI_ERROR__CLAIM_BACK_WINDOW_STILL_OPEN
+  | typeof HXUI_ERROR__CYCLE_WINNER_ALREADY_DRAWN
   | typeof HXUI_ERROR__DRAW_TIME_NOT_REACHED
-  | typeof HXUI_ERROR__INSUFFICIENT_FUNDS
+  | typeof HXUI_ERROR__EMPTY_CANDIDATE_POOL
+  | typeof HXUI_ERROR__FEE_CLAIM_COOLDOWN_ACTIVE
+  | typeof HXUI_ERROR__INACTIVE_CANDIDATE_CLAIM_BLOCKED
+  | typeof HXUI_ERROR__INACTIVE_CANDIDATE_VOTED
+  | typeof HXUI_ERROR__INACTIVE_CANDIDATE_WITHDRAWAL
+  | typeof HXUI_ERROR__INCOMPLETE_ACTIVE_CANDIDATE_LIST
+  | typeof HXUI_ERROR__INELIGIBLE_FOR_TOKEN_CLAIM
+  | typeof HXUI_ERROR__INSUFFICIENT_VOTES_FOR_WINNER
   | typeof HXUI_ERROR__INVALID_CANDIDATE
-  | typeof HXUI_ERROR__INVALID_CLOSETIME
-  | typeof HXUI_ERROR__INVALID_DROP_TIME
-  | typeof HXUI_ERROR__INVALID_RECEIPT_FOR_CANDIDATE
+  | typeof HXUI_ERROR__INVALID_TOKEN_PRICE
   | typeof HXUI_ERROR__MINT_COOLDOWN_ACTIVE
-  | typeof HXUI_ERROR__MISSING_CANDIDATE
-  | typeof HXUI_ERROR__NAME_TOO_LONG
-  | typeof HXUI_ERROR__NO_CANDIDATES
-  | typeof HXUI_ERROR__NOT_ENOUGH_VOTES_FOR_WINNER
-  | typeof HXUI_ERROR__ONLY_ACTIVE_CANDIDATE_CAN_BE_VOTED
-  | typeof HXUI_ERROR__ONLY_ACTIVE_CANDIDATE_CAN_BE_WITHDRAWN
-  | typeof HXUI_ERROR__ONLY_ADMIN_ACCESS
-  | typeof HXUI_ERROR__OPEN_WITHDRAW_WINDOW_FIRST
-  | typeof HXUI_ERROR__PASS_ALL_ACTIVE_CANDIDATES
+  | typeof HXUI_ERROR__MUST_UNREGISTER_FIRST
+  | typeof HXUI_ERROR__NOT_REGISTERED_FOR_FREE_TOKENS
+  | typeof HXUI_ERROR__OUTSIDE_CLAIM_BACK_WINDOW
+  | typeof HXUI_ERROR__OVERALL_FREE_MINT_LIMIT_EXCEEDED
+  | typeof HXUI_ERROR__PENDING_RECEIPTS_EXIST
   | typeof HXUI_ERROR__PENDING_WINNER_DRAW
-  | typeof HXUI_ERROR__RECEIPTS_CANNOT_BE_CLOSED_FOR_AN_ACTIVE_CANDIDATE
-  | typeof HXUI_ERROR__TOKEN_PRICE_NOT_SUFFICIENT
-  | typeof HXUI_ERROR__TOKENS_CANNOT_BE_CLAIMED
-  | typeof HXUI_ERROR__UNCLAIMABLE_NOW
-  | typeof HXUI_ERROR__UNCLAIMABLE_YET
-  | typeof HXUI_ERROR__UNREGISTERED_FOR_FREE_TOKENS
-  | typeof HXUI_ERROR__UNREGISTER_FIRST
-  | typeof HXUI_ERROR__VOTES_MUST_BE_GREATER_THAN0
-  | typeof HXUI_ERROR__WAIT_UNTIL_WITHDRAW_WINDOW_IS_CLOSED
-  | typeof HXUI_ERROR__WINNER_FOR_CURRENT_POLL_ALREADY_DRAWN;
+  | typeof HXUI_ERROR__RECEIPT_CANDIDATE_MISMATCH
+  | typeof HXUI_ERROR__REQUIRES_RECEIPT_CLEARANCE
+  | typeof HXUI_ERROR__TIMESTAMP_NOT_IN_FUTURE
+  | typeof HXUI_ERROR__UNAUTHORIZED_ADMIN_ACCESS
+  | typeof HXUI_ERROR__USER_ALREADY_UNREGISTERED
+  | typeof HXUI_ERROR__VAULT_INSUFFICIENT_FUNDS
+  | typeof HXUI_ERROR__ZERO_RECEIPTS_IMMEDIATE_CLOSE
+  | typeof HXUI_ERROR__ZERO_VOTES_PROVIDED;
 
 let hxuiErrorMessages: Record<HxuiError, string> | undefined;
 if (process.env.NODE_ENV !== "production") {
   hxuiErrorMessages = {
-    [HXUI_ERROR__ACTIVE_CANDIDATE_CANNOT_BE_CLOSED]: `Cannot close Non active candidate.`,
-    [HXUI_ERROR__ACTIVE_CANDIDATE_CANNOT_OPEN_WITHDRAW_WINDOW]: `Active candidate cannot open a withdraw window.`,
-    [HXUI_ERROR__ALL_FREE_TOKENS_FOR_THE_DAY_MINTED]: `Rate limit exceeded for maximum free mints per epoch`,
-    [HXUI_ERROR__ALREADY_UNREGISTERED]: `User have already unregistered.`,
-    [HXUI_ERROR__CAN_BE_CLOSED_IMMEDIATELY_BY_CLEARING_RECEIPTS]: `This component can be closed immediately by clearing all the receipts.`,
-    [HXUI_ERROR__CAN_BE_CLOSED_IMMEDIATELY_WITHOUT_WITHDRAW_WINDOW]: `This component can be closed immediately without the withdraw window as there are 0 receipts.`,
-    [HXUI_ERROR__CANDIDATE_ALREADY_A_WINNER]: `This candidate is already a winner.`,
-    [HXUI_ERROR__CANDIDATE_IS_NO_LONGER_VOTABLE]: `Only active candidates can be voted.`,
-    [HXUI_ERROR__CANNOT_SET_CLAIMABLE_FOR_NON_ACTIVE_CANDIDATE]: `Cannot set claimable for non active candidate.`,
-    [HXUI_ERROR__CLOSE_ALL_RECEIPT_ACCOUNT]: `Close all the receipts first otherwise you will lose your money.`,
-    [HXUI_ERROR__DESCRIPTION_TOO_LONG]: `Candidate description should be less than or equal to 32 characters`,
+    [HXUI_ERROR__ACTIVE_CANDIDATE_CLAIM_BACK_WINDOW_BLOCKED]: `An active candidate is not permitted to open a claim back window.`,
+    [HXUI_ERROR__CANDIDATE_DESCRIPTION_TOO_LONG]: `The candidate's description exceeds the maximum length of 128 characters.`,
+    [HXUI_ERROR__CANNOT_CLOSE_ACTIVE_CANDIDATE]: `An active candidate cannot be closed.`,
+    [HXUI_ERROR__CANNOT_CLOSE_ACTIVE_RECEIPTS]: `Receipt accounts cannot be closed while the candidate is still active.`,
+    [HXUI_ERROR__CLAIM_BACK_WINDOW_NOT_OPEN]: `The claim back window must be opened before claiming.`,
+    [HXUI_ERROR__CLAIM_BACK_WINDOW_STILL_OPEN]: `You must wait until the current claim back window has closed.`,
+    [HXUI_ERROR__CYCLE_WINNER_ALREADY_DRAWN]: `A winner for the current cycle has already been drawn. Set a new drop time first.`,
     [HXUI_ERROR__DRAW_TIME_NOT_REACHED]: `A winner can only be drawn after the scheduled draw time has passed.`,
-    [HXUI_ERROR__INSUFFICIENT_FUNDS]: `Not Enough funds in the vault to afford this transfer.`,
-    [HXUI_ERROR__INVALID_CANDIDATE]: `Received an invalid candidate.`,
-    [HXUI_ERROR__INVALID_CLOSETIME]: `Close time should be greater than the current time.`,
-    [HXUI_ERROR__INVALID_DROP_TIME]: `The drop time must be set in the future.`,
-    [HXUI_ERROR__INVALID_RECEIPT_FOR_CANDIDATE]: `Mismatch in candidate and its receipt.`,
+    [HXUI_ERROR__EMPTY_CANDIDATE_POOL]: `There are currently no valid candidates to choose a winner from.`,
+    [HXUI_ERROR__FEE_CLAIM_COOLDOWN_ACTIVE]: `Registration fees can only be claimed after the free mint cooldown period.`,
+    [HXUI_ERROR__INACTIVE_CANDIDATE_CLAIM_BLOCKED]: `Claim back offer cannot be set for a non-active candidate.`,
+    [HXUI_ERROR__INACTIVE_CANDIDATE_VOTED]: `Votes can only be cast for active candidates.`,
+    [HXUI_ERROR__INACTIVE_CANDIDATE_WITHDRAWAL]: `Withdrawals are only permitted for active candidates.`,
+    [HXUI_ERROR__INCOMPLETE_ACTIVE_CANDIDATE_LIST]: `You must provide all active candidates listed in the drop time account.`,
+    [HXUI_ERROR__INELIGIBLE_FOR_TOKEN_CLAIM]: `Tokens cannot be claimed for an active candidate or a winner candidate without claim-back offer.`,
+    [HXUI_ERROR__INSUFFICIENT_VOTES_FOR_WINNER]: `No candidate meets the minimum vote requirement.`,
+    [HXUI_ERROR__INVALID_CANDIDATE]: `The provided candidate is an invalid candidate.`,
+    [HXUI_ERROR__INVALID_TOKEN_PRICE]: `The specified token price must be greater than or equal to half of Vote receipt (21 bytes) account rent.`,
     [HXUI_ERROR__MINT_COOLDOWN_ACTIVE]: `Maximum tokens have already been minted. Please try again after the free mint cooldown.`,
-    [HXUI_ERROR__MISSING_CANDIDATE]: `One or more active candidates are missing.`,
-    [HXUI_ERROR__NAME_TOO_LONG]: `Candidate name should be less than or equal to 32 characters`,
-    [HXUI_ERROR__NO_CANDIDATES]: `There are no candidates to pick winner from.`,
-    [HXUI_ERROR__NOT_ENOUGH_VOTES_FOR_WINNER]: `HxuiCandidate must have atleast 10 votes to be a winner.`,
-    [HXUI_ERROR__ONLY_ACTIVE_CANDIDATE_CAN_BE_VOTED]: `Only active candidate can be voted.`,
-    [HXUI_ERROR__ONLY_ACTIVE_CANDIDATE_CAN_BE_WITHDRAWN]: `Only active candidate can be withdrawn.`,
-    [HXUI_ERROR__ONLY_ADMIN_ACCESS]: `Only admin can invoke this instruction`,
-    [HXUI_ERROR__OPEN_WITHDRAW_WINDOW_FIRST]: `The component is either claimable or withdrawn. Considering opening withdraw window first`,
-    [HXUI_ERROR__PASS_ALL_ACTIVE_CANDIDATES]: `Pass all the active candidates mentioned in the drop time account.`,
-    [HXUI_ERROR__PENDING_WINNER_DRAW]: `Draw winner for current cycle before setting a new drop time.`,
-    [HXUI_ERROR__RECEIPTS_CANNOT_BE_CLOSED_FOR_AN_ACTIVE_CANDIDATE]: `Receipts cannot be closed for an active candidate.`,
-    [HXUI_ERROR__TOKEN_PRICE_NOT_SUFFICIENT]: `Token price economically does not make sense.`,
-    [HXUI_ERROR__TOKENS_CANNOT_BE_CLAIMED]: `Tokens cannot be claimed while the candidate is active or is a winner without claim back offer..`,
-    [HXUI_ERROR__UNCLAIMABLE_NOW]: `Tokens cannot be claimed now. Either the withdraw window is yet to open or closed.`,
-    [HXUI_ERROR__UNCLAIMABLE_YET]: `The registration fees can only be claimed free mint cooldown.`,
-    [HXUI_ERROR__UNREGISTERED_FOR_FREE_TOKENS]: `UnregisteredFreeTokens.`,
-    [HXUI_ERROR__UNREGISTER_FIRST]: `Not unregistered`,
-    [HXUI_ERROR__VOTES_MUST_BE_GREATER_THAN0]: `Votes must be greater than zero.`,
-    [HXUI_ERROR__WAIT_UNTIL_WITHDRAW_WINDOW_IS_CLOSED]: `Wait until the withdraw window is closed.`,
-    [HXUI_ERROR__WINNER_FOR_CURRENT_POLL_ALREADY_DRAWN]: `Only one winner can be drawn in each cycle. set a new drop time and draw a winer after the drop time.`,
+    [HXUI_ERROR__MUST_UNREGISTER_FIRST]: `You must unregister before performing this action.`,
+    [HXUI_ERROR__NOT_REGISTERED_FOR_FREE_TOKENS]: `The user is not registered for free tokens.`,
+    [HXUI_ERROR__OUTSIDE_CLAIM_BACK_WINDOW]: `Tokens cannot be claimed at this time. The claim back window is either closed or has not yet opened.`,
+    [HXUI_ERROR__OVERALL_FREE_MINT_LIMIT_EXCEEDED]: `The rate limit for free mints per epoch has been exceeded.`,
+    [HXUI_ERROR__PENDING_RECEIPTS_EXIST]: `You must close all receipt accounts first to prevent loss of funds.`,
+    [HXUI_ERROR__PENDING_WINNER_DRAW]: `You must draw a winner for the current cycle before setting a new drop time.`,
+    [HXUI_ERROR__RECEIPT_CANDIDATE_MISMATCH]: `The provided receipt does not match the specified candidate.`,
+    [HXUI_ERROR__REQUIRES_RECEIPT_CLEARANCE]: `Clear all receipts to immediately close this component.`,
+    [HXUI_ERROR__TIMESTAMP_NOT_IN_FUTURE]: `The specified timestamp must be set in the future.`,
+    [HXUI_ERROR__UNAUTHORIZED_ADMIN_ACCESS]: `Unauthorized: Only an administrator can invoke this instruction.`,
+    [HXUI_ERROR__USER_ALREADY_UNREGISTERED]: `This user has already unregistered.`,
+    [HXUI_ERROR__VAULT_INSUFFICIENT_FUNDS]: `The vault has insufficient funds to complete this transfer.`,
+    [HXUI_ERROR__ZERO_RECEIPTS_IMMEDIATE_CLOSE]: `This component has zero receipts and can be closed immediately without a claim back window.`,
+    [HXUI_ERROR__ZERO_VOTES_PROVIDED]: `The vote amount must be greater than zero.`,
   };
 }
 

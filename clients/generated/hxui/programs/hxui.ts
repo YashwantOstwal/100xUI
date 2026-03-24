@@ -62,7 +62,7 @@ import {
 } from "../instructions";
 
 export const HXUI_PROGRAM_ADDRESS =
-  "FrcnG1KDPhPqcVaAeLu6DiB5FvZBvvqqxNn5KR8wMBct" as Address<"FrcnG1KDPhPqcVaAeLu6DiB5FvZBvvqqxNn5KR8wMBct">;
+  "HLSeyqzgTyQZpUDqYZpo1sH1uJkE16gGRmRpvUmJRW7r" as Address<"HLSeyqzgTyQZpUDqYZpo1sH1uJkE16gGRmRpvUmJRW7r">;
 
 export enum HxuiAccount {
   FreeMintTracker,
@@ -413,7 +413,7 @@ export function identifyHxuiInstruction(
 }
 
 export type ParsedHxuiInstruction<
-  TProgram extends string = "FrcnG1KDPhPqcVaAeLu6DiB5FvZBvvqqxNn5KR8wMBct",
+  TProgram extends string = "HLSeyqzgTyQZpUDqYZpo1sH1uJkE16gGRmRpvUmJRW7r",
 > =
   | ({
       instructionType: HxuiInstruction.BuyTokens;

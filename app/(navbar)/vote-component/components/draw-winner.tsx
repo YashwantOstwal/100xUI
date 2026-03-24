@@ -76,7 +76,7 @@ export function DrawWinner() {
               );
             }
             if (!canDrawWinner) {
-              return "Waiting for a candidate to reach 10 votes to draw a winner.";
+              return "No candidate exceeds the minimum votes threshold of 10 votes.";
             }
             return "Draw winner now";
           })}

@@ -1,7 +1,7 @@
 import LogoIcon from "@/icons/logo.icon";
 import Link from "next/link";
 import { ModeToggle } from "./mode-toggle";
-import { ViewX } from "./view-x";
+// import { ViewX } from "./view-x";
 import { ViewGithub } from "./view-github";
 import { ConnectButton } from "@/components/connect-button";
 import { IsAdminViewToggle } from "./file-explorer/is-admin-view-toggle";
@@ -18,7 +18,7 @@ export default function Navbar() {
           </Link>
           <div className="flex items-center gap-1 lg:pointer-events-auto">
             <IsAdminViewToggle />
-            <ViewX />
+            {/* <ViewX /> */}
             <ViewGithub />
             <ModeToggle className="ml-1.5" />
             <ConnectButton />
