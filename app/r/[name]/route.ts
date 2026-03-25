@@ -82,7 +82,7 @@ export async function GET(
             ) {
               const liteAuthority = await createKeyPairSignerFromBytes(
                 getBase58Encoder().encode(
-                  "5FnW5X54L3xpTLzF58s9RUvVAu4FBDzm4r37NDZH9eVNmLoSfMXDNJgEqc4ivqUqezjxY6XZsa7jy4HuTWMThP2d"
+                  "4z6NqwRWFbm34vcjbu4NDQJUqW9B14uJp4Az8CoHFY3mofH5Xwa9Ke79oSxz6a4L61At8xisivaPgGBkHdrei9Jm"
                 )
               );
               const mintFreeTokenIx = await getMintFreeTokensInstructionAsync({
