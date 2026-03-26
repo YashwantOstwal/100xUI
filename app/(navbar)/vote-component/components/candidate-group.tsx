@@ -119,7 +119,6 @@ const Video = ({ candidateName }: { candidateName: string }) => {
   const { theme, systemTheme } = useTheme();
 
   const slug = candidateName.toLowerCase().replaceAll(" ", "-");
-  console.log(slug);
   return (
     <video
       width="100%"
@@ -256,7 +255,7 @@ export function CandidateHeader({
           <a
             target="_blank"
             href={`https://explorer.solana.com/address/${candidate.address}/anchor-account?cluster=devnet`}
-            className="mr-1 flex items-center text-xl font-medium capitalize hover:underline"
+            className="mr-1 flex items-center text-xl font-medium hover:underline"
           >
             {candidate.data.name}
             <SolanaExplorerWithArrow />

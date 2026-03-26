@@ -59,7 +59,7 @@ function VoteComponentHero() {
         href="https://github.com/YashwantOstwal/hxui_program/"
         className="text-destructive flex w-fit items-center gap-1 font-mono text-sm leading-5 font-medium tracking-normal hover:underline"
       >
-        HxUI Protocol <FileIcon className="size-4" />
+        Implements HxUI Protocol <FileIcon className="size-4" />
       </a>
       <h1 className="mt-4 text-[clamp(0px,_8vw,_40px)] leading-none font-semibold tracking-tight text-pretty">
         Premium components,
