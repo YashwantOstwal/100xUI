@@ -253,7 +253,7 @@ function CreateCandidate() {
             </FieldDescription>
           </Field>
           <Field>
-            <FieldLabel htmlFor="new-candidate-media">Media</FieldLabel>
+            <FieldLabel htmlFor="new-candidate-media">Media Slug</FieldLabel>
             <Input
               value={newCandidateMeta.name
                 .toLocaleLowerCase()
@@ -263,7 +263,9 @@ function CreateCandidate() {
               id="new-candidate-media"
             />
             <FieldDescription>
-              Ensure the media in the public directory.
+              Ensure video exists in
+              <span className="font-mono">./public/component-assets</span>{" "}
+              directory to override the default.
             </FieldDescription>
           </Field>
           <Field>

@@ -136,8 +136,8 @@ const Video = ({ candidateName }: { candidateName: string }) => {
       src={
         theme?.startsWith("light") ||
         (theme === "system" && systemTheme === "light")
-          ? `/candidate-meta/${slug}-light.mp4`
-          : `/candidate-meta/${slug}-dark.mp4`
+          ? `/component-assets/${slug}-light.mp4`
+          : `/component-assets/${slug}-dark.mp4`
       }
     ></video>
   );
@@ -215,7 +215,7 @@ export function useCandidateAccount(
       abortController.abort();
     };
   }, [
-    // candidate.address,
+    candidate.address,
     setCanBeWinnerCandidates,
     setCandidates,
     client.rpcSubscriptions,
