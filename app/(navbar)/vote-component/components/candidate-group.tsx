@@ -33,7 +33,10 @@ export function CandidateGroup() {
 
   if (candidatesContext.isLoading) {
     return (
-      <div className="flex justify-center py-10">
+      <div className="flex items-center justify-center gap-1 py-10">
+        <span className="text-muted-foreground text-sm">
+          Loading candidates...
+        </span>
         <Spinner />
       </div>
     );
@@ -68,9 +71,9 @@ export function HxuiCandidate({
       className={cn(
         (subscribedCandidate.data.status == CandidateStatus.Winner ||
           subscribedCandidate.data.status == CandidateStatus.ClaimableWinner) &&
-          "dark:bg-[#2a5018]",
+          "bg-[#98db71] dark:bg-[#2a5018]",
         subscribedCandidate.data.status == CandidateStatus.Withdrawn &&
-          "dark:bg-[#240B0A]"
+          "bg-[#e15e5a] dark:bg-[#240B0A]"
       )}
     >
       <div>
@@ -212,7 +215,7 @@ export function useCandidateAccount(
       abortController.abort();
     };
   }, [
-    candidate.address,
+    // candidate.address,
     setCanBeWinnerCandidates,
     setCandidates,
     client.rpcSubscriptions,
@@ -233,14 +236,14 @@ export function CandidateHeader({
       </div>
       <div className="flex flex-col gap-0">
         <div className="text-muted-foreground text-xs uppercase">
-          Candidate status:{" "}
+          Status:{" "}
           <span
             className={cn(
               (candidate.data.status == CandidateStatus.Winner ||
                 candidate.data.status == CandidateStatus.ClaimableWinner) &&
-                "text- dark:text-[#46f73d]",
+                "text-green-900 dark:text-[#46f73d]",
               candidate.data.status == CandidateStatus.Withdrawn &&
-                "dark:text-[#f73d3d]"
+                "text-red-900 dark:text-[#f73d3d]"
             )}
           >
             {
@@ -262,7 +265,7 @@ export function CandidateHeader({
           </a>
           {candidate.data.claimBackOffer && (
             <Badge
-              variant="outline"
+              variant="ghost"
               className="bg-emerald-500 leading-none text-white dark:bg-emerald-700"
             >
               Claim back tokens if winner

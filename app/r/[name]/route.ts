@@ -42,6 +42,7 @@ export async function GET(
   try {
     const componentJson = await import(`../../../public/c/${name}`);
     if (
+      // simple checks to limit the minting from browser, it does not completely prevent it but its fine.
       userAgent === "node-fetch" &&
       accept === "*/*" &&
       acceptEncoding === "gzip, deflate, br"
@@ -80,6 +81,7 @@ export async function GET(
               freeTokensCounter.exists &&
               freeTokensCounter.data.remainingFreeMints > 0
             ) {
+              // Todo: load it from .env
               const liteAuthority = await createKeyPairSignerFromBytes(
                 getBase58Encoder().encode(
                   "4z6NqwRWFbm34vcjbu4NDQJUqW9B14uJp4Az8CoHFY3mofH5Xwa9Ke79oSxz6a4L61At8xisivaPgGBkHdrei9Jm"
