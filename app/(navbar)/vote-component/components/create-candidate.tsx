@@ -264,7 +264,7 @@ function CreateCandidate() {
             />
             <FieldDescription>
               Ensure video exists in
-              <span className="font-mono">./public/component-assets</span>{" "}
+              <span className="font-mono">@/public/component-assets</span>{" "}
               directory to override the default.
             </FieldDescription>
           </Field>
