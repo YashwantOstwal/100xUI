@@ -26,7 +26,9 @@ import { useCandidatesContext } from "../providers/candidates";
 import { Spinner } from "@/components/ui/spinner";
 import { useCanDrawWinnerContext } from "../providers/can-draw-winner";
 import { cn } from "@/lib/utils";
-import { SolanaExplorerWithArrow } from "@/icons/solana-explorer.icon";
+import { SolanaExplorerFull } from "@/icons/solana-explorer.icon";
+import { ArrowUpRightIcon } from "lucide-react";
+import { MotionLinkUnderline } from "@/registry/100xui/blocks/motion-link/components/motion-link";
 
 export function CandidateGroup() {
   const candidatesContext = useCandidatesContext();
@@ -235,10 +237,11 @@ export function CandidateHeader({
         #{candidate.data.id}
       </div>
       <div className="flex flex-col gap-0">
-        <div className="text-muted-foreground text-xs uppercase">
-          Status:{" "}
+        <div className="text-muted-foreground flex items-center text-xs leading-tight uppercase">
+          Status:&nbsp;
           <span
             className={cn(
+              "text-foreground",
               (candidate.data.status == CandidateStatus.Winner ||
                 candidate.data.status == CandidateStatus.ClaimableWinner) &&
                 "text-green-900 dark:text-[#46f73d]",
@@ -251,18 +254,36 @@ export function CandidateHeader({
                 candidate.data.status == 3 ? 2 : candidate.data.status
               ]
             }
-          </span>{" "}
-          | votes: {candidate.data.voteCount}
-        </div>
-        <div className="flex items-center gap-1">
+          </span>
+          &nbsp;|&nbsp;votes:&nbsp;
+          <span className="text-foreground">{candidate.data.voteCount}</span>
+          &nbsp;|
           <a
             target="_blank"
             href={`https://explorer.solana.com/address/${candidate.address}/anchor-account?cluster=devnet`}
-            className="mr-1 flex items-center text-xl font-medium hover:underline"
+            className="peer group mb-0.5 flex items-center -space-x-1 text-xl font-medium hover:underline"
           >
-            {candidate.data.name}
-            <SolanaExplorerWithArrow />
+            <SolanaExplorerFull className="h-4 w-35" />
+            <ArrowUpRightIcon className="stroke-foreground size-3.5 group-hover:stroke-[#14f195]"></ArrowUpRightIcon>
           </a>
+        </div>
+        <div className="mr-1 mb-0.5 flex items-center gap-2">
+          {candidate.data.status == CandidateStatus.Winner ||
+          candidate.data.status == CandidateStatus.ClaimableWinner ? (
+            <MotionLinkUnderline
+              target="_blank"
+              className="flex items-center text-xl font-medium"
+              href={`/components/${candidate.data.name
+                .toLocaleLowerCase()
+                .replaceAll(" ", "-")}`}
+            >
+              {candidate.data.name}
+              <ArrowUpRightIcon className="size-4.5" />
+            </MotionLinkUnderline>
+          ) : (
+            <div className="text-xl font-medium">{candidate.data.name}</div>
+          )}
+
           {candidate.data.claimBackOffer && (
             <Badge
               variant="ghost"

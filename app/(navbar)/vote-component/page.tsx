@@ -15,6 +15,7 @@ import { GetAdminAccess } from "./components/get-admin-access";
 import { CanDrawWinnerProvider } from "./providers/can-draw-winner";
 import { MotionLinkUnderline } from "@/registry/100xui/blocks/motion-link/components/motion-link";
 import { FileIcon } from "lucide-react";
+// import { UpdateConfig } from "./components/update-config";
 
 function Page() {
   const { isAdminView } = useIsAdminView();
@@ -25,18 +26,8 @@ function Page() {
         <CandidatesProvider>
           <div className="relative min-h-screen">
             <VoteComponentHero />
-            {isAdminView && (
-              <CodeCard className="bg-secondary mb-2 flex w-full items-center justify-between rounded-full pl-3">
-                <h2 className="ml-2.5 text-base">Admin actions:</h2>
-                <div className="flex items-center gap-2">
-                  <SetDropTime></SetDropTime>
-                  <CreateCandidate></CreateCandidate>
-                  <WithdrawVaultFunds></WithdrawVaultFunds>
-                </div>
-              </CodeCard>
-            )}
+            {isAdminView && <AdminActions />}
             <DrawWinner />
-
             <div className="sticky top-13 z-20 mb-4 flex items-center justify-end gap-1">
               <GetAdminAccess />
               <div className="flex items-center">
@@ -52,6 +43,19 @@ function Page() {
   );
 }
 
+function AdminActions() {
+  return (
+    <CodeCard className="bg-secondary mb-2 flex w-full items-center justify-between rounded-full pl-3">
+      <h2 className="ml-2.5 text-base">Admin actions:</h2>
+      <div className="flex items-center gap-2">
+        <SetDropTime></SetDropTime>
+        <CreateCandidate></CreateCandidate>
+        <WithdrawVaultFunds></WithdrawVaultFunds>
+        {/* <UpdateConfig /> */}
+      </div>
+    </CodeCard>
+  );
+}
 function VoteComponentHero() {
   return (
     <div>

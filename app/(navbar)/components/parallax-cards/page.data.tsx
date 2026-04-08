@@ -208,15 +208,6 @@ function ParallaxCard({
     [1, 0.85],
   );
 
-  const opacity = useTransform(
-    scrollYProgress,
-    [
-      (index + maxStackedCards - 1) * scrollRatio,
-      (index + maxStackedCards) * scrollRatio,
-    ],
-    [1, 0],
-  );
-
   return (
     <div
       style={{
@@ -229,7 +220,6 @@ function ParallaxCard({
         {...(isSticky && {
           style: {
             scale,
-            opacity,
             y,
             maxHeight: forceParallax ? \`calc(100vh - \${top.absolute})\` : "none",
           },

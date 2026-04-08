@@ -142,7 +142,7 @@ export function VoteCandidate({ candidate }: { candidate: HxuiCandidate }) {
           <PopoverHeader>
             <PopoverTitle>
               Vote&nbsp;
-              <span className="font-medium capitalize">{candidate.name}</span>
+              <span className="font-medium">{candidate.name}</span>
             </PopoverTitle>
             <PopoverDescription>
               Each vote case requires{" "}

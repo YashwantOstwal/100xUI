@@ -35,9 +35,9 @@ export const SolanaExplorerLogo = (props: React.ComponentProps<"svg">) => {
 
 export const SolanaExplorerWithArrow = () => {
   return (
-    <div className="flex items-center -space-x-2.25">
-      <SolanaExplorerLogo className="size-7 shrink-0" />
-      <ArrowUpRightIcon className="size-4 stroke-[#14f195]"></ArrowUpRightIcon>
+    <div className="flex items-center -space-x-2">
+      <SolanaExplorerLogo className="size-6 shrink-0" />
+      <ArrowUpRightIcon className="size-3 stroke-[#14f195]"></ArrowUpRightIcon>
     </div>
   );
 };

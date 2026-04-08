@@ -6,12 +6,12 @@ import {
   useTransform,
   motion,
   type MotionValue,
+  useMotionValueEvent,
 } from "motion/react";
 
 import { cn } from "@/lib/utils";
 
-export interface ParallaxCardsProps
-  extends React.ComponentPropsWithoutRef<"div"> {
+export interface ParallaxCardsProps extends React.ComponentPropsWithoutRef<"div"> {
   children: React.ReactElement[];
   maxStackedCards?: number;
   top?: React.CSSProperties["top"];
@@ -33,7 +33,7 @@ export function ParallaxCards({
 
   if (topUnit === "%")
     throw new Error(
-      "Invalid `top` value: percentages (%) are not supported by <ParallaxCards/>.",
+      "Invalid `top` value: percentages (%) are not supported by <ParallaxCards/>."
     );
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [isSticky, setIsSticky] = React.useState(true);
@@ -142,24 +142,28 @@ function ParallaxCard({
       "0",
       `-${top.absolute}`,
       `${-top.magnitude - top.magnitude / (maxStackedCards - 1)}${top.unit}`,
-    ],
+    ]
   );
 
   const scale = useTransform(
     scrollYProgress,
     [index * scrollRatio, (index + maxStackedCards) * scrollRatio],
-    [1, 0.85],
+    [1, 0.85]
   );
 
-  const opacity = useTransform(
-    scrollYProgress,
-    [
-      (index + maxStackedCards - 1) * scrollRatio,
-      (index + maxStackedCards) * scrollRatio,
-    ],
-    [1, 0],
-  );
+  // const opacity = useTransform(
+  //   scrollYProgress,
 
+  //   [
+  //     (index + maxStackedCards - 1) * scrollRatio,
+  //     (index + maxStackedCards) * scrollRatio,
+  //   ],
+  //   [1, 0],
+  // );
+
+  // useMotionValueEvent(opacity, "change", (value) => {
+  //   console.log(value, typeof value);
+  // });
   return (
     <div
       style={{
@@ -172,7 +176,7 @@ function ParallaxCard({
         {...(isSticky && {
           style: {
             scale,
-            opacity,
+            // opacity,
             y,
             maxHeight: forceParallax ? `calc(100vh - ${top.absolute})` : "none",
           },

@@ -37,7 +37,6 @@ export function MintFreeTokens() {
 
   const disabled = !selectedWallet || hxuiLiteToken.isLoading;
 
-  const accountsLoading = hxuiLiteToken.isLoading;
   const freeMintTrackerExists =
     !hxuiLiteToken.isLoading &&
     hxuiLiteToken.maybeFreeMintTrackerAccount.exists;
@@ -99,7 +98,7 @@ export function MintFreeTokens() {
           </TooltipContent>
         </Tooltip>
       </HxuiButtonGroup>
-      {selectedWallet && !accountsLoading && (
+      {selectedWallet && !hxuiLiteToken.isLoading && (
         <PopoverContent className="w-80 space-y-3">
           {run(() => {
             if (!freeMintTrackerExists) {
