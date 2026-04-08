@@ -263,8 +263,8 @@ function CreateCandidate() {
               id="new-candidate-media"
             />
             <FieldDescription>
-              Ensure video exists in
-              <span className="font-mono">@/public/component-assets</span>{" "}
+              Ensure video exists in&nbsp;
+              <span className="font-mono">@/public/component-assets</span>&nbsp;
               directory to override the default.
             </FieldDescription>
           </Field>
