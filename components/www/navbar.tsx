@@ -16,11 +16,11 @@ export default function Navbar() {
           >
             <LogoIcon />
           </Link>
-          <div className="flex items-center gap-1 lg:pointer-events-auto">
+          <div className="mr-4 flex items-center gap-2 lg:pointer-events-auto lg:mr-2">
             <IsAdminViewToggle />
             {/* <ViewX /> */}
             <ViewGithub />
-            <ModeToggle className="ml-1.5" />
+            <ModeToggle className="" />
             <ConnectButton />
           </div>
         </div>

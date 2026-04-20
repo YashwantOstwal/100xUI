@@ -36,9 +36,12 @@ export function IsAdminViewToggle() {
 
   if (showAdminViewToggle) {
     return (
-      <Field orientation="horizontal" className="mr-0.5 gap-1.5">
-        <FieldLabel htmlFor="admin-view-toggle" className="leading-none">
-          Admin view?
+      <Field orientation="horizontal" className="gap-1.5">
+        <FieldLabel
+          htmlFor="admin-view-toggle"
+          className="text-right leading-none"
+        >
+          Admin view ?
         </FieldLabel>
         <Switch
           id="admin-view-toggle"

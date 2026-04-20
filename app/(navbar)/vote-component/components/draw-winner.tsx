@@ -50,8 +50,8 @@ export function DrawWinner() {
 
   return (
     <div className="flex items-center justify-center py-2">
-      <CodeCard className="bg-secondary mb-2 flex w-full items-center justify-between rounded-full pl-3">
-        <h2 className="ml-2.5 text-base">
+      <CodeCard className="bg-secondary mb-2 flex w-full items-center justify-between rounded-full">
+        <h2 className="text-base lg:ml-5.5">
           {run(() => {
             if (programAccounts.isLoading) {
               return <Spinner />;

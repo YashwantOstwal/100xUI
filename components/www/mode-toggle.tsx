@@ -16,7 +16,7 @@ export function ModeToggle({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "bg-background/75 border-border/50 mr-1 flex h-fit items-center justify-between gap-x-1 rounded-full border p-0.5 backdrop-blur-[2px] lg:pointer-events-auto",
+        "bg-background/75 border-border/50 flex h-fit items-center justify-between gap-x-1 rounded-full border p-0.5 backdrop-blur-[2px] lg:pointer-events-auto",
         className
       )}
     >

@@ -10,7 +10,7 @@ import {
 
 import { truncateAddress } from "@/utils";
 
-import { ChevronDownIcon, Trash2Icon } from "lucide-react";
+import { ChevronDownIcon, Trash2Icon, WalletIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePrivyAsSolanaWallet } from "@/providers/privy-as-solana-wallet";
 import { cn } from "@/lib/utils";
@@ -24,79 +24,78 @@ export function ConnectButton() {
     selectNewWallet,
   } = usePrivyAsSolanaWallet();
   return (
-    <>
-      <div className="p-2">
-        <div className="grid size-fit">
-          {!selectedWallet ? (
-            <Button
-              className="col-start-1 row-start-1"
-              onClick={() =>
-                connectWallet({
-                  description: "Connect to external wallets with privy.",
-                })
-              }
-            >
-              Connect to wallet
+    <div className="w-17 shrink-0 lg:w-42">
+      {!selectedWallet ? (
+        <Button
+          className="w-full"
+          onClick={() =>
+            connectWallet({
+              description: "Connect to external wallets with privy.",
+            })
+          }
+        >
+          <span className="max-lg:hidden">Connect to wallet</span>
+          <WalletIcon className="lg:hidden" />
+        </Button>
+      ) : (
+        <DropdownMenu className="w-full">
+          <DropdownMenuTrigger asChild>
+            <Button className="text-sm">
+              <Image
+                width={20}
+                height={20}
+                src={selectedWallet.standardWallet.icon}
+                alt={selectedWallet + "icon"}
+                className="size-5"
+              />
+              <div className="hidden font-mono font-medium lg:block">
+                {truncateAddress(selectedWallet.address)}
+              </div>
+              <ChevronDownIcon className="size-4 shrink-0" />
             </Button>
-          ) : (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button className="col-start-1 row-start-1 text-sm">
-                  <Image
-                    width={20}
-                    height={20}
-                    src={selectedWallet.standardWallet.icon}
-                    alt={selectedWallet + "icon"}
-                    className="size-5"
-                  />
-                  <div className="font-mono font-medium">
-                    {truncateAddress(selectedWallet.address)}
-                  </div>
-                  <ChevronDownIcon className="size-4 shrink-0" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="relative z-100">
-                <DropdownMenuGroup>
-                  {wallets.map((wallet) => (
-                    <DropdownMenuItem
-                      key={wallet.address}
-                      className={cn(
-                        "mb-1 items-center justify-between font-mono text-sm",
-                        wallet.standardWallet.name ==
-                          selectedWallet.standardWallet.name && "bg-accent"
-                      )}
-                      onClick={() => selectNewWallet(wallet)}
-                    >
-                      {truncateAddress(wallet.address)}
-                      <Button
-                        size="icon-sm"
-                        className="bg-destructive/10 hover:bg-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/40"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          disconnectWallet(wallet);
-                        }}
-                      >
-                        <Trash2Icon className="stroke-destructive size-4" />
-                      </Button>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuGroup>
-                <DropdownMenuGroup>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() =>
-                      connectWallet({
-                        description: "Using privy as wallet adapter",
-                      })
-                    }
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="relative z-100">
+            <DropdownMenuGroup>
+              {wallets.map((wallet) => (
+                <DropdownMenuItem
+                  key={wallet.address}
+                  className={cn(
+                    "mb-1 items-center justify-between font-mono text-sm",
+                    wallet.standardWallet.name ==
+                      selectedWallet.standardWallet.name && "bg-accent"
+                  )}
+                  onClick={() => selectNewWallet(wallet)}
+                >
+                  {truncateAddress(wallet.address)}
+                  <Button
+                    size="icon-sm"
+                    className="bg-destructive/10 hover:bg-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/40"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      disconnectWallet(wallet);
+                    }}
                   >
-                    Connect to new wallet
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-          <Button
+                    <Trash2Icon className="stroke-destructive size-4" />
+                  </Button>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+            <DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() =>
+                  connectWallet({
+                    description: "Using privy as wallet adapter",
+                  })
+                }
+              >
+                Connect to new wallet
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+      {/* <Button
             aria-hidden
             disabled
             className="invisible col-start-1 row-start-1"
@@ -111,10 +110,8 @@ export function ConnectButton() {
             <div className="size-5 shrink-0" />
             <div className="font-mono font-medium">XXXX...XXXX</div>
             <ChevronDownIcon className="size-4 shrink-0" />
-          </Button>
-        </div>
-      </div>
-    </>
+          </Button> */}
+    </div>
   );
 }
 

@@ -8,7 +8,7 @@ export function Hero() {
   return (
     <div className="flex flex-col items-center px-1 pt-6 sm:px-2">
       <div className="text-muted-foreground flex flex-wrap items-center justify-center text-center font-mono leading-5 tracking-normal">
-        {"New component every 72 hours".split(" ").map((word, i) => (
+        {"New component every 7 days".split(" ").map((word, i) => (
           <span key={`words[${i}]`}>{word}&nbsp;</span>
         ))}
         <motion.span
