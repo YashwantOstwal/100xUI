@@ -109,7 +109,7 @@ export function HxuiCandidate({
           </div>
         )}
       </div>
-      <CandidateContent className="flex min-h-fit flex-col justify-between gap-6 rounded-lg p-4 lg:h-50 lg:flex-row xl:h-75">
+      <CandidateContent className="flex flex-col justify-between gap-6 rounded-lg p-4 max-lg:min-h-fit lg:h-50 lg:flex-row xl:h-75">
         <div className="text-muted-foreground text-base leading-[130%]">
           {subscribedCandidate.data.description}
         </div>
