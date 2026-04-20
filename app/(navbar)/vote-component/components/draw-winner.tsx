@@ -50,7 +50,7 @@ export function DrawWinner() {
 
   return (
     <div className="flex items-center justify-center py-2">
-      <CodeCard className="bg-secondary mb-2 flex w-full items-center justify-between rounded-full">
+      <CodeCard className="bg-secondary mb-2 flex w-full flex-col items-center justify-between gap-1 lg:flex-row lg:rounded-full">
         <h2 className="text-base lg:ml-5.5">
           {run(() => {
             if (programAccounts.isLoading) {

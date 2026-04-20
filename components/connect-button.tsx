@@ -38,8 +38,8 @@ export function ConnectButton() {
           <WalletIcon className="lg:hidden" />
         </Button>
       ) : (
-        <DropdownMenu className="w-full">
-          <DropdownMenuTrigger asChild>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild className="w-full">
             <Button className="text-sm">
               <Image
                 width={20}
