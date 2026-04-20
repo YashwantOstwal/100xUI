@@ -167,7 +167,7 @@ export function SetDropTime() {
   const now = getUnixTimestamp();
   return (
     <Popover>
-      <HxuiButtonGroup>
+      <HxuiButtonGroup className="">
         <Tooltip>
           <TooltipTrigger asChild>
             <span>

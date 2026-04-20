@@ -28,9 +28,9 @@ function Page() {
             <VoteComponentHero />
             {isAdminView && <AdminActions />}
             <DrawWinner />
-            <div className="sticky top-13 z-20 mb-4 flex items-center justify-end gap-1">
+            <div className="z-20 mb-4 flex flex-col items-end gap-1 lg:sticky lg:top-13 lg:flex-row lg:items-center">
               <GetAdminAccess />
-              <div className="flex items-center">
+              <div className="flex flex-col items-end max-lg:sticky sm:flex-row md:items-center">
                 <BuyTokens />
                 <MintFreeTokens />
               </div>
@@ -45,12 +45,12 @@ function Page() {
 
 function AdminActions() {
   return (
-    <CodeCard className="bg-secondary mb-2 flex w-full items-center justify-between rounded-full pl-3">
-      <h2 className="ml-2.5 text-base">Admin actions:</h2>
-      <div className="flex items-center gap-2">
-        <SetDropTime></SetDropTime>
+    <CodeCard className="bg-secondary mb-2 flex w-full flex-col items-center justify-between gap-y-3 max-lg:p-2 lg:flex-row lg:rounded-full">
+      <h2 className="text-lg lg:ml-3">Admin actions: </h2>
+      <div className="flex flex-col flex-wrap items-center justify-center gap-1 md:flex-row md:gap-2">
         <CreateCandidate></CreateCandidate>
         <WithdrawVaultFunds></WithdrawVaultFunds>
+        <SetDropTime></SetDropTime>
         {/* <UpdateConfig /> */}
       </div>
     </CodeCard>

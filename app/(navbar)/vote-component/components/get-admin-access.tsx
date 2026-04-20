@@ -34,10 +34,10 @@ import { toast } from "sonner";
 import { SolanaExplorerFull } from "@/icons/solana-explorer.icon";
 export function GetAdminAccess() {
   return (
-    <div className="flex flex-1 items-center justify-center">
-      <CodeCard className="bg-secondary flex w-full items-center justify-between rounded-full pl-3">
-        <div className="ml-2.5 flex items-center gap-2">
-          <h2 className="text-base">Get the admin access </h2>
+    <div className="flex w-full flex-1 items-center justify-center">
+      <CodeCard className="bg-secondary flex w-full flex-col items-center justify-between gap-3 max-sm:p-2 sm:flex-row sm:rounded-full">
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <h2 className="text-lg text-nowrap sm:ml-3">Get the admin access </h2>
           <Badge className="leading-none">Test mode</Badge>
         </div>
         <GetAdminAccessButton />

@@ -35,7 +35,7 @@ export function ConnectButton() {
           }
         >
           <span className="max-lg:hidden">Connect to wallet</span>
-          <WalletIcon className="lg:hidden" />
+          <WalletIcon className="size-5 lg:hidden" />
         </Button>
       ) : (
         <DropdownMenu>

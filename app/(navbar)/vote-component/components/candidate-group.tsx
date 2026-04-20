@@ -78,20 +78,20 @@ export function HxuiCandidate({
           "bg-[#e15e5a] dark:bg-[#240B0A]"
       )}
     >
-      <div>
-        <div className="flex items-center justify-between px-2 py-2">
+      <div className="p-2">
+        <div className="mb-3 flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
           <CandidateHeader candidate={subscribedCandidate} />
-          <div className="flex flex-nowrap gap-1">
+          <div className="flex flex-col flex-nowrap gap-1 sm:flex-row">
             <VoteCandidate candidate={subscribedCandidate.data} />
             <ClaimBackTokens candidate={subscribedCandidate.data} />
           </div>
         </div>
         {isAdminView && (
-          <div className="flex items-center justify-between px-2 pb-2">
+          <div className="flex flex-col justify-between gap-0.5">
             <div className="text-muted-foreground text-xs uppercase">
-              Admin actions:{" "}
+              Admin actions :
             </div>
-            <div className="flex flex-nowrap items-center gap-1">
+            <div className="flex flex-wrap items-center gap-1">
               <EnableClaimBackOfferToggle
                 candidate={subscribedCandidate.data}
               ></EnableClaimBackOfferToggle>
@@ -109,7 +109,7 @@ export function HxuiCandidate({
           </div>
         )}
       </div>
-      <CandidateContent className="flex flex-col justify-between gap-6 rounded-lg p-4 lg:h-50 lg:flex-row xl:h-75">
+      <CandidateContent className="flex min-h-fit flex-col justify-between gap-6 rounded-lg p-4 lg:h-50 lg:flex-row xl:h-75">
         <div className="text-muted-foreground text-base leading-[130%]">
           {subscribedCandidate.data.description}
         </div>
