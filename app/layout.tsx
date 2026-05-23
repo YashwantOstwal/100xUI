@@ -8,7 +8,6 @@ import {
   PrivyAsSolanaWalletProvider,
   PrivyConfigProvider,
 } from "@/providers/privy-as-solana-wallet";
-import { Footer } from "@/components/www/footer";
 
 import "@/app/styles/globals.css";
 import { IsAdminViewProvider } from "@/providers/is-admin-view";
@@ -99,10 +98,9 @@ export default function RootLayout({
                           "dark-bubblegum",
                         ]}
                       >
-                        <div className="mx-auto max-w-screen-2xl px-3 lg:px-4">
-                          <div className="bg-background text-foreground min-h-screen border-x border-dashed px-3 pt-26 pb-16 lg:px-4">
+                        <div className="px-2 lg:px-3">
+                          <div className="bg-background text-foreground relative min-h-screen border-x border-dashed">
                             {children}
-                            <Footer />
                           </div>
                         </div>
                         <Toaster

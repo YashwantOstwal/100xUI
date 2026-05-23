@@ -24,7 +24,7 @@ const IPHONE_FEATURE_IMAGES_PROPS = [
 export function AppleGalleryDemo() {
   return (
     <AppleGallery>
-      <AppleGalleryContainer className="h-160">
+      <AppleGalleryContainer className="h-160 max-h-screen">
         {IPHONE_FEATURE_IMAGES_PROPS.map((props) => (
           <Card key={props.alt} className="relative overflow-hidden">
             <Image

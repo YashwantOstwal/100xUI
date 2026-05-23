@@ -11,8 +11,8 @@ export default function NavbarLayout({
   const pathname = usePathname();
   return (
     <>
-      {children}
       {pathname !== "/components/in-page-navbar" && <Navbar />}
+      {children}
     </>
   );
 }

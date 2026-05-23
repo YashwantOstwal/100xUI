@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     images: [
       {
-        url: `/og/apple-cards-slideshow.png`,
+        url: `/og/apple-gallery.png`,
         width: 1200,
         height: 630,
       },

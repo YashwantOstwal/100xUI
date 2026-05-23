@@ -29,7 +29,7 @@ export function ComponentPage({
   ...rest
 }: ComponentProps<"main">) {
   return (
-    <main className={cn(className)} {...rest}>
+    <main className={cn("mx-auto max-w-screen-2xl px-3", className)} {...rest}>
       <HomeLink />
       {children}
     </main>
