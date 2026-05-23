@@ -4,9 +4,9 @@ import {
   type DirectoryItem,
 } from "@/components/www/file-explorer/file-explorer.types";
 import type { PropTableProps } from "../_components/prop-table";
-import registryItem from "@/public/c/chat-bento-card.json";
-import internals from "@/public/c/internals.json";
-import demos from "@/public/c/demos.json";
+import registryItem from "@/public/components/chat-bento-card.json";
+import internals from "@/public/components/internals.json";
+import demos from "@/public/components/demos.json";
 
 const ROOT_DIRECTORY: DirectoryItem[] = [
   {

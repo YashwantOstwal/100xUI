@@ -12,8 +12,17 @@ import TextSwitcherShowcase from "@/public/og/text-switcher.png";
 import MorphModal from "@/public/og/morph-modal.png";
 import Default from "@/public/og/default.png";
 import ChatBentoCard from "@/public/og/chat-bento-card.png";
+import AppleGallery from "@/public/og/apple-gallery.png";
 
 const components: ComponentGridItemProps[] = [
+  {
+    name: "Apple gallery",
+    href: "/components/apple-gallery",
+    imgProps: {
+      src: AppleGallery,
+      alt: "apple-gallery",
+    },
+  },
   {
     name: "Notification",
     href: "/components/notification",

@@ -95,22 +95,6 @@ export function ConnectButton() {
           </DropdownMenuContent>
         </DropdownMenu>
       )}
-      {/* <Button
-            aria-hidden
-            disabled
-            className="invisible col-start-1 row-start-1"
-          >
-            Connect to wallet
-          </Button>
-          <Button
-            aria-hidden
-            disabled
-            className="invisible col-start-1 row-start-1 flex items-center gap-2 text-sm"
-          >
-            <div className="size-5 shrink-0" />
-            <div className="font-mono font-medium">XXXX...XXXX</div>
-            <ChevronDownIcon className="size-4 shrink-0" />
-          </Button> */}
     </div>
   );
 }

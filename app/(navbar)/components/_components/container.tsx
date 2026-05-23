@@ -207,10 +207,10 @@ ComponentPage.Cli = function Cli({
   const registryItemName = title.toLocaleLowerCase().replaceAll(" ", "-");
 
   const packageManagerCommands = {
-    pnpm: `pnpm dlx shadcn@latest add https://100xui.com/r/${registryItemName}.json`,
-    npm: `npx shadcn@latest add https://100xui.com/r/${registryItemName}.json`,
-    yarn: `yarn shadcn@latest add https://100xui.com/r/${registryItemName}.json`,
-    bun: `bun --bun shadcn@latest add https://100xui.com/r/${registryItemName}.json`,
+    pnpm: `pnpm dlx shadcn@latest add https://100xui.com/components/${registryItemName}.json`,
+    npm: `npx shadcn@latest add https://100xui.com/components/${registryItemName}.json`,
+    yarn: `yarn shadcn@latest add https://100xui.com/components/${registryItemName}.json`,
+    bun: `bun --bun shadcn@latest add https://100xui.com/components/${registryItemName}.json`,
   } as const;
 
   return (
@@ -229,6 +229,8 @@ ComponentPage.Dependencies = function Dependencies({
     | "tailwind-merge"
     | "clsx"
     | "@radix-ui/react-avatar"
+    | "radix-ui"
+    | "class-variance-authority"
   )[];
 } & React.ComponentProps<"section">) {
   const stringifiedDependencies = dependencies.sort().join(" ");

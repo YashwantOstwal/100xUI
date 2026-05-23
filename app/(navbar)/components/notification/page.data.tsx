@@ -7,7 +7,7 @@ import {
 import { GLOBALS_CSS } from "@/app/code-strings";
 import { UTILS_TS } from "@/lib/code-strings";
 
-import registryItem from "@/public/c/notification.json";
+import registryItem from "@/public/components/notification.json";
 
 const NOTIFICATION = registryItem?.files?.find(({ path }) =>
   path.endsWith("notification.tsx")

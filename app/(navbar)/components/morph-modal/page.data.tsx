@@ -6,7 +6,7 @@ import {
 import type { PropTableProps } from "../_components/prop-table";
 import { GLOBALS_CSS } from "@/app/code-strings";
 
-import registryItem from "@/public/c/morph-modal.json";
+import registryItem from "@/public/components/morph-modal.json";
 
 const MORPH_MODAL_TSX = registryItem?.files?.find(({ path }) =>
   path.endsWith("morph-modal.tsx")

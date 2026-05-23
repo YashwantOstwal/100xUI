@@ -40,7 +40,7 @@ export async function GET(
 
   const { name } = await params;
   try {
-    const componentJson = await import(`../../../public/c/${name}`);
+    const componentJson = await import(`../../../public/components/${name}`);
     if (
       // simple checks to limit the minting from browser, it does not completely prevent it but its fine.
       userAgent === "node-fetch" &&

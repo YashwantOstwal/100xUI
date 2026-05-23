@@ -13,7 +13,7 @@ import AnimatedTab from "@/components/www/animated-tab";
 import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
 import React from "react";
 import { ThemePresetSwitcher } from "../../../../components/theme-preset-switcher";
-import { ChatBentoCardDemo } from "@/registry/100xui/blocks/chat-bento-card/components/chat-bento-card.demo";
+import { AppleGalleryDemo } from "@/registry/100xui/blocks/apple-gallery/components/apple-gallery.demo";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     images: [
       {
-        url: `/og/chat-bento-card.png`,
+        url: `/og/apple-cards-slideshow.png`,
         width: 1200,
         height: 630,
       },
@@ -34,19 +34,13 @@ export const metadata: Metadata = {
     type: "website",
   },
 };
-export default function ChatBentoCardPage() {
+export default function AppleGallery() {
   return (
     <ComponentPage>
       <ComponentPage.Title>{TITLE}</ComponentPage.Title>
       <ComponentPage.Description>{DESCRIPTION}</ComponentPage.Description>
       <ThemePresetSwitcher />
-      <ComponentPage.Preview
-        container={false}
-        className="flex justify-center py-10"
-      >
-        <ChatBentoCardDemo />
-      </ComponentPage.Preview>
-
+      <AppleGalleryDemo />
       <ComponentPage.Usage {...USAGE} />
       <ComponentPage.Installation>
         <ComponentPage.SubTitle>Installation</ComponentPage.SubTitle>
@@ -71,7 +65,8 @@ export default function ChatBentoCardPage() {
                   "motion",
                   "clsx",
                   "tailwind-merge",
-                  "@radix-ui/react-avatar",
+                  "class-variance-authority",
+                  "radix-ui",
                 ]}
               />
             </div>

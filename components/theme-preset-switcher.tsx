@@ -32,7 +32,7 @@ export function ThemePresetSwitcher() {
   }, []);
 
   return (
-    <div className="mt-5 flex items-center justify-between gap-2">
+    <div className="mt-5 mb-3 flex items-center justify-between gap-2">
       <div className="text-muted-foreground font-mono uppercase">
         Current Theme:{" "}
         {isMounted && (
@@ -43,7 +43,7 @@ export function ThemePresetSwitcher() {
             }}
           >
             {THEME_PRESETS.find((themePreset) =>
-              themeCtx.theme?.endsWith(themePreset.id),
+              themeCtx.theme?.endsWith(themePreset.id)
             )?.label ?? "Neutral (Page default)"}
           </motion.span>
         )}
@@ -59,7 +59,7 @@ export function ThemePresetSwitcher() {
               (themeCtx.theme?.endsWith("light") ||
                 themeCtx.theme?.endsWith("dark") ||
                 themeCtx.theme?.endsWith("system")) &&
-              "ring-primary z-40 ring-2",
+              "ring-primary z-40 ring-2"
           )}
           onClick={() => {
             themeCtx.setTheme((currTheme) => currTheme.split("-")[0]);
@@ -71,7 +71,7 @@ export function ThemePresetSwitcher() {
               isMounted &&
                 themeCtx.theme?.endsWith(id) &&
                 "ring-primary z-40 ring-2",
-              className,
+              className
             )}
             key={id}
             themeCtx={themeCtx}
@@ -109,7 +109,7 @@ function ThemePreset({
           data-switch={id}
           className={cn(
             "from-primary via-secondary to-card ring-primary size-10 rounded-full bg-gradient-to-r hover:z-50 focus-visible:z-50 focus-visible:ring-2 focus-visible:outline-none sm:size-11",
-            className,
+            className
           )}
           onClick={() => {
             setTheme((currTheme) => {

@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarImage, AvatarFallback } from "./avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const TestimonialCard = ({
   className,
@@ -8,7 +8,7 @@ const TestimonialCard = ({
   <div
     className={cn(
       "bg-card text-card-foreground border-border/50 flex flex-col justify-between gap-10 rounded-4xl border px-5 py-4 shadow-md lg:px-7 lg:py-6",
-      className,
+      className
     )}
     {...rest}
   />
@@ -28,7 +28,7 @@ const TestimonialAuthor = ({
   <div
     className={cn(
       "grid grid-cols-[auto_1fr] grid-rows-[auto_auto] gap-x-3 lg:gap-x-4",
-      className,
+      className
     )}
     {...rest}
   />
@@ -45,11 +45,11 @@ const TestimonialAvatar = ({
 );
 
 const TestimonialAvatarImage = (
-  props: React.ComponentProps<typeof AvatarImage>,
+  props: React.ComponentProps<typeof AvatarImage>
 ) => <AvatarImage {...props} />;
 
 const TestimonialAvatarFallback = (
-  props: React.ComponentProps<typeof AvatarFallback>,
+  props: React.ComponentProps<typeof AvatarFallback>
 ) => <AvatarFallback {...props} />;
 
 const TestimonialName = ({
@@ -59,7 +59,7 @@ const TestimonialName = ({
   <div
     className={cn(
       "col-start-2 row-start-1 text-sm font-medium lg:text-base",
-      className,
+      className
     )}
     {...rest}
   />
@@ -72,7 +72,7 @@ const TestimonialPosition = ({
   <div
     className={cn(
       "text-muted-foreground col-start-2 row-start-2 text-xs lg:text-sm",
-      className,
+      className
     )}
     {...rest}
   />

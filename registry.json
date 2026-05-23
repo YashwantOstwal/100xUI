@@ -143,6 +143,20 @@
       ],
       "dependencies": ["motion"]
     },
+    {
+      "name": "apple-gallery",
+      "type": "registry:block",
+      "title": "Apple gallery",
+      "description": "An elegant, interactive media gallery inspired by Apple's iPhone 17 landing page. Designed with smooth transitions, interactive playback controls, and a highly polished user experience.",
+      "files": [
+        {
+          "path": "registry/100xui/blocks/apple-gallery/components/apple-gallery.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "registryDependencies": ["button"],
+      "dependencies": ["motion"]
+    },
 
     {
       "name": "internals",
@@ -158,6 +172,10 @@
         },
         {
           "path": "registry/100xui/shared/components/ui/avatar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "registry/100xui/shared/components/ui/button.tsx",
           "type": "registry:ui"
         }
       ]
@@ -200,6 +218,10 @@
         },
         {
           "path": "registry/100xui/blocks/chat-bento-card/components/chat-bento-card.demo.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/100xui/blocks/apple-gallery/components/apple-gallery.demo.tsx",
           "type": "registry:component"
         }
       ]

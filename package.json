@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "shadcn build --output ./public/c & next build",
+    "build": "shadcn build --output ./public/components & next build",
     "start": "next start",
     "lint": "next lint",
-    "prod": "shadcn build --output ./public/c & next build & next start",
-    "registry:build": "shadcn build --output ./public/c",
-    "registry:host": "shadcn build --output ./public/c & next dev --turbopack",
+    "prod": "shadcn build --output ./public/components & next build & next start",
+    "registry:build": "shadcn build --output ./public/components",
+    "registry:host": "shadcn build --output ./public/components & next dev --turbopack",
     "codama:js": "codama run js"
   },
   "dependencies": {
