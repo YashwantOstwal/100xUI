@@ -3,7 +3,7 @@ import { MotionLinkUnderline } from "../../registry/100xui/blocks/motion-link/co
 import { XIcon } from "@/icons/x.icon";
 export function Footer() {
   return (
-    <footer className="divide-border mt-24 flex flex-col divide-y divide-dashed text-sm">
+    <footer className="divide-border mx-auto mt-24 flex max-w-screen-2xl flex-col divide-y divide-dashed px-3 text-sm">
       <div className="flex items-center gap-x-6 py-4">
         <LogoIcon />
         <p className="italic">Reusable motion components for React.</p>

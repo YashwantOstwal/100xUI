@@ -15,6 +15,7 @@ import { ProgramAccountsProvider } from "./(navbar)/vote-component/providers/pro
 import { TimeProvider } from "./(navbar)/vote-component/providers/time";
 import { HxuiLiteTokenProvider } from "./(navbar)/vote-component/providers/hxui-lite-token";
 import { Toaster } from "sonner";
+import { Footer } from "@/components/www/footer";
 
 // Fonts
 const poppins = Poppins({
@@ -101,6 +102,7 @@ export default function RootLayout({
                         <div className="px-2 lg:px-3">
                           <div className="bg-background text-foreground relative min-h-screen border-x border-dashed">
                             {children}
+                            <Footer></Footer>
                           </div>
                         </div>
                         <Toaster

@@ -7,7 +7,6 @@ export default function Page() {
     <main className="mx-auto max-w-screen-2xl px-3 py-16">
       <Hero />
       <ComponentsGrid />
-      <Footer />
     </main>
   );
 }
