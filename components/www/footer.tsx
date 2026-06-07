@@ -1,5 +1,5 @@
 import LogoIcon from "@/icons/logo.icon";
-import { MotionLinkUnderline } from "../../registry/100xui/blocks/motion-link/components/motion-link";
+import { MotionLinkUnderline } from "@/registry/100xui/blocks/motion-link/components/motion-link";
 import { XIcon } from "@/icons/x.icon";
 export function Footer() {
   return (
@@ -11,7 +11,7 @@ export function Footer() {
       <div className="py-4">
         Building in public.&nbsp;
         <MotionLinkUnderline
-          href="https://x.com/Yashwant_Ostwal"
+          href="https://x.com/100xUI"
           target="_blank"
           rel="nopenner noreferrer"
           className="group relative mt-0.5 flex items-center gap-x-1"

@@ -5,16 +5,16 @@ import {
   DEFAULT_ACTIVE_FILE,
   ROOT_DIRECTORY,
   PROP_TABLE,
-  ADDITIONAL_INFORMATION,
+  // ADDITIONAL_INFORMATION,
   USAGE,
 } from "./page.data";
 import { Metadata } from "next";
 import { PackageManagerProvider } from "@/components/www/package-manager-providers";
 import AnimatedTab from "@/components/www/animated-tab";
 import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
-import Placeholder from "@/components/www/placeholder";
 import React from "react";
-import { ThemePresetSwitcher } from "../../../../components/theme-preset-switcher";
+import { IPhone3DMockupDemo } from "@/registry/100xui/blocks/iphone-3d-mockup/components/iphone-3d-mockup.demo";
+
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     images: [
       {
-        url: `/og/${TITLE.toLowerCase().replaceAll(" ", "-")}.png`,
+        url: `/og/iphone-3d-mockup.png`,
         width: 1200,
         height: 630,
       },
@@ -34,39 +34,16 @@ export const metadata: Metadata = {
     type: "website",
   },
 };
-export default function InPageNavbarPage() {
+export default function IPhone3DMockupPage() {
   return (
-    <ComponentPage className="mt-13.5 lg:mt-14.5">
+    <ComponentPage>
       <ComponentPage.Title>{TITLE}</ComponentPage.Title>
       <ComponentPage.Description>{DESCRIPTION}</ComponentPage.Description>
-      <ThemePresetSwitcher />
-
-      <div className="-mx-2 space-y-1 py-10 lg:-mx-3">
-        {[
-          {
-            id: "about",
-            className: "h-160",
-          },
-          {
-            id: "pricing",
-            className: "h-fit",
-          },
-        ].map(({ id, className }, i) => (
-          <Placeholder
-            msg1={`id="${id}" className="${className}"`}
-            msg2="This is still a server component."
-            center={
-              <p className="px-2 py-10 text-center text-sm leading-tight after:content-['Open_the_sidebar_for_section_progress_as_you_scroll.'] sm:py-16 sm:text-base sm:after:content-['Watch_the_navbar_for_section_progress_as_you_scroll.']" />
-            }
-            key={id}
-            index={i}
-            id={id}
-            className={className}
-          />
-        ))}
-      </div>
-      <ComponentPage.Usage id="api-usage" {...USAGE} />
-      <ComponentPage.Installation id="installation">
+      <ComponentPage.Preview className="block p-0">
+        <IPhone3DMockupDemo />
+      </ComponentPage.Preview>
+      <ComponentPage.Usage {...USAGE} />
+      <ComponentPage.Installation>
         <ComponentPage.SubTitle>Installation</ComponentPage.SubTitle>
         <PackageManagerProvider>
           <div className="mb-10">
@@ -81,20 +58,16 @@ export default function InPageNavbarPage() {
             <ComponentPage.SubSubTitle>Manual</ComponentPage.SubSubTitle>
             <div className="mb-6" data-tracker="step-1">
               <ComponentPage.Note>
-                <AnimatedTab className="mt-0.5" trackerFor="step-1">
-                  1
-                </AnimatedTab>
+                <AnimatedTab trackerFor="step-1">1</AnimatedTab>
                 Install the following dependencies.
               </ComponentPage.Note>
               <ComponentPage.Dependencies
-                dependencies={["motion", "clsx", "tailwind-merge"]}
+                dependencies={["clsx", "tailwind-merge"]}
               />
             </div>
             <div className="mb-6" data-tracker="step-2">
               <ComponentPage.Note>
-                <AnimatedTab className="mt-0.5" trackerFor="step-2">
-                  2
-                </AnimatedTab>
+                <AnimatedTab trackerFor="step-2">2</AnimatedTab>
                 Copy and paste the following code into your project.
               </ComponentPage.Note>
               <ComponentPage.FileExplorer
@@ -104,16 +77,14 @@ export default function InPageNavbarPage() {
             </div>
             <div className="-mt-6 -mb-12 pt-6 pb-12" data-tracker="step-3">
               <ComponentPage.Note>
-                <AnimatedTab className="mt-0.5" trackerFor="step-3">
-                  3
-                </AnimatedTab>{" "}
-                Finally, Update the import paths to match your project setup.
+                <AnimatedTab trackerFor="step-3">3</AnimatedTab> Finally, Update
+                the import paths to match your project setup.
               </ComponentPage.Note>
             </div>
           </AnimatedTabsProvider>
         </PackageManagerProvider>
       </ComponentPage.Installation>
-      <ComponentPage.Documentation id="documentation">
+      <ComponentPage.Documentation>
         {PROP_TABLE.data.map(({ title, tableData }, i) => (
           <React.Fragment key={i}>
             <ComponentPage.SubSubTitle className="flex flex-col items-start text-base font-medium sm:text-lg">
@@ -128,12 +99,12 @@ export default function InPageNavbarPage() {
             <ComponentPage.PropsTable tableData={tableData} />
           </React.Fragment>
         ))}
-        {ADDITIONAL_INFORMATION.map((props, index) => (
+        {/* {ADDITIONAL_INFORMATION.map((props, index) => (
           <ComponentPage.ListContainer
             {...props}
             key={`container-${index + 1}`}
           />
-        ))}
+        ))} */}
       </ComponentPage.Documentation>
     </ComponentPage>
   );

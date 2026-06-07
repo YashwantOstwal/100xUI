@@ -144,6 +144,18 @@
       "dependencies": ["motion"]
     },
     {
+      "name": "iphone-3d-mockup",
+      "type": "registry:block",
+      "title": "iPhone 3D mockup",
+      "description": "A 3D iPhone mockup to beautifully showcase your app on landing pages. It is built purely with React and CSS with no external dependencies, keeping your site fast.",
+      "files": [
+        {
+          "path": "registry/100xui/blocks/iphone-3d-mockup/components/iphone-3d-mockup.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "apple-gallery",
       "type": "registry:block",
       "title": "Apple gallery",
@@ -180,6 +192,7 @@
         }
       ]
     },
+
     {
       "name": "demos",
       "type": "registry:block",
@@ -222,6 +235,10 @@
         },
         {
           "path": "registry/100xui/blocks/apple-gallery/components/apple-gallery.demo.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/100xui/blocks/iphone-3d-mockup/components/iphone-3d-mockup.demo.tsx",
           "type": "registry:component"
         }
       ]

@@ -15,7 +15,7 @@ import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
 import { ThemePresetSwitcher } from "../../../../components/theme-preset-switcher";
 import { NotificationDemo } from "@/registry/100xui/blocks/notification/components/notification.demo";
 import React from "react";
-import PlaceHolder from "@/components/www/place-holder";
+import Placeholder from "@/components/www/placeholder";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -42,7 +42,7 @@ export default function MotionDockPage() {
       <ComponentPage.Title>{TITLE}</ComponentPage.Title>
       <ComponentPage.Description>{DESCRIPTION}</ComponentPage.Description>
       <ThemePresetSwitcher />
-      <PlaceHolder
+      <Placeholder
         center={
           <p className="grid h-75 place-items-center px-2 text-center text-sm leading-tight sm:h-100 sm:text-base">
             &quot;Please direct your attention to the bottom-right corner of the

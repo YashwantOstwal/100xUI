@@ -13,22 +13,23 @@ import MorphModal from "@/public/og/morph-modal.png";
 import Default from "@/public/og/default.png";
 import ChatBentoCard from "@/public/og/chat-bento-card.png";
 import AppleGallery from "@/public/og/apple-gallery.png";
+import Iphone3DMockup from "@/public/og/iphone-3d-mockup.png";
 
 const components: ComponentGridItemProps[] = [
+  {
+    name: "iPhone 3D mockup",
+    href: "/components/iphone-3d-mockup",
+    imgProps: {
+      src: Iphone3DMockup,
+      alt: "iphone-3d-mockup",
+    },
+  },
   {
     name: "Apple gallery",
     href: "/components/apple-gallery",
     imgProps: {
       src: AppleGallery,
       alt: "apple-gallery",
-    },
-  },
-  {
-    name: "Notification",
-    href: "/components/notification",
-    imgProps: {
-      src: Default,
-      alt: "notification",
     },
   },
   {
@@ -40,14 +41,6 @@ const components: ComponentGridItemProps[] = [
     },
   },
   {
-    name: "Morph modal",
-    href: "/components/morph-modal",
-    imgProps: {
-      src: MorphModal,
-      alt: "morph-modal",
-    },
-  },
-  {
     name: "Spinning testimonials",
     href: "/components/spinning-testimonials",
     imgProps: {
@@ -55,6 +48,31 @@ const components: ComponentGridItemProps[] = [
       alt: "spinning-testimonials",
     },
   },
+  {
+    name: "Motion dock",
+    href: "/components/motion-dock",
+    imgProps: {
+      src: MotionDockShowcase,
+      alt: "motion-dock",
+    },
+  },
+  {
+    name: "Parallax cards",
+    href: "/components/parallax-cards",
+    imgProps: {
+      src: ParallaxCardsShowcase,
+      alt: "parallax-cards",
+    },
+  },
+  {
+    name: "Morph modal",
+    href: "/components/morph-modal",
+    imgProps: {
+      src: MorphModal,
+      alt: "morph-modal",
+    },
+  },
+
   {
     name: "Motion link",
     href: "/components/motion-link",
@@ -64,14 +82,6 @@ const components: ComponentGridItemProps[] = [
     },
   },
 
-  {
-    name: "Parallax cards",
-    href: "/components/parallax-cards",
-    imgProps: {
-      src: ParallaxCardsShowcase,
-      alt: "parallax-cards",
-    },
-  },
   {
     name: "In-page navbar",
     href: "/components/in-page-navbar",
@@ -88,12 +98,13 @@ const components: ComponentGridItemProps[] = [
       alt: "text-switcher",
     },
   },
+
   {
-    name: "Motion dock",
-    href: "/components/motion-dock",
+    name: "Notification",
+    href: "/components/notification",
     imgProps: {
-      src: MotionDockShowcase,
-      alt: "motion-dock",
+      src: Default,
+      alt: "notification",
     },
   },
 ];

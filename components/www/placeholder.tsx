@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import React, { CSSProperties, ReactNode } from "react";
 import { PlusIcon } from "lucide-react";
-export default function PlaceHolder({
+export default function Placeholder({
   className,
   msg1,
   msg2,

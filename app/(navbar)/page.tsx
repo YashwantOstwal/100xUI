@@ -1,5 +1,4 @@
 import { ComponentsGrid } from "@/components/www/components-grid";
-import { Footer } from "@/components/www/footer";
 import { Hero } from "@/components/www/hero";
 
 export default function Page() {

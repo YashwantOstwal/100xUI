@@ -15,7 +15,6 @@ import { GetAdminAccess } from "./components/get-admin-access";
 import { CanDrawWinnerProvider } from "./providers/can-draw-winner";
 import { MotionLinkUnderline } from "@/registry/100xui/blocks/motion-link/components/motion-link";
 import { FileIcon } from "lucide-react";
-// import { UpdateConfig } from "./components/update-config";
 
 function Page() {
   const { isAdminView } = useIsAdminView();
@@ -24,11 +23,11 @@ function Page() {
     <HxuiTokenProvider>
       <CanDrawWinnerProvider>
         <CandidatesProvider>
-          <div className="relative min-h-screen">
+          <div className="relative mx-auto min-h-screen max-w-screen-2xl px-3 pt-16">
             <VoteComponentHero />
             {isAdminView && <AdminActions />}
             <DrawWinner />
-            <div className="z-20 mb-4 flex flex-col items-end gap-1 lg:sticky lg:top-13 lg:flex-row lg:items-center">
+            <div className="z-20 mb-4 flex flex-col items-end gap-1 lg:sticky lg:top-14 lg:flex-row lg:items-center">
               <GetAdminAccess />
               <div className="flex flex-col items-end max-lg:sticky sm:flex-row md:items-center">
                 <BuyTokens />

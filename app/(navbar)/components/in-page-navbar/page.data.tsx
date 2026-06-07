@@ -5,7 +5,7 @@ import {
 import { ListContainerProps } from "@/components/www/list-container";
 import type { PropTableProps } from "../_components/prop-table";
 import SyntaxHighlighterServer from "@/components/www/syntax-highlighter/server";
-import registryItem from "@/public/components/chat-bento-card.json";
+import registryItem from "@/public/components/in-page-navbar.json";
 import internals from "@/public/components/internals.json";
 import demos from "@/public/components/demos.json";
 
@@ -20,22 +20,6 @@ const ROOT_DIRECTORY: DirectoryItem[] = [
           const name = file.path.split("/").pop();
           return { name, type: "file", code: file.content } as DirectoryItem;
         }),
-      {
-        name: "hooks",
-        type: "directory",
-        items: [
-          ...registryItem.files
-            .filter(({ type }) => type === "registry:hook")
-            .map((hook) => {
-              const name = hook.path.split("/").pop();
-              return {
-                name,
-                type: "file",
-                code: hook.content,
-              } as DirectoryItem;
-            }),
-        ],
-      },
     ],
   },
   {
