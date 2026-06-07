@@ -7,6 +7,7 @@ import { ConnectButton } from "@/components/connect-button";
 import { IsAdminViewToggle } from "./file-explorer/is-admin-view-toggle";
 import React from "react";
 import { cn } from "@/lib/utils";
+import { ViewX } from "./view-x";
 export default function Navbar() {
   return (
     <div className="max-lg:bg-background/40 pointer-events-auto flex w-full max-w-screen-2xl items-center justify-between px-3 max-lg:backdrop-blur-[2px]">
@@ -18,7 +19,8 @@ export default function Navbar() {
       </Link>
       <div className="flex items-center gap-2">
         <IsAdminViewToggle />
-        {/* <ViewX /> */}
+        <ViewX />
+
         <ViewGithub />
         <ModeToggle className="" />
         <ConnectButton />

@@ -16,7 +16,7 @@ export function Footer() {
           rel="nopenner noreferrer"
           className="group relative mt-0.5 flex items-center gap-x-1"
         >
-          Get notified. New drops every 72h.
+          Get notified. New drop every week.
           <XIcon className="group-focus-visible::-translate-y-0.5 size-3 h-[1lh] origin-bottom transition-transform ease-out group-hover:-translate-y-0.5 group-hover:scale-110 group-focus-visible:scale-110" />
         </MotionLinkUnderline>
       </div>

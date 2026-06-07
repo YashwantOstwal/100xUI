@@ -112,11 +112,11 @@ function IPhone3DMockupSideButton({
       <div
         className="absolute inset-0 rounded-full bg-[#F1AF88]"
         style={{
-          transform: "translateZ(2px)",
+          transform: "translateZ(3px)",
         }}
       />
       <div
-        className="w-[2px] border-[#923B15] bg-linear-to-r from-[#923B15] to-[#F1AF88] to-95%"
+        className="w-[3px] border-[#923B15] bg-linear-to-r from-[#923B15] to-[#F1AF88] to-95%"
         style={{
           transform: "rotateY(-90deg) translateX(50%)",
         }}
