@@ -14,8 +14,16 @@ import Default from "@/public/og/default.png";
 import ChatBentoCard from "@/public/og/chat-bento-card.png";
 import AppleGallery from "@/public/og/apple-gallery.png";
 import Iphone3DMockup from "@/public/og/iphone-3d-mockup.png";
-
+import MenuWheel from "@/public/og/menu-wheel.png";
 const components: ComponentGridItemProps[] = [
+  {
+    name: "Menu wheel",
+    href: "/components/menu-wheel",
+    imgProps: {
+      src: MenuWheel,
+      alt: "menu-wheel-display",
+    },
+  },
   {
     name: "iPhone 3D mockup",
     href: "/components/iphone-3d-mockup",

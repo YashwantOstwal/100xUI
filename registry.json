@@ -156,6 +156,19 @@
       ]
     },
     {
+      "name": "menu-wheel",
+      "type": "registry:block",
+      "title": "Menu wheel",
+      "description": "An interactive, animated radial menu that smoothly expands to reveal options in a circular layout. Powered by Motion, it features a fluid 'press, hover, and release' interaction model, making it perfect for housing grouped actions or quick-access settings in a compact, modern UI.",
+      "files": [
+        {
+          "path": "registry/100xui/blocks/menu-wheel/components/menu-wheel.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "dependencies": ["motion"]
+    },
+    {
       "name": "apple-gallery",
       "type": "registry:block",
       "title": "Apple gallery",
@@ -239,6 +252,10 @@
         },
         {
           "path": "registry/100xui/blocks/iphone-3d-mockup/components/iphone-3d-mockup.demo.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/100xui/blocks/menu-wheel/components/menu-wheel.demo.tsx",
           "type": "registry:component"
         }
       ]

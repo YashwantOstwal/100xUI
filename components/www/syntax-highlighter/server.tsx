@@ -11,7 +11,7 @@ export default async function SyntaxHighlighterServer({
     lang: "ts",
     themes: {
       light: "github-light",
-      dark: "vesper",
+      dark: "github-dark",
     },
     tabindex: "-1",
   });

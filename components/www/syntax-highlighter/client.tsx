@@ -11,7 +11,7 @@ export async function highlight(code: string) {
     lang: "ts",
     themes: {
       light: "github-light",
-      dark: "vesper",
+      dark: "github-dark",
     },
     tabindex: "-1",
   });
@@ -32,7 +32,7 @@ export default function SyntaxHighlighterClient({
   Loader,
 }: SyntaxHighlighterClientProps) {
   const [nodes, setNodes] = React.useState<React.JSX.Element | undefined>(
-    undefined,
+    undefined
   );
   React.useEffect(() => {
     void highlight(codeString).then(setNodes);
