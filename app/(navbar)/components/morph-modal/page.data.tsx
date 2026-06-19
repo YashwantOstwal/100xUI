@@ -58,9 +58,9 @@ export function MorphModalDemo() {
 `;
 export const ROOT_DIRECTORY: DirectoryItem[] = [
   {
-    name: "globals.css | index.css",
+    name: "globals.css",
     type: "file",
-    absolutePath: "globals.css | index.css",
+    absolutePath: "globals.css",
     code: GLOBALS_CSS,
   },
   {
@@ -88,7 +88,7 @@ export const ROOT_DIRECTORY: DirectoryItem[] = [
   },
 ];
 export const DEFAULT_ACTIVE_FILE: ActiveFile = {
-  absolutePath: `components/morph-link.tsx`,
+  absolutePath: `components/morph-modal.tsx`,
   code: MORPH_MODAL_TSX as string,
 };
 

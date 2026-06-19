@@ -11,7 +11,6 @@ import {
 import React, {
   type ComponentProps,
   createContext,
-  type ReactNode,
   useContext,
   useEffect,
   useRef,
@@ -23,7 +22,7 @@ import { cn } from "@/lib/utils";
 
 const TRANSITION: Transition = {
   ease: "easeOut",
-  duration: 0.3,
+  duration: 0.25,
 };
 
 type MenuWheelContextType = {
@@ -40,9 +39,7 @@ const MenuWheelContext = createContext<MenuWheelContextType | null>(null);
 export function useMenuWheelContext() {
   const ctx = useContext(MenuWheelContext);
   if (!ctx) {
-    throw new Error(
-      "MenuWheel components must be used within a MenuWheel provider"
-    );
+    throw new Error("MenuWheel components must be used within a <MenuWheel/>");
   }
   return ctx;
 }
@@ -60,7 +57,7 @@ export function useMenuWheelContainerContext() {
   const ctx = useContext(MenuWheelContainerContext);
   if (!ctx) {
     throw new Error(
-      "MenuWheelItem components must be used within a MenuWheelContainer"
+      "MenuWheelItem components must be used within a <MenuWheelContainer/>"
     );
   }
   return ctx;
@@ -78,7 +75,6 @@ export function MenuWheel({
   showCurrent = true,
   defaultValue,
   onValueChange,
-  onMouseDown,
   ...props
 }: MenuWheelProps) {
   const [open, setOpen] = useState(false);
@@ -109,6 +105,18 @@ export function MenuWheel({
     >
       <MotionConfig transition={TRANSITION}>
         <div
+          onPointerDown={(e) => {
+            setOpen((prev) => !prev);
+            props.onPointerDown?.(e);
+          }}
+          onTouchEnd={(e) => {
+            // prevent onMouseUp trigger.
+            e.preventDefault();
+          }}
+          onMouseUp={(e) => {
+            setOpen(false);
+            props.onMouseUp?.(e);
+          }}
           className={cn(
             "relative isolate grid size-12 place-items-center rounded-full",
             open ? "*:cursor-grabbing" : "*:cursor-grab",
@@ -130,13 +138,13 @@ export function MenuWheelTrigger({
   ...props
 }: {
   cancel?: React.ReactNode; // The content to display when the menu wheel is open (default is an X Icon)
-} & React.ComponentProps<"button"> &
+} & React.ComponentProps<"div"> &
   MotionProps) {
-  const { open, setOpen } = useMenuWheelContext();
+  const { open } = useMenuWheelContext();
   return (
     <AnimatePresence mode="popLayout" initial={false}>
       {!open ? (
-        <motion.button
+        <motion.div
           key="open"
           aria-label="open menu wheel"
           initial={{ scale: 0, opacity: 0.5 }}
@@ -147,13 +155,9 @@ export function MenuWheelTrigger({
             className
           )}
           {...props}
-          onMouseDown={(e) => {
-            setOpen(true);
-            props.onMouseDown?.(e);
-          }}
         >
           {children}
-        </motion.button>
+        </motion.div>
       ) : (
         <motion.div
           key="close"
@@ -247,20 +251,17 @@ export function MenuWheelContainer({
             initial={{
               maskImage:
                 "conic-gradient(rgba(0,0,0,1) 0%,rgba(0,0,0,1) 0%,rgba(0,0,0,0) 0%,rgba(0,0,0,0) 100%)",
-              scale: 0.85,
-              opacity: 0.5,
+              scale: 0.9,
             }}
             animate={{
               maskImage:
                 "conic-gradient(rgba(0,0,0,1) 0%,rgba(0,0,0,1) 100%,rgba(0,0,0,0) 100%,rgba(0,0,0,0) 100%)",
               scale: 1,
-              opacity: 1,
             }}
             exit={{
               maskImage:
                 "conic-gradient(rgba(0,0,0,1) 0%,rgba(0,0,0,1) 0%,rgba(0,0,0,0) 0%,rgba(0,0,0,0) 100%)",
-              scale: 0.85,
-              opacity: 0.5,
+              scale: 0.9,
             }}
             className={cn(
               "bg-border text-secondary-foreground absolute isolate z-10 flex size-[325%] rounded-full",
@@ -287,8 +288,6 @@ export function MenuWheelContainer({
 
 export function MenuWheelItem({
   className,
-  onMouseEnter,
-  onMouseUp,
   index, // The index of the item in the menu wheel
   value, // The value associated with the item, used for selection
   children,
@@ -303,14 +302,25 @@ export function MenuWheelItem({
     <button
       onMouseEnter={(e) => {
         moveHighlight(index);
-        onMouseEnter?.(e);
+        props.onMouseEnter?.(e);
+      }}
+      onTouchStart={(e) => {
+        if (!value) return;
+        setActiveValue(value);
+        clearHighlight();
+        onValueChange?.(value);
+        props.onTouchStart?.(e);
+      }}
+      onTouchEnd={(e) => {
+        // prevent onMouseUp trigger.
+        e.preventDefault();
       }}
       onMouseUp={(e) => {
         if (!value) return;
         setActiveValue(value);
         clearHighlight();
         onValueChange?.(value);
-        onMouseUp?.(e);
+        props.onMouseUp?.(e);
       }}
       {...props}
       className={cn(

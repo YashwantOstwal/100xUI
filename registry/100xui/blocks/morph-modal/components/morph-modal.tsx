@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 function assertOnlyChild(children: React.ReactNode) {
   if (Array.isArray(children))
     throw new Error(
-      "A single child is required, but received multiple siblings.",
+      "A single child is required, but received multiple siblings."
     );
   if (
     children &&
@@ -21,7 +21,7 @@ function assertOnlyChild(children: React.ReactNode) {
     Array.isArray((children.props as React.FragmentProps).children)
   )
     throw new Error(
-      "A single child is required; fragments that render multiple siblings are not allowed.",
+      "A single child is required; fragments that render multiple siblings are not allowed."
     );
 }
 
@@ -100,7 +100,7 @@ export function MorphModalTrigger({
             className={cn(
               "bg-primary text-primary-foreground hover:bg-accent/80 hover:text-accent-foreground/80 size-fit cursor-pointer overflow-hidden transition-colors duration-150 ease-out",
               className,
-              "!absolute !inset-0",
+              "!absolute !inset-0"
             )}
             {...rest}
             transition={{ layout: { duration, ...restTransition } }}
@@ -192,7 +192,7 @@ export function MorphModalOverlay({
           transition={transition}
           className={cn(
             "fixed inset-0 isolate z-50 grid place-items-center",
-            className,
+            className
           )}
           onClick={(e) => {
             setOpenModal(false);

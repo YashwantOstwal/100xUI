@@ -14,6 +14,7 @@ import AnimatedTab from "@/components/www/animated-tab";
 import { AnimatedTabsProvider } from "@/components/www/animated-tabs-provider";
 import React from "react";
 import { MenuWheelDemo } from "@/registry/100xui/blocks/menu-wheel/components/menu-wheel.demo";
+import { ThemePresetSwitcher } from "@/components/theme-preset-switcher";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -39,6 +40,8 @@ export default function MenuWheelPage() {
     <ComponentPage>
       <ComponentPage.Title>{TITLE}</ComponentPage.Title>
       <ComponentPage.Description>{DESCRIPTION}</ComponentPage.Description>
+      <ThemePresetSwitcher />
+
       <ComponentPage.Preview className="py-10">
         <MenuWheelDemo />
       </ComponentPage.Preview>

@@ -25,7 +25,6 @@ export function IPhone3DMockupDemo() {
     mouseXProgress.set(relativeX);
     mouseYProgress.set(relativeY);
   };
-  [];
   const handleMouseLeave = () => {
     mouseXProgress.set(0.5);
     mouseYProgress.set(0.5);
