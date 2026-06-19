@@ -30,10 +30,10 @@ export function AppleGalleryDemo() {
     <AppleGallery>
       <AppleGalleryContainer
         {...(matches && {
-          paddingInlineInPx: 50,
-          gapInPx: 20,
+          paddingInlineInPx: 25,
+          gapInPx: 10,
         })}
-        className="h-160 max-h-screen"
+        className="h-100 max-h-screen md:h-160"
       >
         {IPHONE_FEATURE_IMAGES_PROPS.map((props) => (
           <Card key={props.alt} className="relative overflow-hidden">
