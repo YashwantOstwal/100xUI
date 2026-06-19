@@ -324,7 +324,7 @@ export function MenuWheelItem({
       }}
       {...props}
       className={cn(
-        "bg-muted text-muted-foreground border-border/50 absolute inset-y-1 right-1/2 left-1 z-20 origin-right cursor-grabbing rounded-l-full border-r transition-opacity hover:opacity-80",
+        "bg-muted text-muted-foreground border-border/50 absolute inset-y-1 right-1/2 left-1 z-20 origin-right cursor-grabbing rounded-l-full border-r opacity-80",
         showCurrent && activeValue === value && "text-secondary-foreground",
         className
       )}
