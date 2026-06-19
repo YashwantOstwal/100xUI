@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 
 import { Card } from "@/components/ui/card";
@@ -12,6 +14,7 @@ import Cameras from "@/public/demo/apple-cards-slideshow/Cameras.png";
 import ChipBattery from "@/public/demo/apple-cards-slideshow/ChipBattery.jpeg";
 import FrontCamera from "@/public/demo/apple-cards-slideshow/FrontCamera.jpeg";
 import Intelligence from "@/public/demo/apple-cards-slideshow/Intelligence.jpeg";
+import { useEffect, useState } from "react";
 
 const IPHONE_FEATURE_IMAGES_PROPS = [
   { src: CeramicShield, alt: "Ceramic Shield" },
@@ -22,9 +25,16 @@ const IPHONE_FEATURE_IMAGES_PROPS = [
 ];
 
 export function AppleGalleryDemo() {
+  const matches = useMediaQuery("(max-width: 767px)");
   return (
     <AppleGallery>
-      <AppleGalleryContainer className="h-160 max-h-screen">
+      <AppleGalleryContainer
+        {...(matches && {
+          paddingInlineInPx: 50,
+          gapInPx: 20,
+        })}
+        className="h-160 max-h-screen"
+      >
         {IPHONE_FEATURE_IMAGES_PROPS.map((props) => (
           <Card key={props.alt} className="relative overflow-hidden">
             <Image
@@ -38,4 +48,26 @@ export function AppleGalleryDemo() {
       <AppleGalleryControls />
     </AppleGallery>
   );
+}
+
+export function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => {
+    const isServer = typeof window == "undefined";
+    if (isServer) return false;
+    return window.matchMedia(query).matches;
+  });
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mediaQueryList = window.matchMedia(query);
+
+    const handleMediaQuery = (e: MediaQueryListEvent) => {
+      setMatches(e.matches);
+    };
+
+    mediaQueryList.addEventListener("change", (e) => handleMediaQuery(e));
+    return () => {
+      mediaQueryList.removeEventListener("change", (e) => handleMediaQuery(e));
+    };
+  }, [query]);
+  return matches;
 }

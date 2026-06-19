@@ -142,7 +142,7 @@ export function AppleGalleryContainer({
           }
         }
       },
-      { threshold: 1 }
+      { threshold: 0.5 }
     );
 
     const childrenObserver = new IntersectionObserver(
